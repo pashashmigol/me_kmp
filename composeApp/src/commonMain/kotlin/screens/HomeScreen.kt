@@ -1,6 +1,5 @@
 package screens
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,18 +29,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-//import androidx.navigation.NavHostController
-//import com.me.BuildConfig
-//import com.me.navigation.navOptions
+import com.me.resources.library.MR
+import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.skia.ColorChannel
-
-@Preview
-@Composable
-fun Preview() {
-    HomeScreen()
-}
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -55,7 +46,7 @@ fun HomeScreen(
         contentAlignment = Alignment.BottomEnd
     ) {
         Image(
-            painterResource(ColorChannel.R.drawable.tram),
+            painterResource("drawable/tram.jpg"),
             contentDescription = "",
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize(),
@@ -69,14 +60,14 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             IconButton(
-                onClick = { navController?.navigate("months", navOptions) },
+                onClick = { /*navController?.navigate("months", navOptions)*/ },
                 modifier = Modifier
                     .then(Modifier.size(80.dp))
                     .border(3.dp, Color.White, shape = CircleShape)
                     .semantics { testTag = "months" }
             ) {
                 Text(
-                    text = stringResource(R.string.months),
+                    text = stringResource(MR.strings.months_k),
                     color = Color.White,
                     fontSize = TextUnit(18.0f, TextUnitType.Sp),
                     fontWeight = FontWeight.Bold
@@ -84,14 +75,14 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
-                onClick = { navController?.navigate("weeks", navOptions) },
+                onClick = { /*navController?.navigate("weeks", navOptions)*/ },
                 modifier = Modifier
                     .then(Modifier.size(80.dp))
                     .border(3.dp, Color.White, shape = CircleShape)
                     .semantics { testTag = "weeks" }
             ) {
                 Text(
-                    text = stringResource(R.string.weeks),
+                    text = stringResource(MR.strings.weeks_k),
                     color = Color.White,
                     fontSize = TextUnit(18.0f, TextUnitType.Sp),
                     fontWeight = FontWeight.Bold
@@ -99,14 +90,14 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
-                onClick = { navController?.navigate("days", navOptions) },
+                onClick = { /*navController?.navigate("days", navOptions) */},
                 modifier = Modifier
                     .then(Modifier.size(80.dp))
                     .border(3.dp, Color.White, shape = CircleShape)
                     .semantics { testTag = "days" }
             ) {
                 Text(
-                    text = stringResource(R.string.days),
+                    text = stringResource(MR.strings.days_k),
                     color = Color.White,
                     fontSize = TextUnit(18.0f, TextUnitType.Sp),
                     fontWeight = FontWeight.Bold
@@ -114,7 +105,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
-                onClick = { navController?.navigate("today", navOptions) },
+                onClick = { /*navController?.navigate("today", navOptions)*/ },
                 modifier = Modifier
                     .then(Modifier.size(100.dp))
                     .semantics { testTag = "new record" }
@@ -129,7 +120,8 @@ fun HomeScreen(
             }
         }
         Text(
-            text = "v${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})",
+//            text = "v${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})",
+            text = "test test test",
             color = Color.White,
             fontSize = 8.sp,
         )

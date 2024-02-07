@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.multiplatformResources)
 }
 
 kotlin {
@@ -15,9 +16,9 @@ kotlin {
             }
         }
     }
-    
+
     jvm("desktop")
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -28,13 +29,19 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        val desktopMain by getting
-        
+        val commonMain by getting
+        val desktopMain by getting {
+            dependsOn(commonMain)
+        }
+        val androidMain by getting {
+            dependsOn(commonMain)
+        }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -44,6 +51,9 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(libs.kotlinx.datetime)
+
+            implementation(libs.multiplatform.resources)
+            implementation(libs.multiplatform.resources.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -81,6 +91,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildFeatures { compose = true }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.8"
+    }
+
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
         implementation(libs.androidx.ui.tooling.preview.android)
@@ -98,7 +112,10 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
-    dependencies {
-        implementation(libs.androidx.ui.tooling.preview.desktop)
-    }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.me.resources.library"
+    multiplatformResourcesClassName = "MR"
+    disableStaticFrameworkWarning = true
 }

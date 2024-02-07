@@ -25,9 +25,10 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import screens.HomeScreen
 
 
- inline fun <reified A, reified B> Pair<*, *>.asPairOf(): Pair<A, B>? {
+inline fun <reified A, reified B> Pair<*, *>.asPairOf(): Pair<A, B>? {
     if (first !is A || second !is B) return null
     return first as A to second as B
 }
@@ -57,7 +58,6 @@ val stringToStringList = somePair.asPairOf<String, List<String>>() // Compiles b
 }
 
 fun demo(shmomparable: Shmomparable<Number>) {
-
     shmomparable.compareTo(1)
 
     val y: Shmomparable<Double> = shmomparable // OK!
@@ -66,30 +66,7 @@ fun demo(shmomparable: Shmomparable<Number>) {
 @OptIn(ExperimentalResourceApi::class, InternalComposeApi::class)
 @Composable
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        val greeting = remember { Greeting().greet() }
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Today's date is ${todayDate()}",
-                modifier = Modifier.padding(20.dp),
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center
-            )
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(painterResource("compose-multiplatform.xml"), null)
-                    Text("Compose: $greeting")
-                }
-            }
-        }
-    }
+    HomeScreen()
 }
 
 fun todayDate(): String {

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.1.4"
+agp = "8.2.2"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
@@ -10,16 +10,17 @@ androidx-core-ktx = "1.12.0"
 androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
-compose = "1.5.4"
-compose-compiler = "1.5.8"
-compose-plugin = "1.5.11"
+compose = "1.5.8"
+compose-preview = "1.5.4"
+compose-plugin = "1.5.12"
 junit = "4.13.2"
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 kotlinxDatetime = "0.4.1"
-uiToolingPreviewAndroid = "1.6.0"
-uiToolingPreviewDesktop = "1.6.0"
+mokoVersion = "0.23.0"
 
 [libraries]
+androidx-ui-tooling-preview-v160 = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-preview" }
+jetbrains-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-preview" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -31,16 +32,19 @@ androidx-material = { group = "com.google.android.material", name = "material", 
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose-preview" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-preview" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
-androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
-androidx-ui-tooling-preview-desktop = { group = "androidx.compose.ui", name = "ui-tooling-preview-desktop", version.ref = "uiToolingPreviewDesktop" }
+androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "compose-preview" }
+androidx-ui-tooling-preview-desktop = { group = "androidx.compose.ui", name = "ui-tooling-preview-desktop", version.ref = "compose-preview" }
+multiplatform-resources = { group = "dev.icerock.moko", name = "resources", version.ref = "mokoVersion" }
+multiplatform-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "mokoVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+multiplatformResources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "mokoVersion" }
