@@ -1,5 +1,6 @@
 package screens
 
+import MeMultiplatform.composeApp.BuildConfig
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+//import androidx.navigation.NavHostController
 import com.me.resources.library.MR
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -120,8 +122,7 @@ fun HomeScreen(
             }
         }
         Text(
-//            text = "v${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})",
-            text = "test test test",
+            text = "v${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})",
             color = Color.White,
             fontSize = 8.sp,
         )

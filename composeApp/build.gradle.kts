@@ -1,11 +1,16 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.multiplatformResources)
+    alias(libs.plugins.buildConfig)
+}
+
+buildConfig {
+    buildConfigField("VERSION_NAME", "1.0.11")
+    buildConfigField("VERSION_CODE", 11)
 }
 
 kotlin {
@@ -31,17 +36,9 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
-        val desktopMain by getting {
-            dependsOn(commonMain)
-        }
-        val androidMain by getting {
-            dependsOn(commonMain)
-        }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
-
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -55,9 +52,6 @@ kotlin {
             implementation(libs.multiplatform.resources)
             implementation(libs.multiplatform.resources.compose)
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-        }
     }
 }
 
@@ -68,6 +62,7 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    sourceSets["main"].java.srcDirs("build/generated/moko/androidMain/src")
 
     defaultConfig {
         applicationId = "com.me.multiplatform"
@@ -99,18 +94,6 @@ android {
         debugImplementation(libs.compose.ui.tooling)
         implementation(libs.androidx.ui.tooling.preview.android)
         api(compose.preview)
-    }
-}
-
-compose.desktop {
-    application {
-        mainClass = "MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.me.multiplatform"
-            packageVersion = "1.0.0"
-        }
     }
 }
 
