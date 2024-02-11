@@ -13,12 +13,14 @@ androidx-test-junit = "1.1.5"
 compose = "1.5.8"
 compose-preview = "1.5.4"
 compose-plugin = "1.5.12"
+decompose = "2.2.2"
 junit = "4.13.2"
 kotlin = "1.9.22"
 kotlinxDatetime = "0.4.1"
 mokoVersion = "0.23.0"
 navigationRuntimeKtx = "2.7.6"
 buildconfig = "5.3.5"
+lifecycleViewmodelKtx = "2.7.0"
 
 [libraries]
 androidx-ui-tooling-preview-v160 = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-preview" }
@@ -44,6 +46,9 @@ androidx-ui-tooling-preview-desktop = { group = "androidx.compose.ui", name = "u
 multiplatform-resources = { group = "dev.icerock.moko", name = "resources", version.ref = "mokoVersion" }
 multiplatform-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "mokoVersion" }
 #androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+#extensions-compose = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

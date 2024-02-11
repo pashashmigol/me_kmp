@@ -22,7 +22,7 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+//    jvm("desktop")
 
     listOf(
         iosX64(),
@@ -32,6 +32,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+//            export("com.arkivanov.decompose:decompose:2.2.2")
+//            export("com.arkivanov.essenty:lifecycle:1.3.0")
+        }
+        dependencies {
+            api("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
+            api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
         }
     }
 
@@ -51,7 +57,14 @@ kotlin {
 
             implementation(libs.multiplatform.resources)
             implementation(libs.multiplatform.resources.compose)
+            implementation(libs.decompose)
+            api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
+//            implementation(libs.androidx.lifecycle.viewmodel.ktx)
         }
+//        iosMain.dependencies {
+//            implementation("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
+//            implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
+//        }
     }
 }
 
