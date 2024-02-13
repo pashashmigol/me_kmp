@@ -1,6 +1,7 @@
 package screens
 
 import MeMultiplatform.composeApp.BuildConfig
+import Screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.push
 import com.me.resources.library.MR
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -39,6 +42,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun HomeScreen(
 //    navController: NavHostController? = null
+    navController: StackNavigation<Screen>? = null
 ) {
     Box(
         modifier = Modifier
@@ -91,7 +95,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
-                onClick = { /*navController?.navigate("days", navOptions) */},
+                onClick = { /*navController?.navigate("days", navOptions) */ },
                 modifier = Modifier
                     .then(Modifier.size(80.dp))
                     .border(3.dp, Color.White, shape = CircleShape)
@@ -106,7 +110,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
-                onClick = { /*navController?.navigate("today", navOptions)*/ },
+                onClick = { navController?.push(Screen.Today()) },
                 modifier = Modifier
                     .then(Modifier.size(100.dp))
                     .semantics { testTag = "new record" }

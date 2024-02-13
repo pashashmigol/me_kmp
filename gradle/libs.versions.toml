@@ -16,6 +16,7 @@ compose-plugin = "1.5.12"
 decompose = "2.2.2"
 junit = "4.13.2"
 kotlin = "1.9.22"
+parcelize = "1.9.21"
 kotlinxDatetime = "0.4.1"
 mokoVersion = "0.23.0"
 navigationRuntimeKtx = "2.7.6"
@@ -57,3 +58,5 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 multiplatformResources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "mokoVersion" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }

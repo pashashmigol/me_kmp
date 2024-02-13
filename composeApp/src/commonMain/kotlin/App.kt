@@ -3,5 +3,5 @@ import screens.HomeScreen
 
 @Composable
 fun App() {
-    HomeScreen()
+    MainContent()
 }

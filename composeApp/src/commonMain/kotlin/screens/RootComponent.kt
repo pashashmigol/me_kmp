@@ -1,108 +1,118 @@
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.StackNavigationSource
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.popTo
-import com.arkivanov.decompose.router.stack.push
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import dev.icerock.moko.parcelize.Parcelable
-import dev.icerock.moko.parcelize.Parcelize
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
+import screens.HomeScreen
+
+
+sealed class Screen : Parcelable {
+
+    @Parcelize
+    class Today() : Screen()
+
+    @Parcelize
+    data class OneDay(val text: String = "") : Screen()
+
+    @Parcelize
+    data class OneWeek(val text: String = "") : Screen()
+
+    @Parcelize
+    data class OneMonth(val text: String = "") : Screen()
+
+    @Parcelize
+    data class Days(val text: String = "") : Screen()
+
+    @Parcelize
+    data class Weeks(val text: String = "") : Screen()
+
+    @Parcelize
+    data class Months(val text: String = "") : Screen()
+
+    @Parcelize
+    data class Home(val text: String = "") : Screen()
+}
+
+val LocalComponentContext: ProvidableCompositionLocal<ComponentContext> =
+    staticCompositionLocalOf { error("Root component context was not provided") }
+
 
 @Composable
-fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
+fun ProvideComponentContext(
+    componentContext: ComponentContext,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalComponentContext provides componentContext,
+        content = content
+    )
+}
+
+@Composable
+inline fun <reified C : Parcelable> ChildStack(
+    source: StackNavigationSource<C>,
+    noinline initialStack: () -> List<C>,
+    modifier: Modifier = Modifier,
+    handleBackButton: Boolean = false,
+    animation: StackAnimation<C, ComponentContext>? = null,
+    noinline content: @Composable (C) -> Unit,
+) {
+    val componentContext = LocalComponentContext.current
+
     Children(
-        stack = component.stack,
+        stack = remember {
+            componentContext.childStack(
+                source = source,
+                initialStack = initialStack,
+                handleBackButton = handleBackButton,
+                childFactory = { _, childComponentContext -> childComponentContext },
+            )
+        },
         modifier = modifier,
-    ) {
-        when (val child = it.instance) {
-            is RootComponent.Child.ListChild -> ListContent(component = child.component)
-            is RootComponent.Child.DetailsChild -> DetailsContent()
+        animation = animation,
+    ) { child ->
+        ProvideComponentContext(child.instance) {
+            content(child.configuration)
+        }
+    }
+}
+
+@Composable
+fun MainContent() {
+    val navigation: StackNavigation<Screen> = remember { StackNavigation<Screen>() }
+
+    ChildStack(
+        source = navigation,
+        initialStack = { listOf(Screen.Home("")) },
+        handleBackButton = true,
+        animation = stackAnimation(fade() + scale()),
+    ) { screen ->
+        when (screen) {
+            is Screen.Home -> HomeScreen(navigation)
+            is Screen.Months -> Stub(onItemClick = { })
+            is Screen.Weeks -> Stub(onItemClick = { })
+            is Screen.Days -> Stub(onItemClick = { })
+            is Screen.Today -> Stub(onItemClick = { })
             else -> {}
         }
     }
 }
 
 @Composable
-fun DetailsContent() {
-    // Omitted code
-}
-//
-//class DetailsViewModel : ViewModel() {
-//    // Omitted code
-//}
-
-interface RootComponent {
-
-    val stack: Value<ChildStack<*, Child>>
-
-    // It's possible to pop multiple screens at a time on iOS
-    fun onBackClicked(toIndex: Int)
-
-    // Defines all possible child components
-    sealed class Child {
-        class ListChild(val component: ListComponent) : Child()
-        class DetailsChild(val component: DetailsComponent) : Child()
-    }
-}
-
-interface ListComponent {
-    val model: Value<Model>
-
-    fun onItemClicked(item: String)
-
-    data class Model(
-        val items: List<String>,
-    )
-}
-
-interface DetailsComponent {
-//    val model: Value<Model>
-
-    data class Model(
-        val items: List<String>,
-    )
-}
-
-class DefaultDetailsComponent(
-//    override val model: Value<DetailsComponent.Model>
-) : DetailsComponent {
-
-}
-
-class DefaultListComponent(
-    componentContext: ComponentContext,
-    private val onItemSelected: (item: String) -> Unit,
-) : ListComponent {
-    override val model: Value<ListComponent.Model> =
-        MutableValue(ListComponent.Model(items = List(100) { "Item $it" }))
-
-    override fun onItemClicked(item: String) {
-        onItemSelected(item)
-    }
-}
-
-@Composable
-fun ListContent(component: ListComponent, modifier: Modifier = Modifier) {
-
-    LazyColumn {
-        items(count = 10) { item ->
-            Text(
-                text = item.toString(),
-                modifier = Modifier.clickable {
-                    component.onItemClicked(item = "item")
-                },
-            )
-        }
-    }
+fun Stub(onItemClick: (String) -> Unit) {
+    Text("STUB")
 }

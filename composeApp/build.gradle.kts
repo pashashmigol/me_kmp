@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.multiplatformResources)
     alias(libs.plugins.buildConfig)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.parcelize)
+    id("kotlin-parcelize")
 }
 
 buildConfig {
@@ -32,12 +35,11 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-//            export("com.arkivanov.decompose:decompose:2.2.2")
-//            export("com.arkivanov.essenty:lifecycle:1.3.0")
         }
         dependencies {
             api("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
             api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
+            api("com.arkivanov.essenty:lifecycle:1.3.0")
         }
     }
 
@@ -46,25 +48,33 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
         }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
-            implementation(compose.components.resources)
-            implementation(libs.kotlinx.datetime)
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.ui)
+                @OptIn(ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
+                implementation(libs.kotlinx.datetime)
 
-            implementation(libs.multiplatform.resources)
-            implementation(libs.multiplatform.resources.compose)
-            implementation(libs.decompose)
-            api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
+                implementation(libs.multiplatform.resources)
+                implementation(libs.multiplatform.resources.compose)
+                implementation(libs.decompose)
+                api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
 //            implementation(libs.androidx.lifecycle.viewmodel.ktx)
+            }
         }
-//        iosMain.dependencies {
-//            implementation("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
-//            implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
-//        }
+
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
     }
 }
 
