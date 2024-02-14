@@ -1,4 +1,4 @@
-package screens
+package screens.home
 
 import MeMultiplatform.composeApp.BuildConfig
 import Screen
@@ -41,7 +41,6 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun HomeScreen(
-//    navController: NavHostController? = null
     navController: StackNavigation<Screen>? = null
 ) {
     Box(

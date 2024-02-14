@@ -61,8 +61,8 @@ kotlin {
                 implementation(libs.multiplatform.resources)
                 implementation(libs.multiplatform.resources.compose)
                 implementation(libs.decompose)
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
                 api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
-//            implementation(libs.androidx.lifecycle.viewmodel.ktx)
             }
         }
 

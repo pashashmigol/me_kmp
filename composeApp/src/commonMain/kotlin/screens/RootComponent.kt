@@ -17,7 +17,7 @@ import com.arkivanov.decompose.router.stack.StackNavigationSource
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
-import screens.HomeScreen
+import screens.home.HomeScreen
 
 
 sealed class Screen : Parcelable {
