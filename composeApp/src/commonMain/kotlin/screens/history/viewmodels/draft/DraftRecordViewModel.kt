@@ -1,12 +1,12 @@
-package com.me.screens.history.viewmodels.draft
+package screens.history.viewmodels.draft
 
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.ViewModel
-import com.me.model.Feeling
-import com.me.model.MoodRecord
+import com.rickclephas.kmm.viewmodel.KMMViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import model.Feeling
+import model.MoodRecord
 
-abstract class DraftRecordViewModel : ViewModel() {
+abstract class DraftRecordViewModel : KMMViewModel() {
 
     abstract var text: MutableStateFlow<TextFieldValue>
 

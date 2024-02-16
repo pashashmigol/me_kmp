@@ -1,7 +1,7 @@
-package com.me.model
+package model
 
 import androidx.compose.ui.graphics.Color
-import com.me.data.utils.randomString
+import data.utils.randomString
 
 interface HistoryRecord {
     val text: String

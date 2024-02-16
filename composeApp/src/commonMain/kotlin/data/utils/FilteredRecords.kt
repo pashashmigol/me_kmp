@@ -1,7 +1,7 @@
-package com.me.data.utils
+package data.utils
 
-import com.me.model.HistoryRecord
-import com.me.screens.history.viewmodels.Filter
+import model.HistoryRecord
+import screens.history.viewmodels.Filter
 
 fun <T : HistoryRecord> filteredRecords(
     unfilteredRecords: List<T>,

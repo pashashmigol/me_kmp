@@ -1,14 +1,14 @@
-package com.me.data.utils
+package data.utils
 
-import java.util.concurrent.ThreadLocalRandom
-import kotlin.streams.asSequence
+import kotlin.random.Random
 
 const val STRING_LENGTH = 140
 private val charPool: List<Char> = ('a'..'z') + ('A'..'Z') +
         ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' '
 
-fun randomString(): String = ThreadLocalRandom.current()
-    .ints(STRING_LENGTH.toLong(), 0, charPool.size)
-    .asSequence()
+fun randomString(): String = generateSequence {
+    Random.Default.nextInt(0, charPool.size)
+}.take(STRING_LENGTH)
+    .toList()
     .map(charPool::get)
     .joinToString("")

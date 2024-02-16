@@ -10,4 +10,6 @@ data class Mention(
     val value: String,
     val lastUsed: LocalDateTime = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
-)
+) {
+    companion object
+}

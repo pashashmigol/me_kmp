@@ -1,16 +1,13 @@
-package com.me.screens.history.viewmodels
+package screens.history.viewmodels
 
-import com.me.data.Repository
-import com.me.data.utils.filteredRecords
-import com.me.model.DayRecord
-import com.me.model.HistoryRecord
-import dagger.hilt.android.lifecycle.HiltViewModel
+import data.Repository
+import data.utils.filteredRecords
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import javax.inject.Inject
+import model.DayRecord
+import model.HistoryRecord
 
-@HiltViewModel
-class DaysViewModel @Inject constructor(repo: Repository) : HistoryViewModelReal<DayRecord>(repo) {
+class DaysViewModel(repo: Repository) : HistoryViewModelReal<DayRecord>(repo) {
     override val records: Flow<List<HistoryRecord>>
         get() = repo.days
             .combine(filter) { records: List<DayRecord>, filter: Filter ->

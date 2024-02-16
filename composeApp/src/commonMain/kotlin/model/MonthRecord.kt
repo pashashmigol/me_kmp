@@ -1,11 +1,15 @@
-package com.me.model
+package model
 
-import korlibs.time.Date
-import model.CompositeRecord
+import kotlinx.datetime.LocalDateTime
 
-class MonthRecord(index: Int, start: Date, end: Date, records: List<MoodRecord>) :
+class MonthRecord(
+    index: Int,
+    start: LocalDateTime,
+    end: LocalDateTime,
+    records: List<MoodRecord>
+) :
     CompositeRecord(index, start, end, records) {
 
-    override fun dateString() = "${start.year}, ${start.month.localShortName}"
+    override fun dateString() = "${start.year}, ${start.month.name}"
     override val text = "${records.size} records"
 }

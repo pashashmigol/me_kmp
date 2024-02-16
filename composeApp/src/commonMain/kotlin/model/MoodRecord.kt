@@ -1,18 +1,15 @@
 package model
 
 import data.utils.randomDate
-import com.me.data.utils.randomString
-import com.me.model.HistoryRecord
+import data.utils.randomString
 import data.utils.format
-import kotlinx.datetime.Clock.System.now
+import data.utils.now
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 val dateTimeFormat = "EEE, dd MMM yyyy HH:mm"
 
 data class MoodRecord(
-    val date: LocalDateTime = now().toLocalDateTime(TimeZone.currentSystemDefault()),
+    val date: LocalDateTime = now(),
     override val text: String = "",
     override val feelings: List<Feeling> = listOf()
 ) : HistoryRecord {

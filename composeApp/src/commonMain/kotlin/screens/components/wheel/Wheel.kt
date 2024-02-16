@@ -1,6 +1,5 @@
-package com.me.screens.components.wheel
+package screens.components.wheel
 
-import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.exponentialDecay
@@ -15,6 +14,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
@@ -29,25 +29,21 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.me.model.Emotion
-import com.me.model.Feeling
-import com.me.model.color
+import model.Emotion
+import model.Feeling
+import model.color
 import kotlinx.coroutines.launch
-import java.lang.Math.toDegrees
-import java.lang.Math.toRadians
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -59,20 +55,7 @@ val textStyle = TextStyle(
     fontSize = TextUnit(24f, type = TextUnitType.Sp),
 )
 
-@Preview
-@Composable
-fun WheelPreview() {
-    Wheel(
-        modifier = Modifier,
-        smallWheelPosition = Rect(
-            offset = Offset(x = 0f, y = 0f),
-            size = Size(500f, 500f),
-        ),
-        onEmotion = {},
-        onFeeling = {}
-    )
-}
-
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Wheel(
     modifier: Modifier,
@@ -83,13 +66,12 @@ fun Wheel(
     val rotation: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
     val velocity: MutableState<Float> = remember { mutableFloatStateOf(0f) }
 
-    val context = LocalContext.current
     val minRadius = smallWheelPosition.size.minDimension / 2
-    val maxRadius = LocalView.current.measuredWidth.toFloat() / 2
+    val measuredWidth = LocalWindowInfo.current.containerSize.width.toFloat()
+    val measuredHeight = LocalWindowInfo.current.containerSize.height.toFloat()
+    val maxRadius = measuredWidth / 2
 
-    val maxSize = Size(
-        LocalView.current.measuredWidth.toFloat(), LocalView.current.measuredWidth.toFloat()
-    )
+    val maxSize = Size(measuredWidth, measuredWidth)
     if (maxSize == Size.Unspecified) {
         return
     }
@@ -102,8 +84,8 @@ fun Wheel(
     val chosenEmotion = remember<MutableState<Emotion?>> { mutableStateOf(null) }
 
     val center = Offset(
-        x = LocalView.current.width.toFloat() / 2,
-        y = LocalView.current.width.toFloat() / 2
+        x = maxRadius,
+        y = maxRadius
     )
 
     val offset = smallWheelPosition.center - Offset(center.x, center.y)
@@ -128,8 +110,8 @@ fun Wheel(
 
     Spacer(modifier
         .size(
-            width = LocalView.current.measuredWidth.dp,
-            height = LocalView.current.measuredHeight.dp
+            width = measuredHeight.dp,
+            height = measuredHeight.dp
         )
         .background(Color.Transparent)
         .zIndex(1f)
@@ -205,7 +187,6 @@ fun Wheel(
                     rotation = rotation,
                     offset = offset,
                     maxSize = maxSize,
-                    context = context,
                     radius = maxRadius,
                     textMeasurer = textMeasurer
                 )
@@ -216,7 +197,6 @@ fun Wheel(
                 rotation = rotation,
                 offset = offset,
                 maxSize = maxSize,
-                context = context,
                 radius = maxRadius,
                 textMeasurer = textMeasurer
             )
@@ -229,7 +209,6 @@ private fun ContentDrawScope.secondWheel(
     offset: Offset,
     maxSize: Size,
     radius: Float,
-    context: Context,
     textMeasurer: TextMeasurer
 ) {
     val sectorAngle = 360f / emotion.feelings.size
@@ -244,7 +223,7 @@ private fun ContentDrawScope.secondWheel(
         )
         text(
             drawScope = this,
-            text = feeling.name(context = context),
+            text = feeling.name(),
             offset = offset,
             angle = index * sectorAngle + sectorAngle / 2 + rotation.value + 180,
             textMeasurer = textMeasurer,
@@ -267,7 +246,6 @@ private fun ContentDrawScope.firstWheel(
     offset: Offset,
     maxSize: Size,
     radius: Float,
-    context: Context,
     textMeasurer: TextMeasurer
 ) {
     val sectorAngle = 360f / Emotion.values.size
@@ -283,7 +261,7 @@ private fun ContentDrawScope.firstWheel(
         )
         text(
             drawScope = this,
-            text = emotion.name(context = context),
+            text = emotion.name(),
             offset = offset,
             angle = index * sectorAngle + rotation.value + 180 + sectorAngle / 2,
             textMeasurer = textMeasurer,

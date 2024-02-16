@@ -1,11 +1,11 @@
-package com.me.screens.components.wheel
+package screens.components.wheel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Rect
-import androidx.lifecycle.ViewModel
+import com.rickclephas.kmm.viewmodel.KMMViewModel
 
-abstract class WheelViewModel : ViewModel() {
+abstract class WheelViewModel : KMMViewModel() {
     abstract val bigWheelPosition: MutableState<Rect?>
 }
 

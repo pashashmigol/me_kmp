@@ -23,13 +23,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.me.model.HistoryRecord
 import model.CompositeRecord
-import com.me.screens.history.viewmodels.HistoryViewModel
-import com.me.screens.history.viewmodels.tags.TagsViewModel
-import com.me.screens.components.FilterPanel
-import com.me.screens.components.cards.RecordCard
 import kotlinx.coroutines.flow.update
+import model.HistoryRecord
+import screens.components.FilterPanel
+import screens.components.cards.RecordCard
+import screens.history.viewmodels.HistoryViewModel
+import screens.history.viewmodels.tags.TagsViewModel
 
 @Composable
 fun <T : HistoryRecord> HistoryScreen(
@@ -37,7 +37,7 @@ fun <T : HistoryRecord> HistoryScreen(
     tagsViewModel: TagsViewModel,
     onItemClick: ((index: Int) -> Unit)? = null,
 ) {
-    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsStateWithLifecycle()
+    val suggestions: List<String> by tagsViewModel.suggestedTags.cocollectAsStateWithLifecycle()
     val records: List<HistoryRecord> by historyViewModel.records.collectAsStateWithLifecycle(
         emptyList()
     )

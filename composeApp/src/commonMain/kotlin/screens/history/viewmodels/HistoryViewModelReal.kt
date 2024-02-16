@@ -1,10 +1,10 @@
-package com.me.screens.history.viewmodels
+package screens.history.viewmodels
 
-import com.me.data.Repository
-import com.me.model.HistoryRecord
-import com.me.model.MoodRecord
+import data.Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import model.HistoryRecord
+import model.MoodRecord
 
 abstract class HistoryViewModelReal<T : HistoryRecord>(val repo: Repository) :
     HistoryViewModel<T>() {

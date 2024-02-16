@@ -1,18 +1,15 @@
-package com.me.screens.history.viewmodels
+package screens.history.viewmodels
 
-import com.me.data.Repository
-import com.me.data.utils.filteredRecords
-import com.me.model.HistoryRecord
-import com.me.model.MoodRecord
-import com.me.model.WeekRecord
-import dagger.hilt.android.lifecycle.HiltViewModel
+import data.Repository
+import data.utils.filteredRecords
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
+import model.HistoryRecord
+import model.MoodRecord
+import model.WeekRecord
 
-@HiltViewModel
-class OneWeekRecordsViewModel @Inject constructor(repo: Repository) :
+class OneWeekRecordsViewModel  (repo: Repository) :
     HistoryViewModelReal<MoodRecord>(repo) {
     var weekIndex: Int? = null
 

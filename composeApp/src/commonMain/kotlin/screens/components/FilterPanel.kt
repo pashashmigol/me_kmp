@@ -1,4 +1,4 @@
-package com.me.screens.components
+package screens.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +10,10 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -25,25 +24,19 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.me.data.Repository
-import data.storage.StorageStub
-import com.me.model.HistoryRecord
-import com.me.screens.history.viewmodels.HistoryViewModel
-import com.me.screens.history.viewmodels.HistoryViewModelStub
-import com.me.screens.history.viewmodels.tags.TagsViewModel
-import com.me.screens.history.viewmodels.tags.TagsViewModelReal
+import dev.icerock.moko.resources.compose.painterResource
 import kotlinx.coroutines.flow.update
-import screens.components.ChooseEmotionPanel
+import model.HistoryRecord
+import screens.history.viewmodels.HistoryViewModel
+import screens.history.viewmodels.tags.TagsViewModel
+import com.me.resources.library.MR
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T : HistoryRecord> FilterPanel(
     historyViewModel: HistoryViewModel<T>,
@@ -68,7 +61,7 @@ fun <T : HistoryRecord> FilterPanel(
                     ),
                     trailingIcon = {
                         Image(
-                            painterResource(android.R.drawable.ic_menu_search),
+                            painterResource(MR.images.),
                             contentDescription = "",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.wrapContentSize()
@@ -80,11 +73,8 @@ fun <T : HistoryRecord> FilterPanel(
                         .weight(1f)
                         .focusRequester(remember { FocusRequester() })
                         .testTag("text input"),
-                    colors = TextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.White,
                     ),
                     onValueChange = { newText: TextFieldValue ->
                         historyViewModel.onTextChanged(newText)
@@ -126,10 +116,3 @@ fun <T : HistoryRecord> FilterPanel(
         }
     }
 }
-
-@Preview
-@Composable
-fun FilterPanelPreview() = FilterPanel(
-    historyViewModel = HistoryViewModelStub(),
-    tagsViewModel = TagsViewModelReal(Repository(StorageStub()))
-)

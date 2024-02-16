@@ -1,11 +1,11 @@
-package com.me.screens.history.viewmodels.tags
+package screens.history.viewmodels.tags
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.ViewModel
+import com.rickclephas.kmm.viewmodel.KMMViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
-abstract class TagsViewModel : ViewModel() {
+abstract class TagsViewModel : KMMViewModel() {
     abstract fun onTextChanged(newText: TextFieldValue): TextFieldValue
 
     abstract fun onSuggestionClicked(index: Int, currentText: TextFieldValue): TextFieldValue

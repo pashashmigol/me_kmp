@@ -1,0 +1,5 @@
+ val data = Project("kotlinx.serialization", "Kotlin")
+    val string = Json.encodeToString(data)
+    println(string) // {"name":"kotlinx.serialization","language":"Kotlin"}
+    // Deserializing back into objects
+    val obj = Json.decodeFromString<Project>(string)

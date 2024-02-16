@@ -1,9 +1,9 @@
-package com.me.screens.history.viewmodels
+package screens.history.viewmodels
 
-import com.me.model.HistoryRecord
-import com.me.model.MoodRecord
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import model.HistoryRecord
+import model.MoodRecord
 
 class HistoryViewModelStub : HistoryViewModel<HistoryRecord>() {
     override fun addRecord(moodRecord: MoodRecord) {}

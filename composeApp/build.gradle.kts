@@ -63,6 +63,9 @@ kotlin {
                 implementation(libs.decompose)
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
                 api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+                implementation("com.squareup.okio:okio:3.8.0")
+                api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
             }
         }
 

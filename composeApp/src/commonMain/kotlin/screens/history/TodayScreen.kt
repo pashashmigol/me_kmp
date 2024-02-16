@@ -1,4 +1,4 @@
-package com.me.screens.history
+package screens.history
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material.Divider
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -23,23 +23,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.me.data.Repository
-import data.storage.StorageStub
-import com.me.model.HistoryRecord
-import com.me.screens.history.viewmodels.draft.DraftRecordViewModel
-import com.me.screens.history.viewmodels.tags.TagsViewModel
-import com.me.screens.history.viewmodels.tags.TagsViewModelReal
-import com.me.screens.history.viewmodels.TodayRecordsViewModel
-import com.me.screens.components.cards.DraftCard
-import com.me.screens.components.cards.DraftRecordViewModelStub
-import com.me.screens.components.cards.RecordCard
-import com.me.screens.components.wheel.Wheel
-import com.me.screens.components.wheel.WheelViewModel
-import com.me.screens.components.wheel.WheelViewModelStub
+import model.HistoryRecord
+import screens.components.cards.DraftCard
+import screens.components.cards.RecordCard
+import screens.components.wheel.Wheel
+import screens.components.wheel.WheelViewModel
+import screens.history.viewmodels.TodayRecordsViewModel
+import screens.history.viewmodels.draft.DraftRecordViewModel
+import screens.history.viewmodels.tags.TagsViewModel
 
 @Composable
 fun TodayScreen(
@@ -124,15 +117,4 @@ fun TodayScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun TodayScreenPreview() {
-    TodayScreen(
-        historyViewModel = TodayRecordsViewModel(Repository(StorageStub())),
-        draftViewModel = DraftRecordViewModelStub(),
-        wheelViewModel = WheelViewModelStub(),
-        tagsViewModel = TagsViewModelReal(Repository(StorageStub())),
-    )
 }

@@ -6,19 +6,17 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.viewModelScope
-import com.me.data.Repository
+import com.rickclephas.kmm.viewmodel.coroutineScope
+import data.Repository
+import data.utils.now
 import model.HashTag
-import com.me.model.Mention
-import dagger.hilt.android.lifecycle.HiltViewModel
-import korlibs.time.DateTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import model.Mention
+import screens.history.viewmodels.tags.TagsViewModel
 
-@HiltViewModel
-class TagsViewModelReal @Inject constructor(
+class TagsViewModelReal(
     val repository: Repository
 ) : TagsViewModel() {
 
@@ -58,13 +56,13 @@ class TagsViewModelReal @Inject constructor(
             if (mr.value.startsWith("@")) {
                 val mention = Mention(
                     value = mr.value,
-                    lastUsed = DateTime.now()
+                    lastUsed = now()
                 )
                 repository.addMention(mention)
             } else if (mr.value.startsWith("#")) {
                 val mention = HashTag(
                     value = mr.value,
-                    lastUsed = DateTime.now()
+                    lastUsed = now()
                 )
                 repository.addTag(mention)
             }
@@ -86,7 +84,7 @@ class TagsViewModelReal @Inject constructor(
         ),
         selection = TextRange(index = Int.MAX_VALUE)
     ).also {
-        viewModelScope.launch { suggestedTags.emit(emptyList()) }
+        viewModelScope.coroutineScope.launch { suggestedTags.emit(emptyList()) }
     }
 
     override fun annotateString(text: AnnotatedString): AnnotatedString = buildAnnotatedString {

@@ -1,15 +1,16 @@
-package com.me.data
+package data
 
-import com.me.data.storage.Storage
-import com.me.model.DayRecord
 import model.HashTag
-import com.me.model.Mention
-import com.me.model.MonthRecord
-import com.me.model.MoodRecord
-import com.me.model.WeekRecord
-import korlibs.time.DateTime
+import data.storage.Storage
+import data.utils.endOfIsoWeek
+import data.utils.endOfMonth
+import data.utils.now
+import data.utils.startOfDay
+import data.utils.startOfIsoWeek
+import data.utils.startOfMonth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,18 +18,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Singleton
+import kotlinx.datetime.LocalDateTime
+import model.DayRecord
+import model.Mention
+import model.MonthRecord
+import model.MoodRecord
+import model.WeekRecord
 
-@Singleton
-class Repository @Inject constructor(private val storage: Storage) {
+class Repository(private val storage: Storage) {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val records = MutableStateFlow<List<MoodRecord>>(emptyList())
     val tags = MutableStateFlow<MutableMap<String, HashTag>>(mutableMapOf())
     val mentions = MutableStateFlow<MutableMap<String, Mention>>(mutableMapOf())
 
-    val h = Heap()
     val todayRecords: StateFlow<List<MoodRecord>> = records
         .map { todayRecords(it) }
         .stateIn(
@@ -113,7 +116,7 @@ class Repository @Inject constructor(private val storage: Storage) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other == null || this::class != other::class) return false
 
         other as Repository
 
@@ -143,8 +146,8 @@ class Repository @Inject constructor(private val storage: Storage) {
 }
 
 private fun generateMonths(records: List<MoodRecord>): List<MonthRecord> = records
-    .fold(initial = mutableMapOf<DateTime, MutableList<MoodRecord>>()) { acc, moodRecord ->
-        val monthsStart = moodRecord.date.local.startOfMonth
+    .fold(initial = mutableMapOf<LocalDateTime, MutableList<MoodRecord>>()) { acc, moodRecord ->
+        val monthsStart = moodRecord.date.startOfMonth
 
         if (!acc.containsKey(monthsStart)) {
             acc[monthsStart] = mutableListOf()
@@ -156,8 +159,8 @@ private fun generateMonths(records: List<MoodRecord>): List<MonthRecord> = recor
     .foldIndexed(initial = mutableListOf()) { index, acc, monthsRecords ->
         MonthRecord(
             index = index,
-            start = monthsRecords.key.date,
-            end = monthsRecords.key.endOfMonth.date,
+            start = monthsRecords.key,
+            end = monthsRecords.key.endOfMonth,
             records = monthsRecords.value.toList()
 
         ).let { acc.add(it) }
@@ -165,8 +168,8 @@ private fun generateMonths(records: List<MoodRecord>): List<MonthRecord> = recor
     }
 
 private fun generateWeeks(records: List<MoodRecord>): List<WeekRecord> = records
-    .fold(initial = mutableMapOf<DateTime, MutableList<MoodRecord>>()) { acc, moodRecord ->
-        val weekStart = moodRecord.date.local.startOfIsoWeek
+    .fold(initial = mutableMapOf<LocalDateTime, MutableList<MoodRecord>>()) { acc, moodRecord ->
+        val weekStart = moodRecord.date.startOfIsoWeek
 
         if (!acc.containsKey(weekStart)) {
             acc[weekStart] = mutableListOf()
@@ -177,8 +180,8 @@ private fun generateWeeks(records: List<MoodRecord>): List<WeekRecord> = records
     .foldIndexed(initial = mutableListOf()) { index, acc, weekRecords ->
         WeekRecord(
             index = index,
-            start = weekRecords.key.date,
-            end = weekRecords.key.endOfIsoWeek.date,
+            start = weekRecords.key,
+            end = weekRecords.key.endOfIsoWeek,
             records = weekRecords.value.toList()
         ).let { acc.add(it) }
         acc
@@ -186,9 +189,9 @@ private fun generateWeeks(records: List<MoodRecord>): List<WeekRecord> = records
 
 private fun generateDays(records: List<MoodRecord>): List<DayRecord> = records
     .fold(
-        initial = mutableMapOf<DateTime, MutableList<MoodRecord>>()
+        initial = mutableMapOf<LocalDateTime, MutableList<MoodRecord>>()
     ) { acc, moodRecord ->
-        val dayStart = moodRecord.date.local.startOfDay
+        val dayStart = moodRecord.date.startOfDay
 
         if (!acc.containsKey(dayStart)) {
             acc[dayStart] = mutableListOf()
@@ -200,12 +203,12 @@ private fun generateDays(records: List<MoodRecord>): List<DayRecord> = records
     ) { index, acc, dayRecords ->
         DayRecord(
             index = index,
-            start = dayRecords.key.date,
+            start = dayRecords.key,
             records = dayRecords.value.toList()
         ).let { acc.add(it) }
         acc
     }
 
 private fun todayRecords(records: List<MoodRecord>) = records.filter {
-    it.date.local.date == lazy { DateTime.nowLocal().local.date }.value
+    it.date.date == lazy { now().date }.value
 }

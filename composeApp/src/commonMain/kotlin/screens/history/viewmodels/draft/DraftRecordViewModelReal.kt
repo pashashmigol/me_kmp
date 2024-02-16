@@ -1,16 +1,16 @@
-package com.me.screens.history.viewmodels.draft
+package screens.history.viewmodels.draft
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.text.input.TextFieldValue
-import com.me.model.Feeling
-import com.me.model.MoodRecord
-import com.me.model.MoodRecord.Companion.MAX_EMOTIONS_NUMBER
-import com.me.model.MoodRecord.Companion.MAX_TEXT_LENGTH
-import com.me.model.MoodRecord.Companion.MIN_EMOTIONS_NUMBER
-import com.me.model.MoodRecord.Companion.MIN_TEXT_LENGTH
-import com.me.screens.history.viewmodels.tags.TagsViewModel
-import korlibs.time.DateTime
+import data.utils.now
+import model.Feeling
+import model.MoodRecord
+import model.MoodRecord.Companion.MAX_EMOTIONS_NUMBER
+import model.MoodRecord.Companion.MAX_TEXT_LENGTH
+import model.MoodRecord.Companion.MIN_EMOTIONS_NUMBER
+import model.MoodRecord.Companion.MIN_TEXT_LENGTH
 import kotlinx.coroutines.flow.MutableStateFlow
+import screens.history.viewmodels.tags.TagsViewModel
 
 class DraftRecordViewModelReal(
     private val tagsViewModel: TagsViewModel
@@ -51,7 +51,7 @@ class DraftRecordViewModelReal(
                 )
             }
             val record = MoodRecord(
-                date = DateTime.nowLocal(),
+                date = now(),
                 text = text.value.text,
                 feelings = feelings.toList()
             )

@@ -1,6 +1,5 @@
 package model
 
-import com.me.model.HistoryRecord
 import kotlinx.datetime.LocalDateTime
 
 

@@ -1,18 +1,18 @@
-package com.me.model
+package model
 
-import korlibs.time.Date
-import model.CompositeRecord
+import kotlinx.datetime.LocalDateTime
 
-class WeekRecord(index: Int, start: Date, end: Date, records: List<MoodRecord>) :
+
+class WeekRecord(index: Int, start: LocalDateTime, end: LocalDateTime, records: List<MoodRecord>) :
     CompositeRecord(index, start, end, records) {
 
     override fun dateString() = if (start.month == end.month) {
         "${start.year}, " +
-                "${start.month.localShortName} ${start.day}-${end.day}"
+                "${start.month.name} ${start.dayOfMonth}-${end.dayOfMonth}"
     } else {
         "${start.year}, " +
-                "${start.month.localShortName} ${start.day} - " +
-                "${end.month.localShortName} ${end.day}"
+                "${start.month.name} ${start.dayOfMonth} - " +
+                "${end.month.name} ${end.dayOfMonth}"
     }
 
     override val text = "${records.size} records"

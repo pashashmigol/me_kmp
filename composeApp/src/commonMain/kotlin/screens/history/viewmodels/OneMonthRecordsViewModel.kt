@@ -1,18 +1,17 @@
 package com.me.screens.history.viewmodels
 
-import com.me.data.Repository
-import com.me.data.utils.filteredRecords
-import com.me.model.HistoryRecord
-import com.me.model.MonthRecord
-import com.me.model.MoodRecord
-import dagger.hilt.android.lifecycle.HiltViewModel
+import data.Repository
+import data.utils.filteredRecords
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
+import model.HistoryRecord
+import model.MonthRecord
+import model.MoodRecord
+import screens.history.viewmodels.Filter
+import screens.history.viewmodels.HistoryViewModelReal
 
-@HiltViewModel
-class OneMonthRecordsViewModel @Inject constructor(repo: Repository) :
+class OneMonthRecordsViewModel(repo: Repository) :
     HistoryViewModelReal<MoodRecord>(repo) {
     var monthIndex: Int? = null
 

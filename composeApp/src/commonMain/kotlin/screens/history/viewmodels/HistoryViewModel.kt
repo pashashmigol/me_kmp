@@ -1,16 +1,16 @@
-package com.me.screens.history.viewmodels
+package screens.history.viewmodels
 
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.ViewModel
-import com.me.model.Emotion
-import com.me.model.HistoryRecord
-import com.me.model.MoodRecord
-import com.me.screens.history.viewmodels.Filter.Companion.noFilter
+import com.rickclephas.kmm.viewmodel.KMMViewModel
+import model.HistoryRecord
+import screens.history.viewmodels.Filter.Companion.noFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import model.Emotion
+import model.MoodRecord
 
-abstract class HistoryViewModel<T : HistoryRecord> : ViewModel() {
+abstract class HistoryViewModel<T : HistoryRecord> : KMMViewModel() {
     abstract fun addRecord(moodRecord: MoodRecord)
     abstract val records: Flow<List<HistoryRecord>>
 

@@ -1,11 +1,8 @@
 package model
 
 import androidx.compose.ui.graphics.Color
-import com.google.errorprone.annotations.Keep
 import com.me.resources.library.MR
 
-
-@Keep
 sealed class Feeling {
 
     abstract fun color(): Color

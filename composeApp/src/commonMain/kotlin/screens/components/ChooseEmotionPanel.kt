@@ -27,9 +27,9 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import model.Emotion
-import com.me.model.HistoryRecord
-import com.me.model.color
-import com.me.screens.history.viewmodels.HistoryViewModel
+import model.HistoryRecord
+import model.color
+import screens.history.viewmodels.HistoryViewModel
 
 @Composable
 fun <T : HistoryRecord> ChooseEmotionPanel(
