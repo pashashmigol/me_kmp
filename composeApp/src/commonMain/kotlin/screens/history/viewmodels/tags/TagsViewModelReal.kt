@@ -1,4 +1,4 @@
-package com.me.screens.history.viewmodels.tags
+package screens.history.viewmodels.tags
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.Mention
-import screens.history.viewmodels.tags.TagsViewModel
 
 class TagsViewModelReal(
     val repository: Repository

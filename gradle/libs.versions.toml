@@ -14,6 +14,7 @@ compose = "1.5.8"
 compose-preview = "1.5.4"
 compose-plugin = "1.5.12"
 decompose = "2.2.2"
+jetbrains-kotlinxDatetime = "0.5.0"
 junit = "4.13.2"
 kotlin = "1.9.22"
 parcelize = "1.9.21"
@@ -44,6 +45,7 @@ compose-material = { module = "androidx.compose.material:material", version.ref 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "compose-preview" }
 androidx-ui-tooling-preview-desktop = { group = "androidx.compose.ui", name = "ui-tooling-preview-desktop", version.ref = "compose-preview" }
+kotlinx-datetime-v050 = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "jetbrains-kotlinxDatetime" }
 multiplatform-resources = { group = "dev.icerock.moko", name = "resources", version.ref = "mokoVersion" }
 multiplatform-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "mokoVersion" }
 #androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }

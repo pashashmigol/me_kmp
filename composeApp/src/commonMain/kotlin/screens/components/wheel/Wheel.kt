@@ -14,7 +14,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
@@ -29,7 +28,6 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -55,11 +53,11 @@ val textStyle = TextStyle(
     fontSize = TextUnit(24f, type = TextUnitType.Sp),
 )
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Wheel(
     modifier: Modifier,
     smallWheelPosition: Rect,
+    bigWheelSize: Size,
     onEmotion: (Emotion?) -> Unit = {},
     onFeeling: (Feeling?) -> Unit = {}
 ) {
@@ -67,8 +65,9 @@ fun Wheel(
     val velocity: MutableState<Float> = remember { mutableFloatStateOf(0f) }
 
     val minRadius = smallWheelPosition.size.minDimension / 2
-    val measuredWidth = LocalWindowInfo.current.containerSize.width.toFloat()
-    val measuredHeight = LocalWindowInfo.current.containerSize.height.toFloat()
+    val measuredWidth = bigWheelSize.width
+    val measuredHeight = bigWheelSize.height
+
     val maxRadius = measuredWidth / 2
 
     val maxSize = Size(measuredWidth, measuredWidth)

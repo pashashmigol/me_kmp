@@ -2,6 +2,7 @@ package screens.history
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,10 +16,12 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
@@ -43,77 +46,80 @@ fun TodayScreen(
 ) {
     var bigWheelPosition by remember { wheelViewModel.bigWheelPosition }
 
-    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsStateWithLifecycle()
-    val todayRecords: List<HistoryRecord>
-            by historyViewModel.records.collectAsStateWithLifecycle(emptyList())
+    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsState()
+    val todayRecords: List<HistoryRecord> by historyViewModel.records.collectAsState(emptyList())
 
     Surface(modifier = Modifier
         .fillMaxWidth()
         .semantics { testTag = "today screen root" }) {
         bigWheelPosition?.let { position ->
-            Wheel(
-                modifier = Modifier.semantics { testTag = "big wheel" },
-                smallWheelPosition = position,
-                onFeeling = { feeling ->
-                    bigWheelPosition = null
-                    feeling?.let { draftViewModel.addFeeling(it) }
-                })
-        }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .padding(2.dp),
-            state = rememberLazyListState(),
-            verticalArrangement = Arrangement.Bottom,
-            reverseLayout = true
-        ) {
-            item { Spacer(modifier = Modifier.height(300.dp)) }
+            BoxWithConstraints(Modifier.fillMaxSize(), propagateMinConstraints = true) {
 
-            item {
-                DraftCard(
-                    draftViewModel = draftViewModel,
-                    historyViewModel = historyViewModel,
-                    wheelViewModel = wheelViewModel,
-                    tagsViewModel = tagsViewModel,
-                )
+                Wheel(
+                    modifier = Modifier.semantics { testTag = "big wheel" },
+                    smallWheelPosition = position,
+                    bigWheelSize = Size(maxWidth.value, maxHeight.value),
+                    onFeeling = { feeling ->
+                        bigWheelPosition = null
+                        feeling?.let { draftViewModel.addFeeling(it) }
+                    })
             }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(2.dp),
+                state = rememberLazyListState(),
+                verticalArrangement = Arrangement.Bottom,
+                reverseLayout = true
+            ) {
+                item { Spacer(modifier = Modifier.height(300.dp)) }
 
-            items(suggestions.size) { index ->
-                val reversedIndex = suggestions.lastIndex - index
-                TextButton(
-                    modifier = Modifier
-                        .background(Color.Transparent)
-                        .testTag("suggestion"),
-                    onClick = {
-                        draftViewModel.text.value = tagsViewModel.onSuggestionClicked(
-                            index = reversedIndex,
-                            currentText = draftViewModel.text.value
-                        )
-                    },
-                ) {
-                    Text(
-                        text = suggestions[reversedIndex],
-                        fontSize = 20.sp,
-                        color = Color.White,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Transparent, CircleShape)
-                            .padding(18.dp)
+                item {
+                    DraftCard(
+                        draftViewModel = draftViewModel,
+                        historyViewModel = historyViewModel,
+                        wheelViewModel = wheelViewModel,
+                        tagsViewModel = tagsViewModel,
                     )
                 }
-            }
 
-            items(todayRecords.size) { index ->
-                val reversedIndex = todayRecords.lastIndex - index
+                items(suggestions.size) { index ->
+                    val reversedIndex = suggestions.lastIndex - index
+                    TextButton(
+                        modifier = Modifier
+                            .background(Color.Transparent)
+                            .testTag("suggestion"),
+                        onClick = {
+                            draftViewModel.text.value = tagsViewModel.onSuggestionClicked(
+                                index = reversedIndex,
+                                currentText = draftViewModel.text.value
+                            )
+                        },
+                    ) {
+                        Text(
+                            text = suggestions[reversedIndex],
+                            fontSize = 20.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Transparent, CircleShape)
+                                .padding(18.dp)
+                        )
+                    }
+                }
 
-                RecordCard(
-                    record = todayRecords[reversedIndex],
-                    tagsViewModel = tagsViewModel
-                )
-                Divider(
-                    modifier = Modifier.height(12.dp), color = Color.Transparent
-                )
+                items(todayRecords.size) { index ->
+                    val reversedIndex = todayRecords.lastIndex - index
+
+                    RecordCard(
+                        record = todayRecords[reversedIndex],
+                        tagsViewModel = tagsViewModel
+                    )
+                    Divider(
+                        modifier = Modifier.height(12.dp), color = Color.Transparent
+                    )
+                }
             }
         }
     }

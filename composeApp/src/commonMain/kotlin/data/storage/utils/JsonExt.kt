@@ -27,22 +27,14 @@ fun HashTag.Companion.fromJson(json: String): List<HashTag> {
     return Json.decodeFromString<List<HashTag>>(json)
 }
 
-fun HashTag.toJson(): String {
-    return Json.encodeToString<HashTag>(this)
-}
-
-fun List<HashTag>.toJson(): String {
-    return Json.encodeToString<List<HashTag>>(this)
+fun hashTagsToJson(list : List<HashTag>): String {
+    return Json.encodeToString<List<HashTag>>(list)
 }
 
 fun Mention.Companion.fromJson(json: String): List<Mention> {
     return Json.decodeFromString<List<Mention>>(json)
 }
 
-fun Mention.toJson(): String {
-    return Json.encodeToString<Mention>(this)
-}
-
-fun List<Mention>.toJson(): String {
-    return Json.encodeToString<List<Mention>>(this)
+fun mentionsToJson(list : List<Mention>): String {
+    return Json.encodeToString<List<Mention>>(list)
 }

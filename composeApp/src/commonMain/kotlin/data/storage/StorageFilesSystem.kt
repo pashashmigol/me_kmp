@@ -2,6 +2,8 @@ package data.storage
 
 //import data.storage.utils.MoodRecordAdapter
 import data.storage.utils.fromJson
+import data.storage.utils.hashTagsToJson
+import data.storage.utils.mentionsToJson
 import data.storage.utils.toJson
 import model.HashTag
 //import com.squareup.moshi.JsonWriter
@@ -102,7 +104,7 @@ constructor(/*@ApplicationContext private val context: Context*/) : Storage {
         }.let { HashTag.fromJson(it) }
 
         fileSystem().write(tagsFile()){
-            write((tags + tag).toJson().encodeToByteArray())
+            write(hashTagsToJson(tags + tag).encodeToByteArray())
         }
     }
 
@@ -123,7 +125,7 @@ constructor(/*@ApplicationContext private val context: Context*/) : Storage {
         }.let { Mention.fromJson(it) }
 
         fileSystem().write(mentionsFile()){
-            write((mentions + mention).toJson().encodeToByteArray())
+            write(mentionsToJson(mentions + mention).encodeToByteArray())
         }
     }
 

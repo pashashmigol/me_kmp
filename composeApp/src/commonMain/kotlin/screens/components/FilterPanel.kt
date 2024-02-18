@@ -61,7 +61,7 @@ fun <T : HistoryRecord> FilterPanel(
                     ),
                     trailingIcon = {
                         Image(
-                            painterResource(MR.images.),
+                            painterResource(MR.images.ic_menu_search),
                             contentDescription = "",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.wrapContentSize()

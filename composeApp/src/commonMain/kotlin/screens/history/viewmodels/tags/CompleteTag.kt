@@ -1,4 +1,4 @@
-package com.me.screens.history.viewmodels.tags
+package screens.history.viewmodels.tags
 
 internal fun completeTag(current: String, tag: String): String {
     val regex = Regex(TagsViewModelReal.TAG_PATTERN)

@@ -44,6 +44,9 @@ kotlin {
     }
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -61,7 +64,6 @@ kotlin {
                 implementation(libs.multiplatform.resources)
                 implementation(libs.multiplatform.resources.compose)
                 implementation(libs.decompose)
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
                 api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
                 implementation("com.squareup.okio:okio:3.8.0")

@@ -1,4 +1,4 @@
-package com.me.screens.history
+package screens.history
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
 import model.CompositeRecord
 import kotlinx.coroutines.flow.update
 import model.HistoryRecord
@@ -37,9 +38,10 @@ fun <T : HistoryRecord> HistoryScreen(
     tagsViewModel: TagsViewModel,
     onItemClick: ((index: Int) -> Unit)? = null,
 ) {
-    val suggestions: List<String> by tagsViewModel.suggestedTags.cocollectAsStateWithLifecycle()
-    val records: List<HistoryRecord> by historyViewModel.records.collectAsStateWithLifecycle(
-        emptyList()
+    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsState(Dispatchers.Default)
+    val records: List<HistoryRecord> by historyViewModel.records.collectAsState(
+        emptyList(),
+        Dispatchers.Default
     )
 
     LazyColumn(

@@ -34,11 +34,9 @@ import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.push
 import com.me.resources.library.MR
+import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun HomeScreen(
     navController: StackNavigation<Screen>? = null
@@ -50,7 +48,7 @@ fun HomeScreen(
         contentAlignment = Alignment.BottomEnd
     ) {
         Image(
-            painterResource("drawable/tram.jpg"),
+            painterResource(MR.images.tram),
             contentDescription = "",
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize(),
