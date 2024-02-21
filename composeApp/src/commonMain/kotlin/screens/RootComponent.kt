@@ -17,6 +17,17 @@ import com.arkivanov.decompose.router.stack.StackNavigationSource
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import data.Repository
+import data.storage.StorageFilesSystem
+import kotlinx.coroutines.flow.SharedFlow
+import org.kodein.di.DI
+import org.kodein.di.DirectDI
+import org.kodein.di.direct
+import org.kodein.di.instance
+import org.kodein.di.named
+import screens.history.TodayScreen
+import screens.history.viewmodels.TodayRecordsViewModel
+import screens.history.viewmodels.draft.DraftRecordViewModel
 import screens.home.HomeScreen
 
 
@@ -92,7 +103,7 @@ inline fun <reified C : Parcelable> ChildStack(
 }
 
 @Composable
-fun MainContent() {
+fun MainContent(di: DirectDI) {
     val navigation: StackNavigation<Screen> = remember { StackNavigation<Screen>() }
 
     ChildStack(
@@ -106,7 +117,12 @@ fun MainContent() {
             is Screen.Months -> Stub(onItemClick = { })
             is Screen.Weeks -> Stub(onItemClick = { })
             is Screen.Days -> Stub(onItemClick = { })
-            is Screen.Today -> Stub(onItemClick = { })
+            is Screen.Today -> TodayScreen(
+                historyViewModel = TodayRecordsViewModel(Repository(StorageFilesSystem())),
+                draftViewModel = di.instance(),
+                wheelViewModel = di.instance(),
+                tagsViewModel = di.instance(),
+            )
             else -> {}
         }
     }

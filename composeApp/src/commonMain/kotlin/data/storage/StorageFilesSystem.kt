@@ -61,13 +61,16 @@ constructor(/*@ApplicationContext private val context: Context*/) : Storage {
         }
     }
 
-    override suspend fun allRecords(): List<MoodRecord> =
-        fileSystem().list(recordsFolder()).map { path ->
+    override suspend fun allRecords(): List<MoodRecord> {
+        fileSystem().createDirectory(recordsFolder())
+
+        return fileSystem().list(recordsFolder()).map { path ->
             val json: String = fileSystem().read(path) {
                 readUtf8LineStrict()
             }
             MoodRecord.fromJson(json)
         }
+    }
 
     fun deleteAllSync() {
         fileSystem().deleteRecursively(recordsFolder())
@@ -77,10 +80,14 @@ constructor(/*@ApplicationContext private val context: Context*/) : Storage {
 //        fromJson(tagsFile().inputStream().source().buffer())
 //    }.getOrNull() ?: emptyList()
 
-    override suspend fun tags(): List<HashTag> = fileSystem()
-        .read(tagsFile()) {
-            readUtf8LineStrict()
-        }.let { HashTag.fromJson(it) }
+    override suspend fun tags(): List<HashTag> {
+        return if (fileSystem().exists(tagsFile())) {
+            fileSystem()
+                .read(tagsFile()) {
+                    readUtf8LineStrict()
+                }.let { HashTag.fromJson(it) }
+        } else emptyList()
+    }
 
     override suspend fun addTag(tag: HashTag) {
         scope.launch(Dispatchers.IO) {
@@ -99,19 +106,24 @@ constructor(/*@ApplicationContext private val context: Context*/) : Storage {
 //    }
 
     private fun addTagSync(tag: HashTag) {
+        fileSystem().createDirectory(tagsFolder())
         val tags = fileSystem().read(tagsFile()) {
             readUtf8LineStrict()
         }.let { HashTag.fromJson(it) }
 
-        fileSystem().write(tagsFile()){
+        fileSystem().write(tagsFile()) {
             write(hashTagsToJson(tags + tag).encodeToByteArray())
         }
     }
 
-    override suspend fun mentions(): List<Mention> = fileSystem()
-        .read(mentionsFile()) {
-            readUtf8LineStrict()
-        }.let { Mention.fromJson(it) }
+    override suspend fun mentions(): List<Mention> {
+        return if (fileSystem().exists(tagsFile())) {
+            fileSystem()
+                .read(mentionsFile()) {
+                    readUtf8LineStrict()
+                }.let { Mention.fromJson(it) }
+        } else emptyList()
+    }
 
     override suspend fun addMention(mention: Mention) {
         scope.launch(Dispatchers.IO) {
@@ -124,12 +136,19 @@ constructor(/*@ApplicationContext private val context: Context*/) : Storage {
             readUtf8LineStrict()
         }.let { Mention.fromJson(it) }
 
-        fileSystem().write(mentionsFile()){
+        fileSystem().write(mentionsFile()) {
             write(mentionsToJson(mentions + mention).encodeToByteArray())
         }
     }
 
-    private fun recordsFolder(): Path = "records".toPath()
+    private fun recordsFolder(): Path =
+        ("/data/data/com.me.multiplatform/files" + "/records").toPath()
+
+    // fileSystem().listRecursively("etc".toPath()).map {
+    //     it.toString()
+    // }.toList()
+
+
 //    : Path {
 //
 //        val fs = fileSystem()
@@ -155,7 +174,8 @@ constructor(/*@ApplicationContext private val context: Context*/) : Storage {
 //        if (!folder.exists()) folder.mkdir()
 //        return folder
 //    }
-    private fun tagsFolder() = "tags".toPath()
+    private fun tagsFolder() =
+        ("/data/data/com.me.multiplatform/files" + "/tags").toPath()
 }
 
 

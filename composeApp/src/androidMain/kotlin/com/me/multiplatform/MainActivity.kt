@@ -11,6 +11,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.defaultComponentContext
+import data.di.di
+import org.kodein.di.direct
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +24,7 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 Surface {
                     ProvideComponentContext(rootComponentContext) {
-                        MainContent()
+                        MainContent(di.direct)
                     }
                 }
             }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -49,77 +48,74 @@ fun TodayScreen(
     val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsState()
     val todayRecords: List<HistoryRecord> by historyViewModel.records.collectAsState(emptyList())
 
-    Surface(modifier = Modifier
+    BoxWithConstraints(modifier = Modifier
         .fillMaxWidth()
         .semantics { testTag = "today screen root" }) {
         bigWheelPosition?.let { position ->
-            BoxWithConstraints(Modifier.fillMaxSize(), propagateMinConstraints = true) {
+            Wheel(
+                modifier = Modifier.semantics { testTag = "big wheel" },
+                smallWheelPosition = position,
+                bigWheelSize = Size(maxWidth.value, maxHeight.value),
+                onFeeling = { feeling ->
+                    bigWheelPosition = null
+                    feeling?.let { draftViewModel.addFeeling(it) }
+                })
+        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(2.dp),
+            state = rememberLazyListState(),
+            verticalArrangement = Arrangement.Bottom,
+            reverseLayout = true
+        ) {
+            item { Spacer(modifier = Modifier.height(300.dp)) }
 
-                Wheel(
-                    modifier = Modifier.semantics { testTag = "big wheel" },
-                    smallWheelPosition = position,
-                    bigWheelSize = Size(maxWidth.value, maxHeight.value),
-                    onFeeling = { feeling ->
-                        bigWheelPosition = null
-                        feeling?.let { draftViewModel.addFeeling(it) }
-                    })
+            item {
+                DraftCard(
+                    draftViewModel = draftViewModel,
+                    historyViewModel = historyViewModel,
+                    wheelViewModel = wheelViewModel,
+                    tagsViewModel = tagsViewModel,
+                )
             }
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black)
-                    .padding(2.dp),
-                state = rememberLazyListState(),
-                verticalArrangement = Arrangement.Bottom,
-                reverseLayout = true
-            ) {
-                item { Spacer(modifier = Modifier.height(300.dp)) }
 
-                item {
-                    DraftCard(
-                        draftViewModel = draftViewModel,
-                        historyViewModel = historyViewModel,
-                        wheelViewModel = wheelViewModel,
-                        tagsViewModel = tagsViewModel,
-                    )
-                }
-
-                items(suggestions.size) { index ->
-                    val reversedIndex = suggestions.lastIndex - index
-                    TextButton(
-                        modifier = Modifier
-                            .background(Color.Transparent)
-                            .testTag("suggestion"),
-                        onClick = {
-                            draftViewModel.text.value = tagsViewModel.onSuggestionClicked(
-                                index = reversedIndex,
-                                currentText = draftViewModel.text.value
-                            )
-                        },
-                    ) {
-                        Text(
-                            text = suggestions[reversedIndex],
-                            fontSize = 20.sp,
-                            color = Color.White,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.Transparent, CircleShape)
-                                .padding(18.dp)
+            items(suggestions.size) { index ->
+                val reversedIndex = suggestions.lastIndex - index
+                TextButton(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .testTag("suggestion"),
+                    onClick = {
+                        draftViewModel.text.value = tagsViewModel.onSuggestionClicked(
+                            index = reversedIndex,
+                            currentText = draftViewModel.text.value
                         )
-                    }
-                }
-
-                items(todayRecords.size) { index ->
-                    val reversedIndex = todayRecords.lastIndex - index
-
-                    RecordCard(
-                        record = todayRecords[reversedIndex],
-                        tagsViewModel = tagsViewModel
-                    )
-                    Divider(
-                        modifier = Modifier.height(12.dp), color = Color.Transparent
+                    },
+                ) {
+                    Text(
+                        text = suggestions[reversedIndex],
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Transparent, CircleShape)
+                            .padding(18.dp)
                     )
                 }
+            }
+
+            items(todayRecords.size) { index ->
+                val reversedIndex = todayRecords.lastIndex - index
+
+                RecordCard(
+                    record = todayRecords[reversedIndex],
+                    tagsViewModel = tagsViewModel
+                )
+                Divider(
+                    modifier = Modifier.height(12.dp), color = Color.Transparent
+                )
             }
         }
     }

@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import model.Mention
 
 class TagsViewModelReal(
-    val repository: Repository
+    val repo: Repository
 ) : TagsViewModel() {
 
     override fun onTextChanged(newText: TextFieldValue): TextFieldValue {
@@ -57,13 +57,13 @@ class TagsViewModelReal(
                     value = mr.value,
                     lastUsed = now()
                 )
-                repository.addMention(mention)
+                repo.addMention(mention)
             } else if (mr.value.startsWith("#")) {
                 val mention = HashTag(
                     value = mr.value,
                     lastUsed = now()
                 )
-                repository.addTag(mention)
+                repo.addTag(mention)
             }
             mr = mr.next()
         }
@@ -105,12 +105,12 @@ class TagsViewModelReal(
         }
         Regex(LAST_TAG_PATTERN).find(string)?.value?.let { found ->
             (if (found.startsWith("@")) {
-                repository.mentions.value
+                repo.mentions.value
                     .map { it.value }
                     .sortedBy { it.lastUsed }
                     .map { it.value }
             } else if (found.startsWith("#")) {
-                repository.tags.value
+                repo.tags.value
                     .map { it.value }
                     .sortedBy { it.lastUsed }
                     .map { it.value }

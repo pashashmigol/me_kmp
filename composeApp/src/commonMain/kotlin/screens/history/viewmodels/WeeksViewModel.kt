@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.combine
 import model.HistoryRecord
 import model.WeekRecord
 
-class WeekViewModel(repo: Repository) :
+class WeeksViewModel(repo: Repository) :
     HistoryViewModelReal<WeekRecord>(repo) {
 
     override val records: Flow<List<HistoryRecord>>
