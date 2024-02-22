@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
@@ -51,11 +52,16 @@ fun TodayScreen(
     BoxWithConstraints(modifier = Modifier
         .fillMaxWidth()
         .semantics { testTag = "today screen root" }) {
+
+        val density = LocalDensity.current.density
         bigWheelPosition?.let { position ->
             Wheel(
                 modifier = Modifier.semantics { testTag = "big wheel" },
                 smallWheelPosition = position,
-                bigWheelSize = Size(maxWidth.value, maxHeight.value),
+                bigWheelSize = Size(
+                    maxWidth.value * density,
+                    maxHeight.value * density
+                ),
                 onFeeling = { feeling ->
                     bigWheelPosition = null
                     feeling?.let { draftViewModel.addFeeling(it) }

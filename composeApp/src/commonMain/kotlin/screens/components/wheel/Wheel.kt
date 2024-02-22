@@ -226,6 +226,7 @@ private fun ContentDrawScope.secondWheel(
             offset = offset,
             angle = index * sectorAngle + sectorAngle / 2 + rotation.value + 180,
             textMeasurer = textMeasurer,
+            maxSize = maxSize,
         )
     }
     emotion.feelings.forEachIndexed { index, _ ->
@@ -264,6 +265,7 @@ private fun ContentDrawScope.firstWheel(
             offset = offset,
             angle = index * sectorAngle + rotation.value + 180 + sectorAngle / 2,
             textMeasurer = textMeasurer,
+            maxSize = maxSize,
         )
     }
     items.forEachIndexed { index, _ ->
@@ -318,11 +320,12 @@ fun text(
     offset: Offset,
     angle: Float,
     textMeasurer: TextMeasurer,
+    maxSize: Size,
 ) {
     val textSize = Size(width = 350f, height = 100f)
 
     val pointOriginal =
-        offset + Offset(drawScope.size.minDimension / 2, drawScope.size.minDimension / 2)
+        offset + Offset(maxSize.maxDimension / 2, maxSize.maxDimension / 2)
     val topLeft = pointOriginal + Offset(-textSize.width - 150, -textSize.height / 2)
 
     drawScope.translate(-0f, -0f) {
