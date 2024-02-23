@@ -66,6 +66,8 @@ class StorageFilesSystem : Storage {
 
     private fun addTagSync(tag: HashTag) {
         fileSystem().createDirectory(tagsFolder())
+        fileSystem().write(tagsFile()) {}
+
         val tags = fileSystem().read(tagsFile()) {
             readUtf8LineStrict()
         }.let { HashTag.fromJson(it) }
@@ -76,6 +78,9 @@ class StorageFilesSystem : Storage {
     }
 
     override suspend fun mentions(): List<Mention> {
+        fileSystem().createDirectory(tagsFolder())
+        fileSystem().write(mentionsFile()) {}
+
         return if (fileSystem().exists(tagsFile())) {
             fileSystem()
                 .read(mentionsFile()) {
@@ -101,7 +106,7 @@ class StorageFilesSystem : Storage {
     }
 
     private fun recordsFolder(): Path =
-        (filesFolder() + "").toPath()
+        (filesFolder() + "/records").toPath()
 
     private fun tagsFolder() =
         (filesFolder() + "/tags").toPath()

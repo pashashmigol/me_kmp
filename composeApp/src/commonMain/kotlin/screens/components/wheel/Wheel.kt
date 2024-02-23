@@ -222,7 +222,7 @@ private fun ContentDrawScope.secondWheel(
         )
         text(
             drawScope = this,
-            text = feeling.name(),
+            text =  feeling.nameTranslated(),
             offset = offset,
             angle = index * sectorAngle + sectorAngle / 2 + rotation.value + 180,
             textMeasurer = textMeasurer,
@@ -388,3 +388,4 @@ private fun sectorDivider(
         end = end,
     )
 }
+

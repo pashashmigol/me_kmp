@@ -8,12 +8,12 @@ sealed interface Emotion {
 
     fun nameCompact(): String {
         return when (this) {
-            Anger ->  MR.strings.months_k.toString()
-            Fear -> MR.strings.fear_b.toString()
-            Happy -> MR.strings.happy_b.toString()
-            Peaceful -> MR.strings.peaceful_b.toString()
-            Sad -> MR.strings.sad_b.toString()
-            Surprise -> MR.strings.surprise_b.toString()
+            Anger -> string(MR.strings.months_k)
+            Fear -> string(MR.strings.fear_b)
+            Happy -> string(MR.strings.happy_b)
+            Peaceful -> string(MR.strings.peaceful_b)
+            Sad -> string(MR.strings.sad_b)
+            Surprise -> string(MR.strings.surprise_b)
         }
     }
 
@@ -29,6 +29,7 @@ data object Happy : Emotion {
         override fun emotion() = Happy
         override fun color() = emotion().color()
     }
+
     object Content : HappyFeeling()
     object Cheerful : HappyFeeling()
     object Proud : HappyFeeling()
@@ -42,7 +43,7 @@ data object Happy : Emotion {
     object Optimistic : HappyFeeling()
     object Elation : HappyFeeling()
 
-    override fun name(): String =  MR.strings.happy.toString()
+    override fun name(): String = string(MR.strings.happy)
 
     override val feelings: List<Feeling>
         get() = listOf(
@@ -66,6 +67,7 @@ data object Peaceful : Emotion {
         override fun emotion() = Peaceful
         override fun color() = emotion().color()
     }
+
     object Calm : PeacefulFeeling()
     object Loving : PeacefulFeeling()
     object Affectionate : PeacefulFeeling()
@@ -79,7 +81,7 @@ data object Peaceful : Emotion {
     object Inspired : PeacefulFeeling()
     object Passionate : PeacefulFeeling()
 
-    override fun name(): String = MR.strings.peaceful.toString()
+    override fun name(): String = string(MR.strings.peaceful)
 
     override val feelings: List<Feeling>
         get() = listOf(
@@ -103,6 +105,7 @@ data object Fear : Emotion {
         override fun emotion() = Fear
         override fun color() = emotion().color()
     }
+
     object Shy : FearfulFeeling()
     object Nervous : FearfulFeeling()
     object Worried : FearfulFeeling()
@@ -116,7 +119,7 @@ data object Fear : Emotion {
     object Terrified : FearfulFeeling()
     object Panic : FearfulFeeling()
 
-    override fun name(): String = MR.strings.fear.toString()
+    override fun name(): String = string(MR.strings.fear)
 
     override val feelings: List<Feeling>
         get() = listOf(
@@ -140,6 +143,7 @@ data object Surprise : Emotion {
         override fun emotion() = Surprise
         override fun color() = emotion().color()
     }
+
     object Startled : SurpriseFeeling()
     object Confused : SurpriseFeeling()
     object Shocked : SurpriseFeeling()
@@ -153,7 +157,7 @@ data object Surprise : Emotion {
     object Stunned : SurpriseFeeling()
     object Bewildered : SurpriseFeeling()
 
-    override fun name(): String = MR.strings.surprise.toString()
+    override fun name(): String = string(MR.strings.surprise)
 
     override val feelings: List<Feeling>
         get() = listOf(
@@ -177,6 +181,7 @@ data object Sad : Emotion {
         override fun emotion() = Sad
         override fun color() = emotion().color()
     }
+
     object Bored : SadFeeling()
     object Tired : SadFeeling()
     object Lonely : SadFeeling()
@@ -190,7 +195,7 @@ data object Sad : Emotion {
     object Depressed : SadFeeling()
     object Miserable : SadFeeling()
 
-    override fun name(): String = MR.strings.sad.toString()
+    override fun name(): String = string(MR.strings.sad)
 
     override val feelings: List<Feeling>
         get() = listOf(
@@ -214,6 +219,7 @@ data object Anger : Emotion {
         override fun emotion() = Anger
         override fun color() = emotion().color()
     }
+
     object Annoyed : AngerFeeling()
     object Frustrated : AngerFeeling()
     object Irritated : AngerFeeling()
@@ -227,7 +233,7 @@ data object Anger : Emotion {
     object Enraged : AngerFeeling()
     object Hostile : AngerFeeling()
 
-    override fun name(): String = MR.strings.anger.toString()
+    override fun name(): String = string(MR.strings.anger)
 
     override val feelings: List<Feeling>
         get() = listOf(
