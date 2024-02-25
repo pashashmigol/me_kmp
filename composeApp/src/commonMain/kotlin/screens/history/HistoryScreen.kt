@@ -18,12 +18,14 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import model.CompositeRecord
 import kotlinx.coroutines.flow.update
 import model.HistoryRecord
@@ -38,10 +40,14 @@ fun <T : HistoryRecord> HistoryScreen(
     tagsViewModel: TagsViewModel,
     onItemClick: ((index: Int) -> Unit)? = null,
 ) {
-    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsState(Dispatchers.Default)
+    val scope = rememberCoroutineScope { Dispatchers.IO }
+    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsState(
+        emptyList(),
+        scope.coroutineContext
+    )
     val records: List<HistoryRecord> by historyViewModel.records.collectAsState(
         emptyList(),
-        Dispatchers.Default
+        scope.coroutineContext
     )
 
     LazyColumn(
