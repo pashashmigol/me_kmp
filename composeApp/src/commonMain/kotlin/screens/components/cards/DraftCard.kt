@@ -149,7 +149,7 @@ fun <T : HistoryRecord> DraftCard(
                     if (draftViewModel.hasValidRecord) {
                         historyViewModel.addRecord(draftViewModel.record)
                     } else {
-                        TODO()
+//                        error()
                     }
                 }
             }

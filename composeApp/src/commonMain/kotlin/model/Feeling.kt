@@ -5,7 +5,9 @@ import com.me.resources.library.MR
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.desc.Resource
 import dev.icerock.moko.resources.desc.StringDesc
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class Feeling {
 
     abstract fun color(): Color

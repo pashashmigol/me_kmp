@@ -5,9 +5,11 @@ import data.utils.randomString
 import data.utils.format
 import data.utils.now
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
 val dateTimeFormat = "EEE, dd MMM yyyy HH:mm"
 
+@Serializable
 data class MoodRecord(
     val date: LocalDateTime = now(),
     override val text: String = "",

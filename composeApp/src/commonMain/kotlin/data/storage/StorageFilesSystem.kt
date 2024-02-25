@@ -39,7 +39,10 @@ class StorageFilesSystem : Storage {
 
         return fileSystem().list(recordsFolder()).map { path ->
             val json: String = fileSystem().read(path) {
-                readUtf8LineStrict()
+                readlnOrNull() ?: ""
+            }
+            if (json.isEmpty()) {
+                return emptyList()
             }
             MoodRecord.fromJson(json)
         }
@@ -53,7 +56,7 @@ class StorageFilesSystem : Storage {
         return if (fileSystem().exists(tagsFile())) {
             fileSystem()
                 .read(tagsFile()) {
-                    readUtf8LineStrict()
+                    readlnOrNull() ?: ""
                 }.let { HashTag.fromJson(it) }
         } else emptyList()
     }
@@ -66,12 +69,17 @@ class StorageFilesSystem : Storage {
 
     private fun addTagSync(tag: HashTag) {
         fileSystem().createDirectory(tagsFolder())
-        fileSystem().write(tagsFile()) {}
-
-        val tags = fileSystem().read(tagsFile()) {
-            readUtf8LineStrict()
-        }.let { HashTag.fromJson(it) }
-
+        if (!fileSystem().exists(tagsFile())) {
+            fileSystem().write(tagsFile()) {}
+        }
+        val json = fileSystem().read(tagsFile()) {
+            readlnOrNull() ?: ""
+        }
+        val tags =  if (json.isEmpty()) {
+            emptyList()
+        } else {
+            HashTag.fromJson(json)
+        }
         fileSystem().write(tagsFile()) {
             write(hashTagsToJson(tags + tag).encodeToByteArray())
         }
@@ -84,7 +92,7 @@ class StorageFilesSystem : Storage {
         return if (fileSystem().exists(tagsFile())) {
             fileSystem()
                 .read(mentionsFile()) {
-                    readUtf8LineStrict()
+                    readlnOrNull() ?: ""
                 }.let { Mention.fromJson(it) }
         } else emptyList()
     }
@@ -95,11 +103,15 @@ class StorageFilesSystem : Storage {
         }
     }
 
-    fun addMentionSync(mention: Mention) {
-        val mentions = fileSystem().read(mentionsFile()) {
-            readUtf8LineStrict()
-        }.let { Mention.fromJson(it) }
-
+    private fun addMentionSync(mention: Mention) {
+        val json = fileSystem().read(mentionsFile()) {
+            readlnOrNull() ?: ""
+        }
+        val mentions = if (json.isEmpty()) {
+            emptyList()
+        } else {
+            Mention.fromJson(json)
+        }
         fileSystem().write(mentionsFile()) {
             write(mentionsToJson(mentions + mention).encodeToByteArray())
         }

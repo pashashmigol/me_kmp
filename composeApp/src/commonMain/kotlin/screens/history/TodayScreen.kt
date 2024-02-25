@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -28,6 +29,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.currentCoroutineContext
 import model.HistoryRecord
 import screens.components.cards.DraftCard
 import screens.components.cards.RecordCard
@@ -36,6 +38,7 @@ import screens.components.wheel.WheelViewModel
 import screens.history.viewmodels.TodayRecordsViewModel
 import screens.history.viewmodels.draft.DraftRecordViewModel
 import screens.history.viewmodels.tags.TagsViewModel
+import kotlin.coroutines.coroutineContext
 
 @Composable
 fun TodayScreen(
@@ -45,8 +48,9 @@ fun TodayScreen(
     tagsViewModel: TagsViewModel,
 ) {
     var bigWheelPosition by remember { wheelViewModel.bigWheelPosition }
-
-    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsState()
+    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsState(
+        rememberCoroutineScope().coroutineContext
+    )
     val todayRecords: List<HistoryRecord> by historyViewModel.records.collectAsState(emptyList())
 
     BoxWithConstraints(modifier = Modifier

@@ -72,6 +72,9 @@ kotlin {
                 api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
             }
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
 
         val iosX64Main by getting
         val iosArm64Main by getting
