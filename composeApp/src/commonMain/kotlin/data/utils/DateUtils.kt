@@ -60,12 +60,12 @@ val LocalDateTime.endOfIsoWeek: LocalDateTime
         error("Shouldn't happen")
     }
 
-private operator fun LocalDateTime.minus(delta: Duration): LocalDateTime =
+operator fun LocalDateTime.minus(delta: Duration): LocalDateTime =
     toInstant(UtcOffset.ZERO)
         .minus(delta)
         .toLocalDateTime(TimeZone.currentSystemDefault())
 
- operator fun LocalDateTime.plus(delta: Duration): LocalDateTime =
+operator fun LocalDateTime.plus(delta: Duration): LocalDateTime =
     toInstant(UtcOffset.ZERO)
         .plus(delta)
         .toLocalDateTime(TimeZone.currentSystemDefault())
@@ -90,4 +90,12 @@ val LocalDateTime.endOfDay
         nanosecond = 999
     )
 
-fun now() = now().toLocalDateTime(TimeZone.currentSystemDefault())
+fun now(): LocalDateTime = now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+fun date(year: Int, month: Int, dayOfMonth: Int) = LocalDateTime(
+    year = year,
+    monthNumber = month,
+    dayOfMonth = dayOfMonth,
+    hour = 0,
+    minute = 0
+)

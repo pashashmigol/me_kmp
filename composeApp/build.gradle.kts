@@ -67,6 +67,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
                 implementation("com.squareup.okio:okio:3.8.0")
                 implementation("org.kodein.di:kodein-di:7.21.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
                 api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
                 api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
@@ -74,6 +75,8 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0-RC2")
+            implementation("app.cash.turbine:turbine:1.0.0")
         }
 
         val iosX64Main by getting

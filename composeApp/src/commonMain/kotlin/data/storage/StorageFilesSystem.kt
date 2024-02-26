@@ -20,12 +20,10 @@ class StorageFilesSystem : Storage {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override suspend fun addRecord(moodRecord: MoodRecord) {
-        scope.launch(Dispatchers.IO) {
-            addRecordSync(moodRecord)
-        }
+        addRecordSync(moodRecord)
     }
 
-    fun addRecordSync(moodRecord: MoodRecord) {
+    private fun addRecordSync(moodRecord: MoodRecord) {
         val filePath = recordsFolder().resolve(moodRecord.date.toString().toPath())
         val fileHandle = fileSystem().openReadWrite(filePath)
 
