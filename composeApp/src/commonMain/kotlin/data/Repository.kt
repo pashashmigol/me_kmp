@@ -25,7 +25,7 @@ import model.MonthRecord
 import model.MoodRecord
 import model.WeekRecord
 
-class Repository(private val storage: Storage) {
+class Repository(val storage: Storage) {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val records = MutableStateFlow<List<MoodRecord>>(emptyList())
@@ -36,7 +36,7 @@ class Repository(private val storage: Storage) {
         .map { todayRecords(it) }
         .stateIn(
             scope = scope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
 
@@ -44,7 +44,7 @@ class Repository(private val storage: Storage) {
         .map { generateDays(it) }
         .stateIn(
             scope = scope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
 
@@ -52,7 +52,7 @@ class Repository(private val storage: Storage) {
         .map { generateWeeks(it) }
         .stateIn(
             scope = scope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
 
@@ -60,7 +60,7 @@ class Repository(private val storage: Storage) {
         .map { generateMonths(it) }
         .stateIn(
             scope = scope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
 
@@ -91,6 +91,15 @@ class Repository(private val storage: Storage) {
         records.update { it + record }
         scope.launch {
             storage.addRecord(record)
+        }
+    }
+
+    fun addRecords(recordList: List<MoodRecord>) {
+        records.update { it + recordList }
+        scope.launch {
+            recordList.forEach { record ->
+                storage.addRecord(record)
+            }
         }
     }
 
