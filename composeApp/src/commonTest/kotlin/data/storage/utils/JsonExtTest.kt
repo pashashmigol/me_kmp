@@ -9,7 +9,7 @@ import model.Peaceful
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class StorageFilesSystemTest {
+class JsonExtTest {
 
     @Test
     fun `mood record serialization`() {

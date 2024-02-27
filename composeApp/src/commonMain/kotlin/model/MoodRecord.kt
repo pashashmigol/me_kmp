@@ -3,7 +3,6 @@ package model
 import data.utils.randomDate
 import data.utils.randomString
 import data.utils.format
-import data.utils.now
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
@@ -11,7 +10,7 @@ val dateTimeFormat = "EEE, dd MMM yyyy HH:mm"
 
 @Serializable
 data class MoodRecord(
-    val date: LocalDateTime = now(),
+    val date: LocalDateTime,
     override val text: String = "",
     override val feelings: List<Feeling> = listOf()
 ) : HistoryRecord {
