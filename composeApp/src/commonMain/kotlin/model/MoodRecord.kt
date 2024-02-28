@@ -1,17 +1,22 @@
 package model
 
+import data.storage.utils.FeelingSerializer
+import data.storage.utils.FeelingsListSerializer
+import data.storage.utils.LocalDateTimeSerializer
 import data.utils.randomDate
 import data.utils.randomString
 import data.utils.format
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
-val dateTimeFormat = "EEE, dd MMM yyyy HH:mm"
+const val dateTimeFormat = "EEE, dd MMM yyyy HH:mm"
 
 @Serializable
 data class MoodRecord(
+    @Serializable(with = LocalDateTimeSerializer::class)
     val date: LocalDateTime,
     override val text: String = "",
+    @Serializable(with = FeelingsListSerializer::class)
     override val feelings: List<Feeling> = listOf()
 ) : HistoryRecord {
 

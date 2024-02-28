@@ -24,7 +24,6 @@ private fun LocalDateTime.toNsDate(): NSDate? {
 }
 
 
-//actual fun LocalDateTime.format(localDateTime: LocalDateTime): String {
 actual fun LocalDateTime.format(dateTimeFormat: String): String {
     val date = toNsDate() ?: throw IllegalStateException(
         "Failed to convert LocalDateTime $LocalDateTime to NSDate"
@@ -33,5 +32,5 @@ actual fun LocalDateTime.format(dateTimeFormat: String): String {
         dateFormat = dateTimeFormat
         locale = NSLocale.currentLocale
     }
-    return formatter.stringFromDate(date) // <-
+    return formatter.stringFromDate(date)
 }

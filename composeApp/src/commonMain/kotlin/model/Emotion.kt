@@ -4,9 +4,9 @@ import com.me.resources.library.MR
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface Emotion {
-    fun name(): String
-    val feelings: List<Feeling>
+sealed class Emotion {
+    abstract fun name(): String
+    abstract val feelings: List<Feeling>
 
     fun nameCompact(): String {
         return when (this) {
@@ -27,7 +27,7 @@ sealed interface Emotion {
 }
 
 @Serializable
-data object Happy : Emotion {
+data object Happy : Emotion() {
     sealed class HappyFeeling : Feeling() {
         override fun emotion() = Happy
         override fun color() = emotion().color()
@@ -89,7 +89,7 @@ data object Happy : Emotion {
 }
 
 @Serializable
-data object Peaceful : Emotion {
+data object Peaceful : Emotion() {
     sealed class PeacefulFeeling : Feeling() {
         override fun emotion() = Peaceful
         override fun color() = emotion().color()
@@ -151,7 +151,7 @@ data object Peaceful : Emotion {
 }
 
 @Serializable
-data object Fear : Emotion {
+data object Fear : Emotion() {
     sealed class FearfulFeeling : Feeling() {
         override fun emotion() = Fear
         override fun color() = emotion().color()
@@ -213,7 +213,7 @@ data object Fear : Emotion {
 }
 
 @Serializable
-data object Surprise : Emotion {
+data object Surprise : Emotion() {
     sealed class SurpriseFeeling : Feeling() {
         override fun emotion() = Surprise
         override fun color() = emotion().color()
@@ -275,7 +275,7 @@ data object Surprise : Emotion {
 }
 
 @Serializable
-data object Sad : Emotion {
+data object Sad : Emotion() {
     sealed class SadFeeling : Feeling() {
         override fun emotion() = Sad
         override fun color() = emotion().color()
@@ -337,7 +337,7 @@ data object Sad : Emotion {
 }
 
 @Serializable
-data object Anger : Emotion {
+data object Anger : Emotion() {
     sealed class AngerFeeling : Feeling() {
         override fun emotion() = Anger
         override fun color() = emotion().color()

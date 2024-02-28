@@ -22,6 +22,8 @@ fun randomDate(): LocalDateTime = LocalDateTime(
 
 expect fun LocalDateTime.format(dateTimeFormat: String): String
 
+expect fun String.toLocalDateTime(dateTimeFormat: String): LocalDateTime
+
 val LocalDateTime.startOfMonth: LocalDateTime
     get() = LocalDateTime(
         year = year,

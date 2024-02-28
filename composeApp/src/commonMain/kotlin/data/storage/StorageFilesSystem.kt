@@ -42,7 +42,7 @@ class StorageFilesSystem : Storage {
             if (json.isEmpty()) {
                 return emptyList()
             }
-            MoodRecord.fromJson(json)
+            MoodRecord.fromJson(json)!!
         }
     }
 
@@ -128,4 +128,4 @@ class StorageFilesSystem : Storage {
 
 expect fun filesFolder(): String
 
-const val FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
+const val FORMAT = "EEE, dd MMM yyyy HH:mm:ss 'GMT'Z"

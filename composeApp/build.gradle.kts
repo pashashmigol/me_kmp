@@ -69,6 +69,7 @@ kotlin {
                 implementation("org.kodein.di:kodein-di:7.21.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
+
                 api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
                 api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
             }
