@@ -4,7 +4,6 @@ import data.storage.FORMAT
 import data.utils.format
 import data.utils.toLocalDateTime
 import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -13,32 +12,21 @@ import model.HashTag
 import model.Mention
 import model.MoodRecord
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.descriptors.listSerialDescriptor
 import kotlinx.serialization.descriptors.nullable
 import kotlinx.serialization.descriptors.serialDescriptor
-import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.serializer
-import model.Anger.Agitated.serializer
-import model.Emotion
-
-fun Feeling.Companion.fromJson(json: String): Feeling {
-    return Json.decodeFromString<Feeling>(json)
-}
-
-fun Feeling.toJson(): String {
-    return Json.encodeToString<Feeling>(this)
-}
 
 @OptIn(ExperimentalSerializationApi::class)
 private val json1 = Json { allowTrailingComma = true }
@@ -86,7 +74,10 @@ val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56 GMT+0200\"," +
 
 
 object FeelingsListSerializer : KSerializer<List<Feeling>> {
-    override val descriptor: SerialDescriptor = serialDescriptor<List<String>>()
+    @OptIn(ExperimentalSerializationApi::class)
+    override val descriptor: SerialDescriptor = listSerialDescriptor(
+        FeelingSerializer.descriptor
+    )
 
     override fun serialize(encoder: Encoder, value: List<Feeling>) {
         return ListSerializer(FeelingSerializer).serialize(encoder, value)
@@ -110,22 +101,17 @@ object FeelingSerializer : KSerializer<Feeling> {
             buildClassSerialDescriptor(serialName = "model.Emotion") {
                 element(
                     "type",
-                    serialDescriptor<String>().nullable
+                    serialDescriptor<String>()
                 )
             }.nullable
         )
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun deserialize(decoder: Decoder): Feeling {
-        println("###; deserialize = ${descriptor.serialName}")
-//        val composite: CompositeDecoder = decoder.beginStructure(descriptor)
         var feeling: Feeling? = null
-        var emotion: Any? = null
         decoder.decodeStructure(descriptor) {
             loop@ while (true) {
                 val index = decodeElementIndex(descriptor)
-                println("###; index = $index")
                 when (index) {
                     DECODE_DONE -> break@loop
                     0 -> {
@@ -134,18 +120,13 @@ object FeelingSerializer : KSerializer<Feeling> {
                             index = index
                         )
                         feeling = Feeling.ofName(type)
-                        println("###; feeling = $feeling")
                     }
-
-                    1 -> {
-                        emotion =  decodeSerializableElement(
-                            descriptor,
-                            index = index,
-                            serializer<Map<String, String>>()
-                        )
-                    }
-
-                    else -> throw SerializationException("Unexpected index $index")
+                    1 -> decodeSerializableElement(
+                        descriptor,
+                        index = index,
+                        serializer<Map<String, String>>()
+                    )
+                    else -> {}
                 }
             }
         }

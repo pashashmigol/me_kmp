@@ -23,6 +23,7 @@ mokoVersion = "0.23.0"
 navigationRuntimeKtx = "2.7.6"
 buildconfig = "5.3.5"
 lifecycleViewmodelKtx = "2.7.0"
+protoliteWellKnownTypes = "18.0.0"
 
 [libraries]
 androidx-ui-tooling-preview-v160 = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-preview" }
@@ -51,6 +52,7 @@ multiplatform-resources-compose = { module = "dev.icerock.moko:resources-compose
 #androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
 #extensions-compose = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 
 [plugins]

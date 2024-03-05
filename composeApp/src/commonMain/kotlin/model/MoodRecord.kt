@@ -1,6 +1,5 @@
 package model
 
-import data.storage.utils.FeelingSerializer
 import data.storage.utils.FeelingsListSerializer
 import data.storage.utils.LocalDateTimeSerializer
 import data.utils.randomDate
@@ -47,6 +46,6 @@ data class MoodRecord(
             date = randomDate(),
             text = randomString(),
             feelings = listOf(Feeling.random())
-        )
+        )!!
     }
 }

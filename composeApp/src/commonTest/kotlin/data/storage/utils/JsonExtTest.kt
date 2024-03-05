@@ -1,7 +1,10 @@
 package data.storage.utils
 
 import data.utils.now
+import data.utils.startOfDay
+import kotlinx.serialization.json.Json
 import model.Fear
+import model.Feeling
 import model.HashTag
 import model.Mention
 import model.MoodRecord
@@ -10,11 +13,18 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class JsonExtTest {
+    @Test
+    fun `feeling deserialization`() {
+        val json = "{\"type\":\"Accepted\"}"
+        val feeling = Json.decodeFromString<Feeling>(json)
+
+        assertEquals(Peaceful.Accepted, feeling)
+    }
 
     @Test
     fun `mood record serialization`() {
         val moodRecordOrigin = MoodRecord(
-            date = now(),
+            date = now().startOfDay,
             text = "test text",
             feelings = listOf(Peaceful.Accepted, Fear.Shy)
         )

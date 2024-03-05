@@ -2,12 +2,13 @@ package model
 
 import androidx.compose.ui.graphics.Color
 import com.me.resources.library.MR
+import data.storage.utils.FeelingSerializer
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.desc.Resource
 import dev.icerock.moko.resources.desc.StringDesc
 import kotlinx.serialization.Serializable
 
-@Serializable
+@Serializable(with = FeelingSerializer::class)
 sealed class Feeling {
 
     abstract fun color(): Color

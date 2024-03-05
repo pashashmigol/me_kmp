@@ -18,6 +18,7 @@ class MoodRecordAdapterTest {
                 "{\"type\":\"Jealous\",\"emotion\":{\"type\":\"Anger\"}}]," +
                 "\"text\":\"#work\"}"
 
+        println(json)
         val moodRecord = MoodRecord.fromJson(json)
 
         assertEquals("#work", moodRecord.text)
@@ -32,8 +33,6 @@ class MoodRecordAdapterTest {
         assertEquals(19, moodRecord.date.hour)
         assertEquals(43, moodRecord.date.minute)
         assertEquals(56, moodRecord.date.second)
-
-//        assertEquals("GMT+0200", moodRecord.date.time.)
     }
 
     @Test
