@@ -22,7 +22,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.me.screens.components.cards.utils.highlightSearch
+import screens.components.cards.utils.highlightSearch
 import model.CompositeRecord
 import model.Emotion
 import model.HistoryRecord

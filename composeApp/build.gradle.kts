@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.serialization)
     alias(libs.plugins.parcelize)
-    id("kotlin-parcelize")
 }
 
 buildConfig {
@@ -24,9 +23,6 @@ kotlin {
             }
         }
     }
-
-//    jvm("desktop")
-
     listOf(
         iosX64(),
         iosArm64(),
@@ -47,9 +43,11 @@ kotlin {
         all {
             languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
-        androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.compose.ui.tooling.preview)
+                implementation(libs.androidx.activity.compose)
+            }
         }
         val commonMain by getting {
             dependencies {
@@ -72,6 +70,16 @@ kotlin {
 
                 api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
                 api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
+            }
+        }
+        val androidUnitTest by getting {
+            dependsOn(androidMain)
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.junit)
+                implementation(libs.kotlin.test)
+                implementation(libs.androidx.ui.test.junit4.android)
+                implementation( "org.robolectric:robolectric:4.11.1")
             }
         }
         commonTest.dependencies {
@@ -107,6 +115,12 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "org.robolectric.RobolectricTestRunner"
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
     packaging {
         resources {
@@ -126,7 +140,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
-
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
         implementation(libs.androidx.ui.tooling.preview.android)

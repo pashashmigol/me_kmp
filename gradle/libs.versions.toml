@@ -24,6 +24,7 @@ navigationRuntimeKtx = "2.7.6"
 buildconfig = "5.3.5"
 lifecycleViewmodelKtx = "2.7.0"
 protoliteWellKnownTypes = "18.0.0"
+uiTestJunit4Android = "1.6.2"
 
 [libraries]
 androidx-ui-tooling-preview-v160 = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-preview" }
@@ -53,6 +54,7 @@ multiplatform-resources-compose = { module = "dev.icerock.moko:resources-compose
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 #extensions-compose = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 
 [plugins]
@@ -63,4 +65,5 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 multiplatformResources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "mokoVersion" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "parcelize" }
+devtools = { id = "com.google.devtools.ksp", version = "1.6.10-1.0.4" }

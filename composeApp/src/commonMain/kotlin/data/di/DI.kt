@@ -1,7 +1,6 @@
 package data.di
 
-import com.me.screens.history.viewmodels.OneDayRecordsViewModel
-import com.me.screens.history.viewmodels.OneMonthRecordsViewModel
+import screens.history.viewmodels.OneMonthRecordsViewModel
 import data.Repository
 import data.storage.StorageFilesSystem
 import org.kodein.di.DI
@@ -11,6 +10,7 @@ import screens.components.wheel.WheelViewModel
 import screens.components.wheel.WheelViewModelReal
 import screens.history.viewmodels.DaysViewModel
 import screens.history.viewmodels.MonthsViewModel
+import screens.history.viewmodels.OneDayRecordsViewModel
 import screens.history.viewmodels.OneWeekRecordsViewModel
 import screens.history.viewmodels.TodayRecordsViewModel
 import screens.history.viewmodels.WeeksViewModel

@@ -1,9 +1,10 @@
-package com.me.screens.components.cards.utils
+package screens.components.cards.utils
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import kotlin.text.Regex.Companion.fromLiteral
 
 internal fun highlightSearch(
     text: String,
@@ -14,14 +15,7 @@ internal fun highlightSearch(
     toSearch.split(" ")
         .filter { it.isNotBlank() }
         .forEach { search ->
-            val regex = search
-                .trim()
-                .toRegex(
-                    setOf(
-                        RegexOption.IGNORE_CASE,
-                        RegexOption.MULTILINE
-                    )
-                )
+            val regex =  fromLiteral(search.trim())
             var matchResult: MatchResult? = regex.find(text)
 
             while (matchResult != null) {

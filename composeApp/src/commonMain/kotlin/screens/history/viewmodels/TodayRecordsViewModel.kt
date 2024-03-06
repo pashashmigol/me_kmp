@@ -3,6 +3,7 @@ package screens.history.viewmodels
 import data.Repository
 import data.utils.filteredRecords
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import model.HistoryRecord
 import model.MoodRecord
