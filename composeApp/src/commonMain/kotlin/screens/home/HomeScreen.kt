@@ -107,7 +107,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
-                onClick = { navController?.push(Screen.Today()) },
+                onClick = { navController?.push(Screen.Today) },
                 modifier = Modifier
                     .then(Modifier.size(100.dp))
                     .semantics { testTag = "new record" }

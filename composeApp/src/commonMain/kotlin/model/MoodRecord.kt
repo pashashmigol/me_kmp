@@ -46,6 +46,6 @@ data class MoodRecord(
             date = randomDate(),
             text = randomString(),
             feelings = listOf(Feeling.random())
-        )!!
+        )
     }
 }

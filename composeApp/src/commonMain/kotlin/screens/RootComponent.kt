@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -19,22 +21,17 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import data.Repository
 import data.storage.StorageFilesSystem
-import kotlinx.coroutines.flow.SharedFlow
-import org.kodein.di.DI
 import org.kodein.di.DirectDI
-import org.kodein.di.direct
 import org.kodein.di.instance
-import org.kodein.di.named
 import screens.history.TodayScreen
 import screens.history.viewmodels.TodayRecordsViewModel
-import screens.history.viewmodels.draft.DraftRecordViewModel
 import screens.home.HomeScreen
 
 
 sealed class Screen : Parcelable {
 
     @Parcelize
-    class Today() : Screen()
+    data object Today : Screen()
 
     @Parcelize
     data class OneDay(val text: String = "") : Screen()

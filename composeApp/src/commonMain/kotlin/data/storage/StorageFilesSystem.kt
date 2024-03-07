@@ -42,7 +42,7 @@ class StorageFilesSystem : Storage {
             if (json.isEmpty()) {
                 return emptyList()
             }
-            MoodRecord.fromJson(json)!!
+            MoodRecord.fromJson(json)
         }
     }
 

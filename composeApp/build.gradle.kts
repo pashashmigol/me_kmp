@@ -33,9 +33,9 @@ kotlin {
             isStatic = true
         }
         dependencies {
-            api("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
-            api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
-            api("com.arkivanov.essenty:lifecycle:1.3.0")
+            api(libs.decompose)
+            api(libs.arkivanov.extensions)
+            api(libs.lifecycle)
         }
     }
 
@@ -62,14 +62,13 @@ kotlin {
                 implementation(libs.multiplatform.resources)
                 implementation(libs.multiplatform.resources.compose)
                 implementation(libs.decompose)
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
-                implementation("com.squareup.okio:okio:3.8.0")
-                implementation("org.kodein.di:kodein-di:7.21.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.okio)
+                implementation(libs.kodein.di)
+                implementation(libs.kotlinx.coroutines.core)
 
-
-                api("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
-                api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
+                api(libs.arkivanov.extensions)
+                api(libs.kmm.viewmodel.core)
             }
         }
         val androidUnitTest by getting {
@@ -79,13 +78,13 @@ kotlin {
                 implementation(libs.junit)
                 implementation(libs.kotlin.test)
                 implementation(libs.androidx.ui.test.junit4.android)
-                implementation( "org.robolectric:robolectric:4.11.1")
+                implementation( libs.robolectric)
             }
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0-RC2")
-            implementation("app.cash.turbine:turbine:1.0.0")
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
         }
 
         val iosX64Main by getting
