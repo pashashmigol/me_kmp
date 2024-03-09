@@ -40,6 +40,7 @@ fun MoodRecord.toJson(): String {
 }
 
 fun HashTag.Companion.fromJson(json: String): List<HashTag> {
+    if (json.isBlank()) return emptyList()
     return Json.decodeFromString<List<HashTag>>(json)
 }
 
@@ -48,6 +49,7 @@ fun hashTagsToJson(list: List<HashTag>): String {
 }
 
 fun Mention.Companion.fromJson(json: String): List<Mention> {
+    if (json.isBlank()) return emptyList()
     return Json.decodeFromString<List<Mention>>(json)
 }
 
@@ -121,11 +123,13 @@ object FeelingSerializer : KSerializer<Feeling> {
                         )
                         feeling = Feeling.ofName(type)
                     }
+
                     1 -> decodeSerializableElement(
                         descriptor,
                         index = index,
                         serializer<Map<String, String>>()
                     )
+
                     else -> {}
                 }
             }

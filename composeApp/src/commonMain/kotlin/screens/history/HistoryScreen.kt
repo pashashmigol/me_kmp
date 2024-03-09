@@ -1,6 +1,8 @@
 package screens.history
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,28 +13,31 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import model.CompositeRecord
 import kotlinx.coroutines.flow.update
+import model.DayRecord
 import model.HistoryRecord
 import screens.components.FilterPanel
 import screens.components.cards.RecordCard
 import screens.history.viewmodels.HistoryViewModel
 import screens.history.viewmodels.tags.TagsViewModel
+
+private val corner = 16.dp
+private val shape = AbsoluteRoundedCornerShape(corner, corner, corner, corner)
 
 @Composable
 fun <T : HistoryRecord> HistoryScreen(
@@ -40,59 +45,66 @@ fun <T : HistoryRecord> HistoryScreen(
     tagsViewModel: TagsViewModel,
     onItemClick: ((index: Int) -> Unit)? = null,
 ) {
-    val scope = rememberCoroutineScope { Dispatchers.IO }
-    val suggestions: List<String> by tagsViewModel.suggestedTags.collectAsState(
-        emptyList(),
-        scope.coroutineContext
-    )
-    val records: List<HistoryRecord> by historyViewModel.records.collectAsState(
-        emptyList(),
-        scope.coroutineContext
-    )
+//    val suggestions = tagsViewModel.suggestedTags
+    val records = remember { historyViewModel.records }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
         state = rememberLazyListState(),
         verticalArrangement = Arrangement.Bottom,
         reverseLayout = true
     ) {
-        item { Spacer(modifier = Modifier.height(300.dp)) }
 
-        item {
-            FilterPanel(
-                historyViewModel = historyViewModel,
-                tagsViewModel = tagsViewModel,
-            )
+        item(key = "0") {
+            Spacer(modifier = Modifier.height(150.dp))
         }
-
-        items(suggestions.size) { index ->
-            val reversedIndex = suggestions.lastIndex - index
-            TextButton(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .testTag("suggestion"),
-                onClick = {
-                    historyViewModel.text.update {
-                        tagsViewModel.onSuggestionClicked(
-                            index = reversedIndex,
-                            currentText = historyViewModel.text.value
-                        )
-                    }
-                },
-            ) {
-                Text(
-                    text = suggestions[reversedIndex],
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Transparent, CircleShape)
-                        .padding(18.dp)
+        item(key = "01") {
+            Spacer(modifier = Modifier.height(150.dp))
+        }
+        item(key = "1") {
+            Box(modifier = Modifier.height(150.dp)) {
+                FilterPanel<DayRecord>(
+//                    historyViewModel = historyViewModel,
+//                    tagsViewModel = tagsViewModel,
                 )
             }
         }
+//        items(
+//            count = tagsViewModel.suggestedTags.size,
+//            key = { it }
+//        ) { index ->
+//            val reversedIndex = tagsViewModel.suggestedTags.lastIndex - index
+//            TextButton(
+//                modifier = Modifier
+//                    .background(Color.Transparent)
+//                    .testTag("suggestion"),
+//                onClick = {
+//                    historyViewModel.text.update {
+//                        tagsViewModel.onSuggestionClicked(
+//                            index = reversedIndex,
+//                            currentText = historyViewModel.text.value
+//                        )
+//                    }
+//                },
+//            ) {
+//                Text(
+//                    text = tagsViewModel.suggestedTags[reversedIndex],
+//                    fontSize = 20.sp,
+//                    color = Color.White,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .background(Color.Transparent, CircleShape)
+//                        .padding(18.dp)
+//                )
+//            }
+//        }
 
-        items(records.size) { index ->
+        items(
+            count = records.size,
+            key = { it }
+        ) { index ->
             val reversedIndex = records.lastIndex - index
             Box(
                 modifier = Modifier
@@ -101,14 +113,21 @@ fun <T : HistoryRecord> HistoryScreen(
                             onItemClick?.invoke(it.index)
                         }
                     }
-                    .testTag("")
+                    .fillParentMaxWidth()
+                    .height(100.dp)
+                    .clip(shape)
+                    .background(Color.Black)
+                    .border(
+                        border = BorderStroke(1.dp, Color.White),
+                        shape = shape
+                    )
             ) {
-                RecordCard(
-                    record = records[reversedIndex],
-                    tagsViewModel = tagsViewModel,
-                    contains = historyViewModel.text.collectAsState().value.annotatedString,
-                    emotions = historyViewModel.filter.collectAsState().value.emotions
-                )
+            RecordCard(
+//                record = records[reversedIndex],
+//                tagsViewModel = tagsViewModel,
+//                contains = historyViewModel.text.collectAsState().value.annotatedString,
+//                    emotions = historyViewModel.filter.collectAsState().value.emotions
+            )
             }
             Divider(
                 modifier = Modifier.height(12.dp),

@@ -14,7 +14,7 @@ import kotlin.time.Duration.Companion.days
 fun randomDate(): LocalDateTime = LocalDateTime(
     year = nextInt(2010, 2024),
     monthNumber = nextInt(1, 13),
-    dayOfMonth = nextInt(1, 32),
+    dayOfMonth = nextInt(1, 29),
     hour = nextInt(0, 23),
     minute = nextInt(0, 59),
     second = nextInt(0, 59),

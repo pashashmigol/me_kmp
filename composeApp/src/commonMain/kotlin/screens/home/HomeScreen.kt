@@ -62,7 +62,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             IconButton(
-                onClick = { /*navController?.navigate("months", navOptions)*/ },
+                onClick = { navController?.push(Screen.Months()) },
                 modifier = Modifier
                     .then(Modifier.size(80.dp))
                     .border(3.dp, Color.White, shape = CircleShape)
@@ -77,7 +77,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
-                onClick = { /*navController?.navigate("weeks", navOptions)*/ },
+                onClick = { navController?.push(Screen.Weeks()) },
                 modifier = Modifier
                     .then(Modifier.size(80.dp))
                     .border(3.dp, Color.White, shape = CircleShape)
@@ -92,7 +92,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
-                onClick = { /*navController?.navigate("days", navOptions) */ },
+                onClick = { navController?.push(Screen.Days()) },
                 modifier = Modifier
                     .then(Modifier.size(80.dp))
                     .border(3.dp, Color.White, shape = CircleShape)

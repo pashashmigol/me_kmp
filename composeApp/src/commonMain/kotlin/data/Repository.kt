@@ -66,7 +66,8 @@ class Repository(val storage: Storage) {
 
     init {
         scope.launch {
-            storage.allRecords()
+            (storage.allRecords()
+                    + generateSequence { MoodRecord.random() }.take(1000))
                 .let { records.emit(it) }
         }
         scope.launch {

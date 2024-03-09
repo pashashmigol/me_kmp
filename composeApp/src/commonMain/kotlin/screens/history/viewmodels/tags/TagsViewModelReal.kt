@@ -1,18 +1,15 @@
 package screens.history.viewmodels.tags
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
-import com.rickclephas.kmm.viewmodel.coroutineScope
 import data.Repository
 import data.utils.now
 import model.HashTag
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import model.Mention
 
 class TagsViewModelReal(
@@ -77,13 +74,13 @@ class TagsViewModelReal(
             AnnotatedString(
                 completeTag(
                     current = currentText.text,
-                    tag = suggestedTags.value.getOrNull(index) ?: "",
+                    tag = suggestedTags.getOrNull(index) ?: "",
                 )
             )
         ),
         selection = TextRange(index = Int.MAX_VALUE)
     ).also {
-        viewModelScope.coroutineScope.launch { suggestedTags.emit(emptyList()) }
+        suggestedTags.clear()
     }
 
     override fun annotateString(text: AnnotatedString): AnnotatedString = buildAnnotatedString {
@@ -100,7 +97,7 @@ class TagsViewModelReal(
 
     private fun updateSuggestions(string: String) {
         if (string.isBlank()) {
-            suggestedTags.update { emptyList() }
+            suggestedTags.clear()
             return
         }
         Regex(LAST_TAG_PATTERN).find(string)?.value?.let { found ->
@@ -119,12 +116,14 @@ class TagsViewModelReal(
             }).filter {
                 kotlin.runCatching { it.contains(found) }.getOrDefault(false)
             }.let { suggestions ->
-                suggestedTags.update { suggestions }
+                suggestedTags.clear()
+                suggestedTags.addAll(suggestions)
             }
         }
     }
 
-    override val suggestedTags = MutableStateFlow<List<String>>(emptyList())
+    override val suggestedTags =
+        mutableStateListOf<String>()
 
     companion object {
         internal const val TAG_PATTERN = "(?<!\\w)[@#][\\w\']*"

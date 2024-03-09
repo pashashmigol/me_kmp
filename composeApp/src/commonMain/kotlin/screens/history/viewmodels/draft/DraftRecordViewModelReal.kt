@@ -29,7 +29,7 @@ class DraftRecordViewModelReal(
     override fun clearRecord() {
         text.value = TextFieldValue()
         feelings.clear()
-        tagsViewModel.suggestedTags.value = emptyList()
+        tagsViewModel.suggestedTags.clear()
     }
 
     override fun addFeeling(feeling: Feeling) {

@@ -1,6 +1,5 @@
 @file:Suppress("DEPRECATION")
 
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
@@ -17,14 +16,22 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.StackNavigationSource
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import data.Repository
 import data.storage.StorageFilesSystem
+import model.DayRecord
+import model.MonthRecord
+import model.WeekRecord
 import org.kodein.di.DirectDI
 import org.kodein.di.instance
+import screens.history.HistoryScreen
 import screens.history.TodayScreen
+import screens.history.viewmodels.DaysViewModel
+import screens.history.viewmodels.HistoryViewModel
 import screens.history.viewmodels.TodayRecordsViewModel
+import screens.history.viewmodels.tags.TagsViewModel
 import screens.home.HomeScreen
 
 
@@ -101,7 +108,7 @@ inline fun <reified C : Parcelable> ChildStack(
 
 @Composable
 fun MainContent(di: DirectDI) {
-    val navigation: StackNavigation<Screen> = remember { StackNavigation<Screen>() }
+    val navigation: StackNavigation<Screen> = remember { StackNavigation() }
 
     ChildStack(
         source = navigation,
@@ -110,10 +117,22 @@ fun MainContent(di: DirectDI) {
         animation = stackAnimation(fade() + scale()),
     ) { screen ->
         when (screen) {
-            is Screen.Home -> HomeScreen(navigation)
-            is Screen.Months -> Stub(onItemClick = { })
-            is Screen.Weeks -> Stub(onItemClick = { })
-            is Screen.Days -> Stub(onItemClick = { })
+            is Screen.Home -> HomeScreen(navController = navigation)
+            is Screen.Months -> HistoryScreen(
+                historyViewModel = di.instance<HistoryViewModel<MonthRecord>>(),
+                tagsViewModel = di.instance<TagsViewModel>(),
+                onItemClick = { navigation.push(Screen.Months()) }
+            )
+            is Screen.Weeks -> HistoryScreen(
+                historyViewModel = di.instance<HistoryViewModel<WeekRecord>>(),
+                tagsViewModel = di.instance<TagsViewModel>(),
+                onItemClick = { navigation.push(Screen.Weeks()) }
+            )
+            is Screen.Days -> HistoryScreen(
+                historyViewModel = di.instance<DaysViewModel>(),
+                tagsViewModel = di.instance<TagsViewModel>(),
+                onItemClick = { navigation.push(Screen.Days()) }
+            )
             is Screen.Today -> TodayScreen(
                 historyViewModel = TodayRecordsViewModel(Repository(StorageFilesSystem())),
                 draftViewModel = di.instance(),
@@ -123,9 +142,4 @@ fun MainContent(di: DirectDI) {
             else -> {}
         }
     }
-}
-
-@Composable
-fun Stub(onItemClick: (String) -> Unit) {
-    Text("STUB")
 }

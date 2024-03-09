@@ -1,8 +1,10 @@
 package model
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import data.utils.randomString
 
+@Stable
 interface HistoryRecord {
     val text: String
     val feelings: List<Feeling>

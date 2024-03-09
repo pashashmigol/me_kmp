@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import model.Anger
 import screens.components.cards.utils.highlightSearch
 import model.CompositeRecord
 import model.Emotion
@@ -34,14 +36,15 @@ private val shape = AbsoluteRoundedCornerShape(corner, corner, corner, corner)
 
 @Composable
 fun RecordCard(
-    record: HistoryRecord,
-    tagsViewModel: TagsViewModel,
-    contains: AnnotatedString = AnnotatedString(""),
-    emotions: List<Emotion> = emptyList()
+//    record: HistoryRecord,
+//    tagsViewModel: TagsViewModel,
+//    contains: AnnotatedString = AnnotatedString(""),
+//    emotions: List<Emotion> = emptyList()
 ) {
     Card(
         Modifier
             .fillMaxWidth()
+            .height(100.dp)
             .clip(shape)
             .background(Color.Black)
             .border(
@@ -54,24 +57,25 @@ fun RecordCard(
             Row(
                 Modifier
                     .background(Color.Black)
-                    .align(Alignment.CenterHorizontally)
+//                    .align(Alignment.CenterHorizontally)
             ) {
                 Column(
                     Modifier
                         .weight(1f)
                 ) {
                     Text(
-                        text = record.dateString(),
+                        text = "record.dateString()",
                         color = Color.White,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                     )
                     Text(
-                        text = highlightSearch(
+                        text = "highlightSearch"/*highlightSearch(
                             text = record.text,
+                            text = "record.text",
                             toSearch = contains.text
-                        ).let { tagsViewModel.annotateString(it) },
+                        ).let { tagsViewModel.annotateString(it) }*/,
                         color = Color.White,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -82,20 +86,20 @@ fun RecordCard(
                     modifier = Modifier
                         .padding(8.dp)
                         .size(72.dp),
-                    label = record.feelings.firstOrNull()?.nameCompact(),
-                    colors = record.colors,
+                    label = Anger.Agitated.name(), //record.feelings.firstOrNull()?.nameCompact(),
+                    colors = listOf(Color.Red, Color.Blue),// record.colors,
                     textSize = 16.sp,
                 )
             }
-            if (contains.text.isNotBlank() || emotions.isNotEmpty()) {
-                (record as? CompositeRecord)
-                    ?.matchedRecords(contains.text, emotions)
-                    ?.forEach {
-                        Box(Modifier.padding(6.dp)) {
-                            RecordCard(it, tagsViewModel, contains, emotions)
-                        }
-                    }
-            }
+//            if (contains.text.isNotBlank() || emotions.isNotEmpty()) {
+//                (record as? CompositeRecord)
+//                    ?.matchedRecords(contains.text, emotions)
+//                    ?.forEach {
+//                        Box(Modifier.padding(6.dp)) {
+//                            RecordCard(it, tagsViewModel, contains, emotions)
+//                        }
+//                    }
+//            }
         }
     }
 }

@@ -10,7 +10,9 @@ import model.Mention
 import model.MoodRecord
 import model.Peaceful
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class JsonExtTest {
     @Test
@@ -46,7 +48,13 @@ class JsonExtTest {
         val json = mentionsToJson(mentionsOrigin)
         val mentionsFromJson = Mention.fromJson(json)
 
-        assertEquals(mentionsOrigin, mentionsFromJson)
+        assertContentEquals(mentionsOrigin, mentionsFromJson)
+    }
+
+    @Test
+    fun `empty Mention json is parsed to empty list`() {
+        val list = Mention.fromJson("")
+        assertTrue(list.isEmpty())
     }
 
     @Test
@@ -61,6 +69,12 @@ class JsonExtTest {
         val json = hashTagsToJson(mentionsOrigin)
         val mentionsFromJson = HashTag.fromJson(json)
 
-        assertEquals(mentionsOrigin, mentionsFromJson)
+        assertContentEquals(mentionsOrigin, mentionsFromJson)
+    }
+
+    @Test
+    fun `empty HashTag json is parsed to empty list`() {
+        val list = HashTag.fromJson("")
+        assertTrue(list.isEmpty())
     }
 }
