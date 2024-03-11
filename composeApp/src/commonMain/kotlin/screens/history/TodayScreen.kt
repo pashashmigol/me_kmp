@@ -15,7 +15,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -113,11 +112,11 @@ fun TodayScreen(
             }
 
             items(todayRecords.size) { index ->
-//                val reversedIndex = todayRecords.lastIndex - index
+                val reversedIndex = todayRecords.lastIndex - index
 
                 RecordCard(
-//                    record = todayRecords[reversedIndex],
-//                    tagsViewModel = tagsViewModel
+                    record = todayRecords[reversedIndex],
+                    tagsViewModel = tagsViewModel
                 )
                 Divider(
                     modifier = Modifier.height(12.dp), color = Color.Transparent

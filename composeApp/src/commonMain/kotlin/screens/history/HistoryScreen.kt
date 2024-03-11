@@ -122,12 +122,12 @@ fun <T : HistoryRecord> HistoryScreen(
                         shape = shape
                     )
             ) {
-            RecordCard(
-//                record = records[reversedIndex],
-//                tagsViewModel = tagsViewModel,
-//                contains = historyViewModel.text.collectAsState().value.annotatedString,
-//                    emotions = historyViewModel.filter.collectAsState().value.emotions
-            )
+                RecordCard(
+                    record = records[reversedIndex],
+                    tagsViewModel = tagsViewModel,
+                    contains = historyViewModel.text.collectAsState().value.annotatedString,
+                    emotions = historyViewModel.filter.collectAsState().value.emotions
+                )
             }
             Divider(
                 modifier = Modifier.height(12.dp),

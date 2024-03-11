@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -36,10 +35,10 @@ private val shape = AbsoluteRoundedCornerShape(corner, corner, corner, corner)
 
 @Composable
 fun RecordCard(
-//    record: HistoryRecord,
-//    tagsViewModel: TagsViewModel,
-//    contains: AnnotatedString = AnnotatedString(""),
-//    emotions: List<Emotion> = emptyList()
+    record: HistoryRecord,
+    tagsViewModel: TagsViewModel,
+    contains: AnnotatedString = AnnotatedString(""),
+    emotions: List<Emotion> = emptyList()
 ) {
     Card(
         Modifier
@@ -64,18 +63,17 @@ fun RecordCard(
                         .weight(1f)
                 ) {
                     Text(
-                        text = "record.dateString()",
+                        text = record.dateString(),
                         color = Color.White,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                     )
                     Text(
-                        text = "highlightSearch"/*highlightSearch(
+                        text = highlightSearch(
                             text = record.text,
-                            text = "record.text",
                             toSearch = contains.text
-                        ).let { tagsViewModel.annotateString(it) }*/,
+                        ).let { tagsViewModel.annotateString(it) },
                         color = Color.White,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -86,20 +84,20 @@ fun RecordCard(
                     modifier = Modifier
                         .padding(8.dp)
                         .size(72.dp),
-                    label = Anger.Agitated.name(), //record.feelings.firstOrNull()?.nameCompact(),
-                    colors = listOf(Color.Red, Color.Blue),// record.colors,
+                    label = record.feelings.firstOrNull()?.nameCompact(),
+                    colors = record.colors,
                     textSize = 16.sp,
                 )
             }
-//            if (contains.text.isNotBlank() || emotions.isNotEmpty()) {
-//                (record as? CompositeRecord)
-//                    ?.matchedRecords(contains.text, emotions)
-//                    ?.forEach {
-//                        Box(Modifier.padding(6.dp)) {
-//                            RecordCard(it, tagsViewModel, contains, emotions)
-//                        }
-//                    }
-//            }
+            if (contains.text.isNotBlank() || emotions.isNotEmpty()) {
+                (record as? CompositeRecord)
+                    ?.matchedRecords(contains.text, emotions)
+                    ?.forEach {
+                        Box(Modifier.padding(6.dp)) {
+                            RecordCard(it, tagsViewModel, contains, emotions)
+                        }
+                    }
+            }
         }
     }
 }

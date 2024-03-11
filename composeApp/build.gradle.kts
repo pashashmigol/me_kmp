@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.serialization)
     alias(libs.plugins.parcelize)
+    alias(libs.plugins.baselineprofile)
 }
 
 buildConfig {
@@ -143,6 +144,9 @@ android {
         debugImplementation(libs.compose.ui.tooling)
         implementation(libs.androidx.ui.tooling.preview.android)
         api(compose.preview)
+        implementation(libs.androidx.metrics.performance)
+        implementation(libs.androidx.profileinstaller)
+        "baselineProfile"(project(":baselineprofile"))
     }
 }
 
