@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedButton
 import androidx.compose.runtime.Composable
@@ -26,14 +27,18 @@ fun CardButton(
             .size(48.dp)
             .padding(2.dp),
         shape = CircleShape,
-        border = BorderStroke(2.dp, Color.Transparent),
+        border = BorderStroke(2.dp, Color.White),
         contentPadding = PaddingValues(2.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            backgroundColor = Color.Transparent,
+            contentColor = Color.White
+        ),
     ) {
         Icon(
-            imageVector = imageVector, //Icons.Default.Close,
-            contentDescription = "content description",
-            tint = Color.White,
-            modifier = modifier.fillMaxSize()
+            imageVector = imageVector,
+            contentDescription = imageVector.name,
+            modifier = modifier.fillMaxSize(),
+            tint = Color.White
         )
     }
 }
