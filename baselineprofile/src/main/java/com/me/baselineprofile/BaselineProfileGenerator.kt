@@ -1,10 +1,14 @@
 package com.me.baselineprofile
 
 import androidx.benchmark.macro.junit4.BaselineProfileRule
+//import androidx.compose.ui.test.assertIsEnabled
+//import androidx.compose.ui.test.hasTestTag
+//import androidx.compose.ui.test.junit4.createComposeRule
+//import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiSelector
+import androidx.test.uiautomator.By
+//import com.me.multiplatform.MainActivity
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,36 +43,63 @@ class BaselineProfileGenerator {
     @get:Rule
     val rule = BaselineProfileRule()
 
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
     @Test
-    fun generate() {
-        // The application id for the running build variant is read from the instrumentation arguments.
+    fun scrollThroughDays() {
         rule.collect(
-            packageName = InstrumentationRegistry.getArguments().getString("targetAppId")
-                ?: throw Exception("targetAppId not passed as instrumentation runner arg"),
-
-            // See: https://d.android.com/topic/performance/baselineprofiles/dex-layout-optimizations
+            packageName = "com.me.multiplatform",
             includeInStartupProfile = true
         ) {
-            // This block defines the app's critical user journey. Here we are interested in
-            // optimizing for app startup. But you can also navigate and scroll through your most important UI.
-
-            // Start default activity for your app
             pressHome()
             startActivityAndWait()
+            device.findObject(By.text("days")).click()
+            device.waitForIdle()
 
-            device.findObject(UiSelector().description("+"))
+            val x = device.displayWidth / 2
+            val yStart = (device.displayHeight * 0.1).toInt()
+            val yEnd = (device.displayHeight * 0.9).toInt()
 
-            // TODO Write more interactions to optimize advanced journeys of your app.
-            // For example:
-            // 1. Wait until the content is asynchronously loaded
-            // 2. Scroll the feed content
-            // 3. Navigate to detail screen
+            device.swipe(x, yStart, x, yEnd, 5)
+            device.waitForIdle()
+        }
+    }
 
-            // Check UiAutomator documentation for more information how to interact with the app.
-            // https://d.android.com/training/testing/other-components/ui-automator
+    @Test
+    fun scrollThroughWeeks() {
+        rule.collect(
+            packageName = "com.me.multiplatform",
+            includeInStartupProfile = true
+        ) {
+            pressHome()
+            startActivityAndWait()
+            device.findObject(By.text("weeks")).click()
+            device.waitForIdle()
+
+            val x = device.displayWidth / 2
+            val yStart = (device.displayHeight * 0.1).toInt()
+            val yEnd = (device.displayHeight * 0.9).toInt()
+
+            device.swipe(x, yStart, x, yEnd, 5)
+            device.waitForIdle()
+        }
+    }
+
+    @Test
+    fun scrollThroughMonths() {
+        rule.collect(
+            packageName = "com.me.multiplatform",
+            includeInStartupProfile = true
+        ) {
+            pressHome()
+            startActivityAndWait()
+            device.findObject(By.text("weeks")).click()
+            device.waitForIdle()
+
+            val x = device.displayWidth / 2
+            val yStart = (device.displayHeight * 0.1).toInt()
+            val yEnd = (device.displayHeight * 0.9).toInt()
+
+            device.swipe(x, yStart, x, yEnd, 5)
+            device.waitForIdle()
         }
     }
 }

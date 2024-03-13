@@ -39,8 +39,8 @@ import com.me.resources.library.MR
 
 @Composable
 fun <T : HistoryRecord> FilterPanel(
-//    historyViewModel: HistoryViewModel<T>,
-//    tagsViewModel: TagsViewModel,
+    historyViewModel: HistoryViewModel<T>,
+    tagsViewModel: TagsViewModel,
 ) {
     Row(
         modifier = Modifier
@@ -56,17 +56,14 @@ fun <T : HistoryRecord> FilterPanel(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    value = TextFieldValue("sdaka kaka"),
-//                    tagsViewModel.onTextChanged(
-//                        historyViewModel.text.collectAsState().value
-//                    ),
+                    value = historyViewModel.text.collectAsState().value,
                     trailingIcon = {
-//                        Image(
-//                            painterResource(MR.images.ic_menu_search),
-//                            contentDescription = "",
-//                            contentScale = ContentScale.Crop,
-//                            modifier = Modifier.wrapContentSize()
-//                        )
+                        Image(
+                            painterResource(MR.images.ic_menu_search),
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.wrapContentSize()
+                        )
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.None),
                     modifier = Modifier
@@ -78,16 +75,16 @@ fun <T : HistoryRecord> FilterPanel(
                         textColor = Color.White,
                     ),
                     onValueChange = { newText: TextFieldValue ->
-//                        historyViewModel.onTextChanged(newText)
-//                        tagsViewModel.onTextChanged(newText)
+                        historyViewModel.onTextChanged(newText)
+                        tagsViewModel.onTextChanged(newText)
                     }
                 )
                 TextButton(
                     modifier = Modifier.testTag("hashtag button"),
                     onClick = {
-//                        historyViewModel.text.update {
-//                            tagsViewModel.onHashClicked(historyViewModel.text.value)
-//                        }
+                        historyViewModel.text.update {
+                            tagsViewModel.onHashClicked(historyViewModel.text.value)
+                        }
                     }
                 ) {
                     Text(
@@ -100,9 +97,9 @@ fun <T : HistoryRecord> FilterPanel(
                 TextButton(
                     modifier = Modifier.testTag("mention button"),
                     onClick = {
-//                        historyViewModel.text.update {
-//                            tagsViewModel.onMentionClicked(historyViewModel.text.value)
-//                        }
+                        historyViewModel.text.update {
+                            tagsViewModel.onMentionClicked(historyViewModel.text.value)
+                        }
                     }
                 ) {
                     Text(
@@ -113,7 +110,7 @@ fun <T : HistoryRecord> FilterPanel(
                     )
                 }
             }
-//            ChooseEmotionPanel(historyViewModel)
+            ChooseEmotionPanel(historyViewModel)
         }
     }
 }

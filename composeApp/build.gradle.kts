@@ -79,7 +79,7 @@ kotlin {
                 implementation(libs.junit)
                 implementation(libs.kotlin.test)
                 implementation(libs.androidx.ui.test.junit4.android)
-                implementation( libs.robolectric)
+                implementation(libs.robolectric)
             }
         }
         commonTest.dependencies {

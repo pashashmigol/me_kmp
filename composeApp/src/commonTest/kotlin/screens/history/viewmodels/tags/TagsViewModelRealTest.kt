@@ -12,7 +12,6 @@ import model.Mention
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -42,14 +41,14 @@ class TagsViewModelRealTest {
         tagViewModel.onTextChanged(TextFieldValue(text = "#"))
 
         assertContentEquals(
-            arrayOf("#1", "#2"),
-            tagViewModel.suggestedTags.first().toTypedArray()
+            listOf("#1", "#2"),
+            tagViewModel.suggestedTags.first()
         )
 
         tagViewModel.onTextChanged(TextFieldValue(text = "#1"))
         assertContentEquals(
-            arrayOf("#1"),
-            tagViewModel.suggestedTags.first().toTypedArray()
+            listOf("#1"),
+            tagViewModel.suggestedTags.first()
         )
 
         tagViewModel.onTextChanged(TextFieldValue(text = ""))

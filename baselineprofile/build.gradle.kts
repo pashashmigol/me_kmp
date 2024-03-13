@@ -20,12 +20,9 @@ android {
     defaultConfig {
         minSdk = 28
         targetSdk = 34
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     targetProjectPath = ":composeApp"
-
 }
 
 // This is the configuration block for the Baseline Profile plugin.
@@ -39,6 +36,8 @@ dependencies {
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.uiautomator)
     implementation(libs.androidx.benchmark.macro.junit4)
+    implementation(libs.androidx.ui.test.junit4.android)
+//    implementation(project(":composeApp"))
 }
 
 androidComponents {

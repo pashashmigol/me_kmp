@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import model.CompositeRecord
 import kotlinx.coroutines.flow.update
-import model.DayRecord
 import model.HistoryRecord
 import screens.components.FilterPanel
 import screens.components.cards.RecordCard
@@ -65,41 +64,41 @@ fun <T : HistoryRecord> HistoryScreen(
         }
         item(key = "1") {
             Box(modifier = Modifier.height(150.dp)) {
-                FilterPanel<DayRecord>(
-//                    historyViewModel = historyViewModel,
-//                    tagsViewModel = tagsViewModel,
+                FilterPanel(
+                    historyViewModel = historyViewModel,
+                    tagsViewModel = tagsViewModel,
                 )
             }
         }
-//        items(
-//            count = tagsViewModel.suggestedTags.size,
-//            key = { it }
-//        ) { index ->
-//            val reversedIndex = tagsViewModel.suggestedTags.lastIndex - index
-//            TextButton(
-//                modifier = Modifier
-//                    .background(Color.Transparent)
-//                    .testTag("suggestion"),
-//                onClick = {
-//                    historyViewModel.text.update {
-//                        tagsViewModel.onSuggestionClicked(
-//                            index = reversedIndex,
-//                            currentText = historyViewModel.text.value
-//                        )
-//                    }
-//                },
-//            ) {
-//                Text(
-//                    text = tagsViewModel.suggestedTags[reversedIndex],
-//                    fontSize = 20.sp,
-//                    color = Color.White,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .background(Color.Transparent, CircleShape)
-//                        .padding(18.dp)
-//                )
-//            }
-//        }
+        items(
+            count = tagsViewModel.suggestedTags.size,
+            key = { it }
+        ) { index ->
+            val reversedIndex = tagsViewModel.suggestedTags.lastIndex - index
+            TextButton(
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .testTag("suggestion"),
+                onClick = {
+                    historyViewModel.text.update {
+                        tagsViewModel.onSuggestionClicked(
+                            index = reversedIndex,
+                            currentText = historyViewModel.text.value
+                        )
+                    }
+                },
+            ) {
+                Text(
+                    text = tagsViewModel.suggestedTags[reversedIndex],
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent, CircleShape)
+                        .padding(18.dp)
+                )
+            }
+        }
 
         items(
             count = records.size,

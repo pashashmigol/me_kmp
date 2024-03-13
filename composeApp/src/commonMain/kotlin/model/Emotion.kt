@@ -10,7 +10,7 @@ sealed class Emotion {
 
     fun nameCompact(): String {
         return when (this) {
-            Anger -> string(MR.strings.months_k)
+            Anger -> string(MR.strings.anger_b)
             Fear -> string(MR.strings.fear_b)
             Happy -> string(MR.strings.happy_b)
             Peaceful -> string(MR.strings.peaceful_b)
