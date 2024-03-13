@@ -38,12 +38,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import kotlinx.coroutines.launch
 import model.Emotion
 import model.Feeling
 import model.color
-import kotlinx.coroutines.launch
+import kotlin.math.PI
+import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.min
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -64,9 +67,9 @@ fun Wheel(
     val rotation: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
     val velocity: MutableState<Float> = remember { mutableFloatStateOf(0f) }
 
-    val minRadius = smallWheelPosition.size.minDimension / 2
-    val measuredWidth = bigWheelSize.width
-    val measuredHeight = bigWheelSize.height
+    val minRadius = remember { smallWheelPosition.size.minDimension / 2 }
+    val measuredWidth = remember { bigWheelSize.width }
+    val measuredHeight = remember { bigWheelSize.height }
 
     val maxRadius = measuredWidth / 2
 
@@ -96,12 +99,13 @@ fun Wheel(
         val start = change.previousPosition - offset
         val end = change.position - offset
 
-        val rad = atan2(end.y - center.y, end.x - center.x) - atan2(
-            start.y - center.y, start.x - center.x
-        )
-        val degrees = toDegrees(rad.toDouble()).toFloat()
+        val endDeg = toDegrees(atan2(end.y - center.y, end.x - center.x).toDouble())
+        val startDeg = toDegrees(atan2(start.y - center.y, start.x - center.x).toDouble())
+
+        val degrees = anglesDifference(startDeg, endDeg).toFloat()
         velocity.value = 200 * degrees / (change.uptimeMillis - change.previousUptimeMillis)
 
+        println("radEnd = $endDeg; radStart = $startDeg; rad = $degrees; velocity = ${velocity.value}")
         scope.launch {
             rotation.snapTo(rotation.value + degrees)
         }
@@ -202,6 +206,11 @@ fun Wheel(
         })
 }
 
+private fun anglesDifference(angle1: Double, angle2: Double): Double {
+    val diff = (angle2 - angle1 + 180) % 360 - 180
+    return if (diff < -180) diff + 360 else diff
+}
+
 private fun ContentDrawScope.secondWheel(
     emotion: Emotion,
     rotation: Animatable<Float, AnimationVector1D>,
@@ -222,7 +231,7 @@ private fun ContentDrawScope.secondWheel(
         )
         text(
             drawScope = this,
-            text =  feeling.nameTranslated(),
+            text = feeling.nameTranslated(),
             offset = offset,
             angle = index * sectorAngle + sectorAngle / 2 + rotation.value + 180,
             textMeasurer = textMeasurer,
