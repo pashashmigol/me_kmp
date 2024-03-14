@@ -56,7 +56,6 @@ fun RecordCard(
             Row(
                 Modifier
                     .background(Color.Black)
-//                    .align(Alignment.CenterHorizontally)
             ) {
                 Column(
                     Modifier

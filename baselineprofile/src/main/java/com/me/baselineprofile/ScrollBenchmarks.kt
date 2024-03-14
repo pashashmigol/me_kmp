@@ -2,14 +2,18 @@ package com.me.baselineprofile
 
 import androidx.benchmark.macro.BaselineProfileMode
 import androidx.benchmark.macro.CompilationMode
+import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.StartupMode
-import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Direction
+import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 /**
  * This test class benchmarks the speed of app startup.
@@ -33,47 +37,51 @@ import org.junit.runner.RunWith
  **/
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class StartupBenchmarks {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+class ScrollBenchmarks {
 
     @get:Rule
     val rule = MacrobenchmarkRule()
 
     @Test
-    fun startupCompilationNone() =
-        benchmark(CompilationMode.None())
+    fun scrollNotOptimizedDays() = benchmark(CompilationMode.None(), "days")
 
     @Test
-    fun startupCompilationBaselineProfiles() =
-        benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
+    fun scrollNotOptimizedWeeks() = benchmark(CompilationMode.None(), "weeks")
 
     @Test
-    fun startupCompilationFull() =
-        benchmark(CompilationMode.Full())
+    fun scrollNotOptimizedMonths() = benchmark(CompilationMode.None(), "months")
 
-    private fun benchmark(compilationMode: CompilationMode) {
-        // The application id for the running build variant is read from the instrumentation arguments.
-        rule.measureRepeated(
-            packageName = "com.me.multiplatform",
-            metrics = listOf(StartupTimingMetric()),
-            compilationMode = compilationMode,
-            startupMode = StartupMode.COLD,
-            iterations = 10,
-            setupBlock = {
-                pressHome()
-            },
-            measureBlock = {
-                startActivityAndWait()
+    @Test
+    fun scrollOptimisedDays() =
+        benchmark(CompilationMode.Partial(BaselineProfileMode.Require), "days")
 
+    @Test
+    fun scrollOptimisedWeeks() =
+        benchmark(CompilationMode.Partial(BaselineProfileMode.Require), "weeks")
 
-                // TODO Add interactions to wait for when your app is fully drawn.
-                // The app is fully drawn when Activity.reportFullyDrawn is called.
-                // For Jetpack Compose, you can use ReportDrawn, ReportDrawnWhen and ReportDrawnAfter
-                // from the AndroidX Activity library.
+    @Test
+    fun scrollOptimisedMonths() =
+        benchmark(CompilationMode.Partial(BaselineProfileMode.Require), "months")
 
-                // Check the UiAutomator documentation for more information on how to
-                // interact with the app.
-                // https://d.android.com/training/testing/other-components/ui-automator
-            }
-        )
+    private fun benchmark(compilationMode: CompilationMode, button: String) = rule.measureRepeated(
+        packageName = "com.me.multiplatform",
+        metrics = listOf(FrameTimingMetric()),
+        compilationMode = compilationMode,
+        startupMode = StartupMode.WARM,
+        iterations = 10,
+        setupBlock = {
+            pressHome()
+        },
+        measureBlock = {
+            startActivityAndWait()
+
+            device.findObject(By.text(button))?.click()
+            device.findObject(By.scrollable(true))?.fling(Direction.UP, SPEED)
+        }
+    )
+
+    companion object {
+        private const val SPEED = 30_000
     }
 }

@@ -4,7 +4,6 @@ import App
 import MainContent
 import ProvideComponentContext
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -55,5 +54,5 @@ fun AppAndroidPreview() {
 
 private val jankFrameListener = JankStats.OnFrameListener { frameData ->
     // A real app could do something more interesting, like writing the info to local storage and later on report it.
-    Log.v("###", frameData.toString())
+//    Log.v("###", frameData.toString())
 }

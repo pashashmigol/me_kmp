@@ -1,14 +1,10 @@
 package com.me.baselineprofile
 
 import androidx.benchmark.macro.junit4.BaselineProfileRule
-//import androidx.compose.ui.test.assertIsEnabled
-//import androidx.compose.ui.test.hasTestTag
-//import androidx.compose.ui.test.junit4.createComposeRule
-//import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.uiautomator.By
-//import com.me.multiplatform.MainActivity
+import androidx.test.uiautomator.Direction
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +26,7 @@ import org.junit.runner.RunWith
  * Check [documentation](https://d.android.com/topic/performance/benchmarking/macrobenchmark-instrumentation-args)
  * for more information about available instrumentation arguments.
  *
- * After you run the generator, you can verify the improvements running the [StartupBenchmarks] benchmark.
+ * After you run the generator, you can verify the improvements running the [ScrollBenchmarks] benchmark.
  *
  * When using this class to generate a baseline profile, only API 33+ or rooted API 28+ are supported.
  *
@@ -44,62 +40,29 @@ class BaselineProfileGenerator {
     val rule = BaselineProfileRule()
 
     @Test
-    fun scrollThroughDays() {
+    fun scrollThroughDays() = scrollTopAndDown("days")
+
+    @Test
+    fun scrollThroughWeeks() = scrollTopAndDown("weeks")
+
+    @Test
+    fun scrollThroughMonths() = scrollTopAndDown("months")
+
+    private fun scrollTopAndDown(button: String) {
         rule.collect(
             packageName = "com.me.multiplatform",
             includeInStartupProfile = true
         ) {
             pressHome()
             startActivityAndWait()
-            device.findObject(By.text("days")).click()
-            device.waitForIdle()
+            device.findObject(By.text(button))?.click()
 
-            val x = device.displayWidth / 2
-            val yStart = (device.displayHeight * 0.1).toInt()
-            val yEnd = (device.displayHeight * 0.9).toInt()
-
-            device.swipe(x, yStart, x, yEnd, 5)
-            device.waitForIdle()
+            device.findObject(By.scrollable(true))?.fling(Direction.UP, SPEED)
+            device.findObject(By.scrollable(true))?.fling(Direction.DOWN, SPEED)
         }
     }
 
-    @Test
-    fun scrollThroughWeeks() {
-        rule.collect(
-            packageName = "com.me.multiplatform",
-            includeInStartupProfile = true
-        ) {
-            pressHome()
-            startActivityAndWait()
-            device.findObject(By.text("weeks")).click()
-            device.waitForIdle()
-
-            val x = device.displayWidth / 2
-            val yStart = (device.displayHeight * 0.1).toInt()
-            val yEnd = (device.displayHeight * 0.9).toInt()
-
-            device.swipe(x, yStart, x, yEnd, 5)
-            device.waitForIdle()
-        }
-    }
-
-    @Test
-    fun scrollThroughMonths() {
-        rule.collect(
-            packageName = "com.me.multiplatform",
-            includeInStartupProfile = true
-        ) {
-            pressHome()
-            startActivityAndWait()
-            device.findObject(By.text("weeks")).click()
-            device.waitForIdle()
-
-            val x = device.displayWidth / 2
-            val yStart = (device.displayHeight * 0.1).toInt()
-            val yEnd = (device.displayHeight * 0.9).toInt()
-
-            device.swipe(x, yStart, x, yEnd, 5)
-            device.waitForIdle()
-        }
+    companion object {
+        private const val SPEED = 30_000
     }
 }
