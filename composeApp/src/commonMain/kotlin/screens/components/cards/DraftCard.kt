@@ -61,6 +61,9 @@ fun <T : HistoryRecord> DraftCard(
                 value = draftViewModel.text.collectAsState().value,
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = Color.White,
+                    cursorColor = Color.White,
+                    unfocusedIndicatorColor = Color.White,
+                    focusedIndicatorColor = Color.White,
                 ),
                 onValueChange = { text: TextFieldValue ->
                     draftViewModel.onTextChanged(text)

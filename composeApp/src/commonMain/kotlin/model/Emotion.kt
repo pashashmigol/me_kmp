@@ -20,9 +20,8 @@ sealed class Emotion {
     }
 
     companion object {
+        val values: List<Emotion> by lazy {listOf(Anger, Fear, Sad, Happy, Surprise, Peaceful)}
         fun random() = values.random()
-        val values: List<Emotion> = listOf(Anger, Fear, Sad, Happy, Surprise, Peaceful)
-        fun values() = values
     }
 }
 
@@ -345,26 +344,37 @@ data object Anger : Emotion() {
 
     @Serializable
     object Annoyed : AngerFeeling()
+
     @Serializable
     object Frustrated : AngerFeeling()
+
     @Serializable
     object Irritated : AngerFeeling()
+
     @Serializable
     object Jealous : AngerFeeling()
+
     @Serializable
     object Offended : AngerFeeling()
+
     @Serializable
     object Mad : AngerFeeling()
+
     @Serializable
     object Disgusted : AngerFeeling()
+
     @Serializable
     object Hateful : AngerFeeling()
+
     @Serializable
     object Furious : AngerFeeling()
+
     @Serializable
     object Agitated : AngerFeeling()
+
     @Serializable
     object Enraged : AngerFeeling()
+
     @Serializable
     object Hostile : AngerFeeling()
 

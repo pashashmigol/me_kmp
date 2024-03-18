@@ -42,11 +42,8 @@ import kotlinx.coroutines.launch
 import model.Emotion
 import model.Feeling
 import model.color
-import kotlin.math.PI
-import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.cos
-import kotlin.math.min
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -73,24 +70,26 @@ fun Wheel(
 
     val maxRadius = measuredWidth / 2
 
-    val maxSize = Size(measuredWidth, measuredWidth)
+    val maxSize = remember { Size(measuredWidth, measuredWidth) }
     if (maxSize == Size.Unspecified) {
         return
     }
 
     val radius: Animatable<Float, AnimationVector1D> = remember { Animatable(minRadius) }
-    val items = Emotion.values()
+    val items = Emotion.values
 
     val scope = rememberCoroutineScope()
     val textMeasurer = rememberTextMeasurer()
     val chosenEmotion = remember<MutableState<Emotion?>> { mutableStateOf(null) }
 
-    val center = Offset(
-        x = maxRadius,
-        y = maxRadius
-    )
+    val center = remember {
+        Offset(
+            x = maxRadius,
+            y = maxRadius
+        )
+    }
 
-    val offset = smallWheelPosition.center - Offset(center.x, center.y)
+    val offset = remember { smallWheelPosition.center - center }
     if (offset == Offset.Unspecified) {
         return
     }
@@ -103,7 +102,7 @@ fun Wheel(
         val startDeg = toDegrees(atan2(start.y - center.y, start.x - center.x).toDouble())
 
         val degrees = anglesDifference(startDeg, endDeg).toFloat()
-        velocity.value = 200 * degrees / (change.uptimeMillis - change.previousUptimeMillis)
+        velocity.value = 1000 * degrees / (change.uptimeMillis - change.previousUptimeMillis)
 
         println("radEnd = $endDeg; radStart = $startDeg; rad = $degrees; velocity = ${velocity.value}")
         scope.launch {
