@@ -1,6 +1,6 @@
 package data
 
-import com.me.diary.BuildConfig
+import com.me.diary.BuildConfig.GENERATE_TEST_RECORDS
 import model.HashTag
 import data.storage.Storage
 import data.utils.endOfIsoWeek
@@ -66,19 +66,22 @@ class Repository(val storage: Storage) {
         )
 
     init {
+        println("### ${Repository::class.simpleName}; init()")
         scope.launch {
-            val testRecords: List<MoodRecord> = if (BuildConfig.GENERATE_TEST_RECORDS) {
+            val testRecords: List<MoodRecord> = if (GENERATE_TEST_RECORDS) {
                 generateSequence { MoodRecord.random() }.take(1000).toList()
             } else {
                 emptyList()
             }
-            (storage.allRecords() + testRecords)
-                .let { records.emit(it) }
+            (storage.allRecords() + testRecords).let {
+                records.emit(it)
+            }
         }
         scope.launch {
             storage.tags().let { storageTags ->
                 mutableMapOf<String, HashTag>().let { map ->
                     storageTags.forEach { map[it.value] = it }
+                    println("### ${Repository::class.simpleName};  tags: $map")
                     tags.emit(map)
                 }
             }
@@ -87,6 +90,7 @@ class Repository(val storage: Storage) {
             storage.mentions().let { storageMentions ->
                 mutableMapOf<String, Mention>().let { map ->
                     storageMentions.forEach { map[it.value] = it }
+                    println("### ${Repository::class.simpleName};  mentions: $map")
                     mentions.emit(map)
                 }
             }

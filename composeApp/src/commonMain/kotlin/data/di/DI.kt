@@ -4,7 +4,9 @@ import screens.history.viewmodels.OneMonthRecordsViewModel
 import data.Repository
 import data.storage.StorageFilesSystem
 import org.kodein.di.DI
+import org.kodein.di.bindEagerSingleton
 import org.kodein.di.bindProvider
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import screens.components.wheel.WheelViewModel
 import screens.components.wheel.WheelViewModelReal
@@ -21,19 +23,19 @@ import screens.history.viewmodels.tags.TagsViewModelReal
 
 
 val di: DI = DI {
-    bindProvider<Repository> { Repository(storage = StorageFilesSystem()) }
-    bindProvider<TodayRecordsViewModel> { TodayRecordsViewModel(repo = instance()) }
-    bindProvider<TagsViewModel> { TagsViewModelReal(repo = instance()) }
+    bindSingleton<Repository> { Repository(storage = StorageFilesSystem()) }
+    bindSingleton<TodayRecordsViewModel> { TodayRecordsViewModel(repo = instance()) }
+    bindSingleton<TagsViewModel> { TagsViewModelReal(repo = instance()) }
 
-    bindProvider<OneDayRecordsViewModel> { OneDayRecordsViewModel(repo = instance()) }
-    bindProvider<OneWeekRecordsViewModel> { OneWeekRecordsViewModel(repo = instance()) }
-    bindProvider<OneMonthRecordsViewModel> { OneMonthRecordsViewModel(repo = instance()) }
+    bindSingleton<OneDayRecordsViewModel> { OneDayRecordsViewModel(repo = instance()) }
+    bindSingleton<OneWeekRecordsViewModel> { OneWeekRecordsViewModel(repo = instance()) }
+    bindSingleton<OneMonthRecordsViewModel> { OneMonthRecordsViewModel(repo = instance()) }
 
-    bindProvider<MonthsViewModel> { MonthsViewModel(repo = instance()) }
-    bindProvider<WeeksViewModel> { WeeksViewModel(repo = instance()) }
-    bindProvider<DaysViewModel> { DaysViewModel(repo = instance()) }
+    bindSingleton<MonthsViewModel> { MonthsViewModel(repo = instance()) }
+    bindSingleton<WeeksViewModel> { WeeksViewModel(repo = instance()) }
+    bindSingleton<DaysViewModel> { DaysViewModel(repo = instance()) }
 
-    bindProvider<DraftRecordViewModel> { DraftRecordViewModelReal(tagsViewModel = instance()) }
+    bindSingleton<DraftRecordViewModel> { DraftRecordViewModelReal(tagsViewModel = instance()) }
 
-    bindProvider<WheelViewModel> { WheelViewModelReal() }
+    bindSingleton<WheelViewModel> { WheelViewModelReal() }
 }

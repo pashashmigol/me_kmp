@@ -35,6 +35,7 @@ class OneDayRecordsViewModelTest {
         repository.addRecord(MoodRecord(date = now()))
 
         viewModel.records.test {
+            awaitItem()
             assertEquals(1, awaitItem().size)
         }
     }

@@ -32,6 +32,7 @@ class DaysViewModelTest {
         repository.addRecord(MoodRecord(date = now()))
 
         viewModel.records.test {
+            skipItems(1)
             assertEquals(1, awaitItem().size)
         }
     }

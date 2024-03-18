@@ -8,7 +8,6 @@ import model.MoodRecord
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -33,9 +32,8 @@ class MonthsViewModelTest {
         repository.addRecord(MoodRecord(date = now()))
 
         viewModel.records.test {
-            while ((awaitItem().isEmpty())) {
-            }
-            assertEquals(1, viewModel.records.first().size)
+            skipItems(1)
+            assertEquals(1, awaitItem().size)
         }
     }
 }

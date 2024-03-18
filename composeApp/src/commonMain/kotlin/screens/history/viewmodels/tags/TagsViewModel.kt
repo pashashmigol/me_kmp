@@ -1,10 +1,10 @@
 package screens.history.viewmodels.tags
 
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import com.rickclephas.kmm.viewmodel.KMMViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Stable
 abstract class TagsViewModel : KMMViewModel() {
@@ -20,5 +20,5 @@ abstract class TagsViewModel : KMMViewModel() {
 
     abstract fun annotateString(text: AnnotatedString): AnnotatedString
 
-    abstract val suggestedTags: SnapshotStateList<String>
+    abstract val suggestedTags: MutableStateFlow<List<String>>
 }

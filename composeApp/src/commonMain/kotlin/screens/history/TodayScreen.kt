@@ -44,9 +44,8 @@ fun TodayScreen(
     tagsViewModel: TagsViewModel,
 ) {
     var bigWheelPosition by remember { wheelViewModel.bigWheelPosition }
-    val suggestions = tagsViewModel.suggestedTags
-
-    val todayRecords: List<HistoryRecord> = historyViewModel.records
+    val suggestions = remember { tagsViewModel.suggestedTags.value }
+    val todayRecords: List<HistoryRecord> = remember { historyViewModel.records.value }
 
     BoxWithConstraints(modifier = Modifier
         .fillMaxWidth()

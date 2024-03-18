@@ -45,7 +45,9 @@ fun <T : HistoryRecord> HistoryScreen(
     onItemClick: ((index: Int) -> Unit)? = null,
 ) {
 //    val suggestions = tagsViewModel.suggestedTags
-    val records = remember { historyViewModel.records }
+    val records = historyViewModel.records.collectAsState()
+    println("### HistoryScreen: records.size = ${records.value.size}")
+    val suggestedTags = remember { tagsViewModel.suggestedTags.value }
 
     LazyColumn(
         modifier = Modifier
@@ -71,10 +73,10 @@ fun <T : HistoryRecord> HistoryScreen(
             }
         }
         items(
-            count = tagsViewModel.suggestedTags.size,
+            count = suggestedTags.size,
             key = { it }
         ) { index ->
-            val reversedIndex = tagsViewModel.suggestedTags.lastIndex - index
+            val reversedIndex = suggestedTags.lastIndex - index
             TextButton(
                 modifier = Modifier
                     .background(Color.Transparent)
@@ -89,7 +91,7 @@ fun <T : HistoryRecord> HistoryScreen(
                 },
             ) {
                 Text(
-                    text = tagsViewModel.suggestedTags[reversedIndex],
+                    text = suggestedTags[reversedIndex],
                     fontSize = 20.sp,
                     color = Color.White,
                     modifier = Modifier
@@ -101,14 +103,14 @@ fun <T : HistoryRecord> HistoryScreen(
         }
 
         items(
-            count = records.size,
+            count = records.value.size,
             key = { it }
         ) { index ->
-            val reversedIndex = records.lastIndex - index
+            val reversedIndex = records.value.lastIndex - index
             Box(
                 modifier = Modifier
                     .clickable {
-                        (records[reversedIndex] as? CompositeRecord)?.let {
+                        (records.value[reversedIndex] as? CompositeRecord)?.let {
                             onItemClick?.invoke(it.index)
                         }
                     }
@@ -122,7 +124,7 @@ fun <T : HistoryRecord> HistoryScreen(
                     )
             ) {
                 RecordCard(
-                    record = records[reversedIndex],
+                    record = records.value[reversedIndex],
                     tagsViewModel = tagsViewModel,
                     contains = historyViewModel.text.collectAsState().value.annotatedString,
                     emotions = historyViewModel.filter.collectAsState().value.emotions

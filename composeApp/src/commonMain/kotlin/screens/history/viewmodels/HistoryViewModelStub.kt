@@ -7,7 +7,7 @@ import model.MoodRecord
 
 class HistoryViewModelStub : HistoryViewModel<HistoryRecord>() {
     override fun addRecord(moodRecord: MoodRecord) {}
-//    override val records: StateFlow<List<HistoryRecord>> = MutableStateFlow(
-//        listOf(HistoryRecord.random())
-//    )
+    override val records: StateFlow<List<HistoryRecord>> = MutableStateFlow(
+        listOf(HistoryRecord.random())
+    )
 }

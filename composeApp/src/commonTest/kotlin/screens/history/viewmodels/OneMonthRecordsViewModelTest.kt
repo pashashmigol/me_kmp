@@ -34,6 +34,7 @@ class OneMonthRecordsViewModelTest {
         repository.addRecord(MoodRecord(date = now()))
 
         oneMonthRecordsViewModel.records.test {
+            skipItems(1)
             assertEquals(1, awaitItem().size)
         }
     }
