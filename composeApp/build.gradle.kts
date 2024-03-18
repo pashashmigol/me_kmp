@@ -1,4 +1,9 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import java.util.regex.Pattern
+
+val appId = "com.me.diary"
+val versionName = "1.0.11"
+val versionCode = 11
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -12,8 +17,11 @@ plugins {
 }
 
 buildConfig {
-    buildConfigField("VERSION_NAME", "1.0.11")
+    packageName("com.me.diary")
+    buildConfigField("VERSION_NAME", versionName)
     buildConfigField("VERSION_CODE", 11)
+    buildConfigField("PACKAGE_NAME", appId)
+    useKotlinOutput { internalVisibility = false }
 }
 
 kotlin {
@@ -101,7 +109,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.me.multiplatform"
+    namespace = appId
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -110,12 +118,13 @@ android {
     sourceSets["main"].java.srcDirs("build/generated/moko/androidMain/src")
 
     defaultConfig {
-        applicationId = "com.me.multiplatform"
+        applicationId = appId
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = versionCode
+        versionName = versionName
         testInstrumentationRunner = "org.robolectric.RobolectricTestRunner"
+        missingDimensionStrategy("version", "demo")
     }
     testOptions {
         unitTests {
@@ -148,6 +157,33 @@ android {
         implementation(libs.androidx.profileinstaller)
         "baselineProfile"(project(":baselineprofile"))
     }
+    buildConfig.buildConfigField(
+        "GENERATE_TEST_RECORDS",
+        shouldGenerateTestRecords()
+    )
+}
+
+fun shouldGenerateTestRecords(): Boolean {
+    gradle.startParameter.taskRequests.forEach {  it: TaskExecutionRequest ->
+        println("### ${it}")
+        println("### ${it.args.joinToString()}")
+    }
+    val taskRequestsStr = gradle.startParameter.taskRequests.toString()
+    val pattern: Pattern = if (taskRequestsStr.contains("assemble")) {
+        Pattern.compile("assemble(\\w+)(Release|Debug)")
+    } else {
+        Pattern.compile("bundle(\\w+)(Release|Debug)")
+    }
+
+    val matcher = pattern.matcher(taskRequestsStr)
+    val flavor = if (matcher.find()) {
+        matcher.group(1).lowercase()
+    } else {
+        println("### NO FLAVOR FOUND")
+        ""
+    }
+    println("### flavor = $flavor")
+    return flavor.contains("nonminified")
 }
 
 multiplatformResources {

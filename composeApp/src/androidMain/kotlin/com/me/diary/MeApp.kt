@@ -1,4 +1,4 @@
-package com.me.multiplatform
+package com.me.diary
 
 import android.app.Application
 import android.content.Context

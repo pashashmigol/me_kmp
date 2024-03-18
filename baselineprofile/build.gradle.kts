@@ -37,7 +37,6 @@ dependencies {
     implementation(libs.androidx.uiautomator)
     implementation(libs.androidx.benchmark.macro.junit4)
     implementation(libs.androidx.ui.test.junit4.android)
-//    implementation(project(":composeApp"))
 }
 
 androidComponents {

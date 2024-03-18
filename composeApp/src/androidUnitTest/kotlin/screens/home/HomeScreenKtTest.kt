@@ -3,7 +3,7 @@ package screens.home
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.me.multiplatform.EmptyTestActivity
+import com.me.diary.EmptyTestActivity
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test

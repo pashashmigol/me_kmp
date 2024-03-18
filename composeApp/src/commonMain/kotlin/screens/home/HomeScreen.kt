@@ -1,6 +1,5 @@
 package screens.home
 
-import MeMultiplatform.composeApp.BuildConfig
 import Screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.push
+import com.me.diary.BuildConfig
 import com.me.resources.library.MR
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource

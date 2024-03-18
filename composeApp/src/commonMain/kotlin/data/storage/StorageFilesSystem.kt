@@ -37,7 +37,7 @@ class StorageFilesSystem : Storage {
 
         return fileSystem().list(recordsFolder()).map { path ->
             val json: String = fileSystem().read(path) {
-                readlnOrNull() ?: ""
+                readUtf8()
             }
             if (json.isEmpty()) {
                 return emptyList()

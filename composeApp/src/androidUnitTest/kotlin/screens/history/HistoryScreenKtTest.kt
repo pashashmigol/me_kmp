@@ -7,7 +7,7 @@ import data.storage.StorageStub
 import screens.history.viewmodels.tags.TagsViewModelReal
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.me.multiplatform.EmptyTestActivity
+import com.me.diary.EmptyTestActivity
 import com.me.screens.clearText
 import model.HashTag
 import model.Mention

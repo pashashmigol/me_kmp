@@ -65,7 +65,7 @@ class ScrollBenchmarks {
         benchmark(CompilationMode.Partial(BaselineProfileMode.Require), "months")
 
     private fun benchmark(compilationMode: CompilationMode, button: String) = rule.measureRepeated(
-        packageName = "com.me.multiplatform",
+        packageName = "com.me.diary",
         metrics = listOf(FrameTimingMetric()),
         compilationMode = compilationMode,
         startupMode = StartupMode.WARM,

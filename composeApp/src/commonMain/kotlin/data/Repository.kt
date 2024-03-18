@@ -1,5 +1,6 @@
 package data
 
+import com.me.diary.BuildConfig
 import model.HashTag
 import data.storage.Storage
 import data.utils.endOfIsoWeek
@@ -66,8 +67,12 @@ class Repository(val storage: Storage) {
 
     init {
         scope.launch {
-            (storage.allRecords()
-                    + generateSequence { MoodRecord.random() }.take(1000))
+            val testRecords: List<MoodRecord> = if (BuildConfig.GENERATE_TEST_RECORDS) {
+                generateSequence { MoodRecord.random() }.take(1000).toList()
+            } else {
+                emptyList()
+            }
+            (storage.allRecords() + testRecords)
                 .let { records.emit(it) }
         }
         scope.launch {

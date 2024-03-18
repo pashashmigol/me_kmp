@@ -1,4 +1,4 @@
-package com.me.multiplatform
+package com.me.diary
 
 object Settings {
     var filesDirPath: String? = null
