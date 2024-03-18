@@ -14,12 +14,10 @@ class DaysViewModel(repo: Repository) : HistoryViewModelReal<DayRecord>(repo) {
         get() {
             return repo.days
                 .combine(filter) { records: List<DayRecord>, filter: Filter ->
-                    println("### DaysViewModel; unfilters records ${records.size}")
                     val filtered = filteredRecords(
                         unfilteredRecords = records,
                         filter = filter,
                     )
-                    println("### DaysViewModel; filters records ${filtered.size}")
                     filtered
                 }.stateIn(
                     scope = scope,

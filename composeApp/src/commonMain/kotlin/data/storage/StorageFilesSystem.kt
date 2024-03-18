@@ -4,6 +4,7 @@ import data.storage.utils.fromJson
 import data.storage.utils.hashTagsToJson
 import data.storage.utils.mentionsToJson
 import data.storage.utils.toJson
+import data.utils.format
 import model.HashTag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ class StorageFilesSystem : Storage {
     }
 
     private fun addRecordSync(moodRecord: MoodRecord) {
-        val filePath = recordsFolder().resolve(moodRecord.date.toString().toPath())
+        val filePath = recordsFolder().resolve(moodRecord.date.format(FORMAT).toPath())
         val fileHandle = fileSystem().openReadWrite(filePath)
 
         fileHandle.sink().buffer().use {
@@ -54,7 +55,9 @@ class StorageFilesSystem : Storage {
         return if (fileSystem().exists(tagsFile())) {
             fileSystem()
                 .read(tagsFile()) {
-                    readlnOrNull() ?: ""
+                    val utf = readUtf8()
+                    println("###: tags: $utf")
+                    utf
                 }.let { HashTag.fromJson(it) }
         } else emptyList()
     }
@@ -87,10 +90,12 @@ class StorageFilesSystem : Storage {
         fileSystem().createDirectory(tagsFolder())
         fileSystem().write(mentionsFile()) {}
 
-        return if (fileSystem().exists(tagsFile())) {
+        return if (fileSystem().exists(mentionsFile())) {
             fileSystem()
                 .read(mentionsFile()) {
-                    readlnOrNull() ?: ""
+                    val utf = readUtf8()
+                    println("###: mentions: $utf")
+                    utf
                 }.let { Mention.fromJson(it) }
         } else emptyList()
     }

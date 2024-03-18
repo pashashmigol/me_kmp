@@ -81,6 +81,7 @@ class Repository(val storage: Storage) {
             storage.tags().let { storageTags ->
                 mutableMapOf<String, HashTag>().let { map ->
                     storageTags.forEach { map[it.value] = it }
+                    println("### ${Repository::class.simpleName};  storageTags: $storageTags")
                     println("### ${Repository::class.simpleName};  tags: $map")
                     tags.emit(map)
                 }
@@ -90,6 +91,7 @@ class Repository(val storage: Storage) {
             storage.mentions().let { storageMentions ->
                 mutableMapOf<String, Mention>().let { map ->
                     storageMentions.forEach { map[it.value] = it }
+                    println("### ${Repository::class.simpleName};  storageMentions: $storageMentions")
                     println("### ${Repository::class.simpleName};  mentions: $map")
                     mentions.emit(map)
                 }

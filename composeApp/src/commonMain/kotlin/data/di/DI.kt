@@ -4,8 +4,6 @@ import screens.history.viewmodels.OneMonthRecordsViewModel
 import data.Repository
 import data.storage.StorageFilesSystem
 import org.kodein.di.DI
-import org.kodein.di.bindEagerSingleton
-import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import screens.components.wheel.WheelViewModel
