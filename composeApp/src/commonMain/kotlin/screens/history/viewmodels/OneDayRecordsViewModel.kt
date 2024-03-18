@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class OneDayRecordsViewModel(repo: Repository) :
-    HistoryViewModelReal<MoodRecord>(repo) {
-    var dayIndex: Int? = null
+class OneDayRecordsViewModel(repo: Repository, val dayIndex: Int?) : HistoryViewModelReal<MoodRecord>(repo) {
+//    var dayIndex: Int? = null
 
     override val records
         get() = repo.days

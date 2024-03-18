@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.stateIn
 import model.MonthRecord
 import model.MoodRecord
 
-class OneMonthRecordsViewModel(repo: Repository) :
+class OneMonthRecordsViewModel(repo: Repository, val monthIndex: Int? = null) :
     HistoryViewModelReal<MoodRecord>(repo) {
-    var monthIndex: Int? = null
 
     override val records
         get() = repo.months

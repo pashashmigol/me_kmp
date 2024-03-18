@@ -259,10 +259,10 @@ private fun ContentDrawScope.firstWheel(
 ) {
     val sectorAngle = 360f / Emotion.values.size
 
-    items.forEachIndexed { index, emotion ->
+    items.forEachIndexed { index, emotion: Emotion? ->
         sector(
             drawScope = this,
-            color = emotion.color(),
+            color = emotion?.color() ?: Color.Black,
             startAngle = index * sectorAngle + rotation.value,
             sweepAngle = sectorAngle,
             offset = offset,
@@ -270,7 +270,7 @@ private fun ContentDrawScope.firstWheel(
         )
         text(
             drawScope = this,
-            text = emotion.name(),
+            text = emotion?.name() ?: "$emotion",
             offset = offset,
             angle = index * sectorAngle + rotation.value + 180 + sectorAngle / 2,
             textMeasurer = textMeasurer,

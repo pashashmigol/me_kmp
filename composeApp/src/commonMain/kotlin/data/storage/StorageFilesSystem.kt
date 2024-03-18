@@ -76,7 +76,7 @@ class StorageFilesSystem : Storage {
         val json = fileSystem().read(tagsFile()) {
             readlnOrNull() ?: ""
         }
-        val tags =  if (json.isEmpty()) {
+        val tags = if (json.isEmpty()) {
             emptyList()
         } else {
             HashTag.fromJson(json)
@@ -90,14 +90,16 @@ class StorageFilesSystem : Storage {
         fileSystem().createDirectory(tagsFolder())
         fileSystem().write(mentionsFile()) {}
 
-        return if (fileSystem().exists(mentionsFile())) {
-            fileSystem()
-                .read(mentionsFile()) {
-                    val utf = readUtf8()
-                    println("###: mentions: $utf")
-                    utf
-                }.let { Mention.fromJson(it) }
-        } else emptyList()
+        require(fileSystem().exists(mentionsFile())) {
+            println("${mentionsFile()} doesn't exist")
+        }
+
+        return fileSystem()
+            .read(mentionsFile()) {
+                val utf = readUtf8()
+                println("###: mentions: $utf")
+                utf
+            }.let { Mention.fromJson(it) }
     }
 
     override suspend fun addMention(mention: Mention) {

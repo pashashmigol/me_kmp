@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.stateIn
 import model.MoodRecord
 import model.WeekRecord
 
-class OneWeekRecordsViewModel(repo: Repository) :
+class OneWeekRecordsViewModel(repo: Repository, val weekIndex: Int? = null) :
     HistoryViewModelReal<MoodRecord>(repo) {
-    var weekIndex: Int? = null
 
     override val records
         get() = repo.weeks

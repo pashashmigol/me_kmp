@@ -29,6 +29,9 @@ import screens.history.HistoryScreen
 import screens.history.TodayScreen
 import screens.history.viewmodels.DaysViewModel
 import screens.history.viewmodels.HistoryViewModel
+import screens.history.viewmodels.OneDayRecordsViewModel
+import screens.history.viewmodels.OneMonthRecordsViewModel
+import screens.history.viewmodels.OneWeekRecordsViewModel
 import screens.history.viewmodels.TodayRecordsViewModel
 import screens.history.viewmodels.tags.TagsViewModel
 import screens.home.HomeScreen
@@ -40,13 +43,13 @@ sealed class Screen : Parcelable {
     data object Today : Screen()
 
     @Parcelize
-    data class OneDay(val text: String = "") : Screen()
+    data class OneDay(val index: Int) : Screen()
 
     @Parcelize
-    data class OneWeek(val text: String = "") : Screen()
+    data class OneWeek(val index: Int) : Screen()
 
     @Parcelize
-    data class OneMonth(val text: String = "") : Screen()
+    data class OneMonth(val index: Int) : Screen()
 
     @Parcelize
     data class Days(val text: String = "") : Screen()
@@ -120,17 +123,17 @@ fun MainContent(di: DirectDI) {
             is Screen.Months -> HistoryScreen(
                 historyViewModel = di.instance<HistoryViewModel<MonthRecord>>(),
                 tagsViewModel = di.instance<TagsViewModel>(),
-                onItemClick = { navigation.push(Screen.Months()) }
+                onItemClick = { navigation.push(Screen.OneMonth(it)) }
             )
             is Screen.Weeks -> HistoryScreen(
                 historyViewModel = di.instance<HistoryViewModel<WeekRecord>>(),
                 tagsViewModel = di.instance<TagsViewModel>(),
-                onItemClick = { navigation.push(Screen.Weeks()) }
+                onItemClick = { navigation.push(Screen.OneWeek(it)) }
             )
             is Screen.Days -> HistoryScreen(
                 historyViewModel = di.instance<DaysViewModel>(),
                 tagsViewModel = di.instance<TagsViewModel>(),
-                onItemClick = { navigation.push(Screen.Days()) }
+                onItemClick = { navigation.push(Screen.OneDay(it)) }
             )
             is Screen.Today -> TodayScreen(
                 historyViewModel = TodayRecordsViewModel(Repository(StorageFilesSystem())),
@@ -138,7 +141,19 @@ fun MainContent(di: DirectDI) {
                 wheelViewModel = di.instance(),
                 tagsViewModel = di.instance(),
             )
-            else -> {}
+            is Screen.OneDay -> HistoryScreen(
+                historyViewModel = di.instance<Int, OneDayRecordsViewModel>(arg = screen.index),
+                tagsViewModel = di.instance<TagsViewModel>(),
+            )
+            is Screen.OneWeek -> HistoryScreen(
+                historyViewModel = di.instance<Int, OneWeekRecordsViewModel>(arg = screen.index),
+                tagsViewModel = di.instance<TagsViewModel>(),
+            )
+            is Screen.OneMonth -> HistoryScreen(
+                historyViewModel = di.instance<Int, OneMonthRecordsViewModel>(arg = screen.index),
+                tagsViewModel = di.instance<TagsViewModel>(),
+            )
+            else -> error("no such screen: $screen")
         }
     }
 }

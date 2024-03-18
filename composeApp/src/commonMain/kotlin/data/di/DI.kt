@@ -4,6 +4,7 @@ import screens.history.viewmodels.OneMonthRecordsViewModel
 import data.Repository
 import data.storage.StorageFilesSystem
 import org.kodein.di.DI
+import org.kodein.di.bindFactory
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import screens.components.wheel.WheelViewModel
@@ -25,15 +26,20 @@ val di: DI = DI {
     bindSingleton<TodayRecordsViewModel> { TodayRecordsViewModel(repo = instance()) }
     bindSingleton<TagsViewModel> { TagsViewModelReal(repo = instance()) }
 
-    bindSingleton<OneDayRecordsViewModel> { OneDayRecordsViewModel(repo = instance()) }
-    bindSingleton<OneWeekRecordsViewModel> { OneWeekRecordsViewModel(repo = instance()) }
-    bindSingleton<OneMonthRecordsViewModel> { OneMonthRecordsViewModel(repo = instance()) }
-
     bindSingleton<MonthsViewModel> { MonthsViewModel(repo = instance()) }
     bindSingleton<WeeksViewModel> { WeeksViewModel(repo = instance()) }
     bindSingleton<DaysViewModel> { DaysViewModel(repo = instance()) }
 
     bindSingleton<DraftRecordViewModel> { DraftRecordViewModelReal(tagsViewModel = instance()) }
-
     bindSingleton<WheelViewModel> { WheelViewModelReal() }
+
+    bindFactory<Int, OneDayRecordsViewModel> { index: Int ->
+        OneDayRecordsViewModel(repo = instance(), dayIndex = index)
+    }
+    bindFactory<Int, OneWeekRecordsViewModel> { index: Int ->
+        OneWeekRecordsViewModel(repo = instance(), weekIndex = index)
+    }
+    bindFactory<Int, OneMonthRecordsViewModel> { index: Int ->
+        OneMonthRecordsViewModel(repo = instance(), monthIndex = index)
+    }
 }

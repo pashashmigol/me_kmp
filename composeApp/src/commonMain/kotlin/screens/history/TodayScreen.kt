@@ -15,9 +15,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -27,7 +25,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import model.HistoryRecord
 import screens.components.cards.DraftCard
 import screens.components.cards.RecordCard
 import screens.components.wheel.Wheel
@@ -43,16 +40,16 @@ fun TodayScreen(
     wheelViewModel: WheelViewModel,
     tagsViewModel: TagsViewModel,
 ) {
-    var bigWheelPosition by remember { wheelViewModel.bigWheelPosition }
-    val suggestions = remember { tagsViewModel.suggestedTags.value }
-    val todayRecords: List<HistoryRecord> = remember { historyViewModel.records.value }
+    val bigWheelPosition = wheelViewModel.bigWheelPosition
+    val suggestions = tagsViewModel.suggestedTags.collectAsState()
+    val todayRecords = historyViewModel.records.collectAsState()
 
     BoxWithConstraints(modifier = Modifier
         .fillMaxWidth()
         .semantics { testTag = "today screen root" }) {
 
         val density = LocalDensity.current.density
-        bigWheelPosition?.let { position ->
+        bigWheelPosition.value?.let { position ->
             Wheel(
                 modifier = Modifier.semantics { testTag = "big wheel" },
                 smallWheelPosition = position,
@@ -61,7 +58,7 @@ fun TodayScreen(
                     maxHeight.value * density
                 ),
                 onFeeling = { feeling ->
-                    bigWheelPosition = null
+                    bigWheelPosition.value = null
                     feeling?.let { draftViewModel.addFeeling(it) }
                 })
         }
@@ -85,8 +82,8 @@ fun TodayScreen(
                 )
             }
 
-            items(suggestions.size) { index ->
-                val reversedIndex = suggestions.lastIndex - index
+            items(suggestions.value.size) { index ->
+                val reversedIndex = suggestions.value.lastIndex - index
                 TextButton(
                     modifier = Modifier
                         .background(Color.Transparent)
@@ -99,7 +96,7 @@ fun TodayScreen(
                     },
                 ) {
                     Text(
-                        text = suggestions[reversedIndex],
+                        text = suggestions.value[reversedIndex],
                         fontSize = 20.sp,
                         color = Color.White,
                         modifier = Modifier
@@ -110,11 +107,11 @@ fun TodayScreen(
                 }
             }
 
-            items(todayRecords.size) { index ->
-                val reversedIndex = todayRecords.lastIndex - index
+            items(todayRecords.value.size) { index ->
+                val reversedIndex = todayRecords.value.lastIndex - index
 
                 RecordCard(
-                    record = todayRecords[reversedIndex],
+                    record = todayRecords.value[reversedIndex],
                     tagsViewModel = tagsViewModel
                 )
                 Divider(

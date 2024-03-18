@@ -20,7 +20,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -44,10 +43,9 @@ fun <T : HistoryRecord> HistoryScreen(
     tagsViewModel: TagsViewModel,
     onItemClick: ((index: Int) -> Unit)? = null,
 ) {
-//    val suggestions = tagsViewModel.suggestedTags
+    val suggestions = tagsViewModel.suggestedTags.collectAsState()
     val records = historyViewModel.records.collectAsState()
     println("### HistoryScreen: records.size = ${records.value.size}")
-    val suggestedTags = remember { tagsViewModel.suggestedTags.value }
 
     LazyColumn(
         modifier = Modifier
@@ -73,10 +71,10 @@ fun <T : HistoryRecord> HistoryScreen(
             }
         }
         items(
-            count = suggestedTags.size,
+            count = suggestions.value.size,
             key = { it }
         ) { index ->
-            val reversedIndex = suggestedTags.lastIndex - index
+            val reversedIndex = suggestions.value.lastIndex - index
             TextButton(
                 modifier = Modifier
                     .background(Color.Transparent)
@@ -91,7 +89,7 @@ fun <T : HistoryRecord> HistoryScreen(
                 },
             ) {
                 Text(
-                    text = suggestedTags[reversedIndex],
+                    text = suggestions.value[reversedIndex],
                     fontSize = 20.sp,
                     color = Color.White,
                     modifier = Modifier
