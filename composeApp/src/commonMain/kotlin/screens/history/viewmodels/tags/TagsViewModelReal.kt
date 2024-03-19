@@ -11,7 +11,6 @@ import data.Repository
 import data.utils.now
 import model.HashTag
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.Mention
 
@@ -23,7 +22,9 @@ class TagsViewModelReal(
         return newText.copy(
             annotatedString = annotateString(newText.annotatedString),
         ).also {
-            updateSuggestions(newText.text)
+            viewModelScope.coroutineScope.launch {
+                updateSuggestions(newText.text)
+            }
         }
     }
 
@@ -83,7 +84,10 @@ class TagsViewModelReal(
         ),
         selection = TextRange(index = Int.MAX_VALUE)
     ).also {
-        viewModelScope.coroutineScope.launch { suggestedTags.emit(emptyList()) }
+        viewModelScope.coroutineScope.launch {
+            println("###: onSuggestionClicked(); suggestions emit: emptyList()")
+            suggestedTags.emit(emptyList())
+        }
     }
 
     override fun annotateString(text: AnnotatedString): AnnotatedString = buildAnnotatedString {
@@ -98,9 +102,10 @@ class TagsViewModelReal(
         }
     }
 
-    private fun updateSuggestions(string: String) {
+    private suspend fun updateSuggestions(string: String) {
         if (string.isBlank()) {
-            suggestedTags.update { emptyList() }
+            println("###: suggestions emit: emptyList()")
+            suggestedTags.emit(emptyList())
             return
         }
         Regex(LAST_TAG_PATTERN).find(string)?.value?.let { found ->
@@ -119,7 +124,8 @@ class TagsViewModelReal(
             }).filter {
                 kotlin.runCatching { it.contains(found) }.getOrDefault(false)
             }.let { suggestions ->
-                suggestedTags.update { suggestions }
+                println("###: suggestions emit:$suggestions")
+                suggestedTags.emit(suggestions)
             }
         }
     }

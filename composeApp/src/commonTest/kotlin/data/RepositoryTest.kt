@@ -14,7 +14,7 @@ import data.utils.startOfDay
 import kotlinx.coroutines.test.runTest
 import data.utils.date
 import data.utils.plus
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.StateFlow
 import model.HashTag
 import model.Mention
 import kotlin.test.assertContentEquals
@@ -32,24 +32,12 @@ class RepositoryTest {
 
     @Test
     fun addRecord() = runTest(timeout = 1.seconds) {
-        repository.addRecord(MoodRecord(now))
+        repository.addRecord(MoodRecord(now()))
 
-        repository.todayRecords.test {
-            skipItems(1)
-            assertEquals(1, awaitItem().size)
-        }
-        repository.days.test {
-            skipItems(1)
-            assertEquals(1, awaitItem().size)
-        }
-        repository.weeks.test {
-            skipItems(1)
-            assertEquals(1, awaitItem().size)
-        }
-        repository.months.test {
-            skipItems(1)
-            assertEquals(1, awaitItem().size)
-        }
+        checkNextValue(1, repository.todayRecords)
+        checkNextValue(1, repository.days)
+        checkNextValue(1, repository.weeks)
+        checkNextValue(1, repository.months)
     }
 
     @Test
@@ -70,7 +58,7 @@ class RepositoryTest {
             assertEquals(2, days.size)
             assertContentEquals(
                 todayRecords + yesterdaysRecords,
-                repository.days.first().flatMap { it.records }
+                days.flatMap { it.records }
             )
         }
         repository.todayRecords.test {
@@ -161,17 +149,36 @@ class RepositoryTest {
         val hashTag1 = HashTag(value = "tag 1", lastUsed = now() - 1.milliseconds)
         repository.addTag(hashTag1)
 
-        assertEquals(1, repository.tags.first().size)
+        repository.tags.test {
+            assertEquals(1, awaitItem().size)
+        }
 
         val hashTag2 = HashTag(value = "tag 2", lastUsed = now())
         repository.addTag(hashTag2)
 
-        assertEquals(2, repository.tags.first().size)
-        assertEquals(hashTag2.value, repository.tags.first().values.last().value)
+        repository.tags.test {
+            val tags = awaitItem()
+            assertEquals(2, tags.size)
+            assertEquals(hashTag2.value, tags.values.last().value)
+        }
 
         repository.addTag(hashTag1.copy(lastUsed = now() + 1.milliseconds))
 
-        assertEquals(2, repository.tags.first().size)
-        assertEquals(hashTag1.value, repository.tags.first().values.first().value)
+        repository.tags.test {
+            val tags = awaitItem()
+            assertEquals(2, tags.size)
+            assertEquals(hashTag1.value, tags.values.first().value)
+        }
+    }
+}
+
+private suspend fun <T>checkNextValue(expectedSize: Int, flow: StateFlow<List<T>>) {
+    flow.test {
+        var item1: List<T>? = null
+        while (expectedSize != item1?.size) {
+            item1 = awaitItem()
+            println("### wait for $expectedSize, got ${item1.size}")
+        }
+        assertEquals(expectedSize, item1.size)
     }
 }

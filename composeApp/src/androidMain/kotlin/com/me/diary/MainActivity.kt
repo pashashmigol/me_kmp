@@ -55,5 +55,5 @@ fun AppAndroidPreview() {
 
 private val jankFrameListener = JankStats.OnFrameListener { frameData ->
     // A real app could do something more interesting, like writing the info to local storage and later on report it.
-    Log.v("###", frameData.toString())
+//    Log.v("###", frameData.toString())
 }

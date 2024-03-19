@@ -74,7 +74,7 @@ class StorageFilesSystem : Storage {
             fileSystem().write(tagsFile()) {}
         }
         val json = fileSystem().read(tagsFile()) {
-            readlnOrNull() ?: ""
+            readUtf8()
         }
         val tags = if (json.isEmpty()) {
             emptyList()
@@ -87,19 +87,14 @@ class StorageFilesSystem : Storage {
     }
 
     override suspend fun mentions(): List<Mention> {
-        fileSystem().createDirectory(tagsFolder())
-        fileSystem().write(mentionsFile()) {}
-
-        require(fileSystem().exists(mentionsFile())) {
-            println("${mentionsFile()} doesn't exist")
-        }
-
-        return fileSystem()
-            .read(mentionsFile()) {
-                val utf = readUtf8()
-                println("###: mentions: $utf")
-                utf
-            }.let { Mention.fromJson(it) }
+        return if (fileSystem().exists(mentionsFile())) {
+            fileSystem()
+                .read(mentionsFile()) {
+                    val utf = readUtf8()
+                    println("###: mentions: $utf")
+                    utf
+                }.let { Mention.fromJson(it) }
+        } else emptyList()
     }
 
     override suspend fun addMention(mention: Mention) {
@@ -109,8 +104,12 @@ class StorageFilesSystem : Storage {
     }
 
     private fun addMentionSync(mention: Mention) {
+        fileSystem().createDirectory(tagsFolder())
+        if (!fileSystem().exists(mentionsFile())) {
+            fileSystem().write(mentionsFile()) {}
+        }
         val json = fileSystem().read(mentionsFile()) {
-            readlnOrNull() ?: ""
+            readUtf8()
         }
         val mentions = if (json.isEmpty()) {
             emptyList()
@@ -118,7 +117,9 @@ class StorageFilesSystem : Storage {
             Mention.fromJson(json)
         }
         fileSystem().write(mentionsFile()) {
-            write(mentionsToJson(mentions + mention).encodeToByteArray())
+            val str = mentionsToJson(mentions + mention)
+            println("###; mentions str = $str")
+            write(str.encodeToByteArray())
         }
     }
 

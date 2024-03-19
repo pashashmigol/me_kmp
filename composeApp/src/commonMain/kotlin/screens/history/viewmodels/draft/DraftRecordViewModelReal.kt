@@ -2,6 +2,7 @@ package screens.history.viewmodels.draft
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.text.input.TextFieldValue
+import com.rickclephas.kmm.viewmodel.coroutineScope
 import data.utils.now
 import model.Feeling
 import model.MoodRecord
@@ -10,6 +11,7 @@ import model.MoodRecord.Companion.MAX_TEXT_LENGTH
 import model.MoodRecord.Companion.MIN_EMOTIONS_NUMBER
 import model.MoodRecord.Companion.MIN_TEXT_LENGTH
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import screens.history.viewmodels.tags.TagsViewModel
 
 class DraftRecordViewModelReal(
@@ -29,7 +31,11 @@ class DraftRecordViewModelReal(
     override fun clearRecord() {
         text.value = TextFieldValue()
         feelings.clear()
-        tagsViewModel.suggestedTags.value = emptyList()
+        viewModelScope.coroutineScope.launch {
+
+            println("###: clearRecord(); suggestions emit: emptyList()")
+            tagsViewModel.suggestedTags.emit(emptyList())
+        }
     }
 
     override fun addFeeling(feeling: Feeling) {

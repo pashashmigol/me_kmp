@@ -12,14 +12,14 @@ import model.Mention
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TagsViewModelRealTest {
@@ -40,24 +40,17 @@ class TagsViewModelRealTest {
         repository.addTag(HashTag("#2", lastUsed = now()))
 
         tagViewModel.onTextChanged(TextFieldValue(text = "#"))
-
-        assertContentEquals(
-            listOf("#1", "#2"),
-            tagViewModel.suggestedTags.first()
-        )
+        checkNextValue(listOf("#1", "#2"), tagViewModel.suggestedTags)
 
         tagViewModel.onTextChanged(TextFieldValue(text = "#1"))
-        assertContentEquals(
-            listOf("#1"),
-            tagViewModel.suggestedTags.first()
-        )
+        checkNextValue(listOf("#1"), tagViewModel.suggestedTags)
 
         tagViewModel.onTextChanged(TextFieldValue(text = ""))
-        assertTrue(tagViewModel.suggestedTags.first().isEmpty())
+        checkNextValue(emptyList(), tagViewModel.suggestedTags)
     }
 
     @Test
-    fun `add and clear mention`() = runTest {
+    fun `add and clear mention`() = runBlocking {
         val repository = Repository(StorageStub())
         val tagViewModel = TagsViewModelReal(repository)
 
@@ -65,20 +58,23 @@ class TagsViewModelRealTest {
         repository.addMention(Mention("@2", lastUsed = now()))
 
         tagViewModel.onTextChanged(TextFieldValue(text = "@"))
-        tagViewModel.suggestedTags.test {
-            assertContentEquals(
-                listOf("@1", "@2"),
-                awaitItem()
-            )
-        }
+        checkNextValue(listOf("@1", "@2"), tagViewModel.suggestedTags)
 
         tagViewModel.onTextChanged(TextFieldValue(text = "@1"))
-        assertContentEquals(
-            listOf("@1"),
-            tagViewModel.suggestedTags.first()
-        )
+        checkNextValue(listOf("@1"), tagViewModel.suggestedTags)
 
         tagViewModel.onTextChanged(TextFieldValue(text = ""))
-        assertTrue(tagViewModel.suggestedTags.first().isEmpty())
+        checkNextValue(emptyList(), tagViewModel.suggestedTags)
+    }
+
+    private suspend fun checkNextValue(expected: List<String>, flow: StateFlow<List<String>>) {
+        flow.test {
+            var item1: List<String>? = null
+            while (item1?.size != expected.size) {
+                item1 = awaitItem()
+                println("### wait for $expected, got $item1")
+            }
+            assertContentEquals(expected, item1)
+        }
     }
 }

@@ -27,9 +27,8 @@ class OneWeekRecordsViewModelTest {
     @Test
     fun `on item is added on the screen`() = runTest {
         val repository = Repository(StorageStub())
-        val viewModel = OneWeekRecordsViewModel(repository).apply {
-            weekIndex = 0
-        }
+        val viewModel = OneWeekRecordsViewModel(repository, 0)
+
         repository.addRecord(MoodRecord(date = now()))
 
         viewModel.records.test {

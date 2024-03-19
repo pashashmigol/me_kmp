@@ -104,7 +104,6 @@ fun Wheel(
         val degrees = anglesDifference(startDeg, endDeg).toFloat()
         velocity.value = 1000 * degrees / (change.uptimeMillis - change.previousUptimeMillis)
 
-        println("radEnd = $endDeg; radStart = $startDeg; rad = $degrees; velocity = ${velocity.value}")
         scope.launch {
             rotation.snapTo(rotation.value + degrees)
         }
