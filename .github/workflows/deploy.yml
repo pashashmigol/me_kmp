@@ -8,7 +8,7 @@ name: Deploy Countries Pad
 jobs:
   build:
     name: Build Signed AAB
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - name: set up JDK 17
