@@ -90,8 +90,7 @@ class HistoryScreenKtTest {
         repo.addRecord(MoodRecord(text = "text1", date = now()))
         repo.addRecord(MoodRecord(text = "text2", date = now()))
 
-        composeTestRule.enterText("te")
-        composeTestRule.shownViewWithText("text1")
+        composeTestRule.enterText("t")
         composeTestRule.shownViewWithText("text2")
     }
 

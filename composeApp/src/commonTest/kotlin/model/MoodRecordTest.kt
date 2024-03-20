@@ -1,6 +1,7 @@
 package model
 
 import data.utils.now
+import data.utils.today
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -27,7 +28,7 @@ class MoodRecordTest {
     @Test
     fun `matches period records`() {
         val period = DayRecord(
-            start = now(),
+            start = today(),
             records = listOf(
                 MoodRecord(
                     date = now(),
@@ -60,7 +61,7 @@ class MoodRecordTest {
     @Test
     fun `matches period with one item`() {
         val period = DayRecord(
-            start = now(),
+            start = today(),
             records = listOf(
                 MoodRecord(
                     date = now(),

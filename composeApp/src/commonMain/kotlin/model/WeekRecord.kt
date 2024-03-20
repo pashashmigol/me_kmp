@@ -1,10 +1,13 @@
 package model
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 
-
-class WeekRecord(index: Int, start: LocalDateTime, end: LocalDateTime, records: List<MoodRecord>) :
-    CompositeRecord(index, start, end, records) {
+data class WeekRecord(
+    override val index: Int,
+    override val start: LocalDate,
+    override val end: LocalDate,
+    override val records: List<MoodRecord>
+) : CompositeRecord(index, start, end, records) {
 
     override fun dateString() = if (start.month == end.month) {
         "${start.year}, " +

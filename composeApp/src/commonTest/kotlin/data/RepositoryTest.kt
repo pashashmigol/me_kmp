@@ -13,10 +13,15 @@ import data.utils.minus
 import data.utils.startOfDay
 import kotlinx.coroutines.test.runTest
 import data.utils.date
+import data.utils.dateTime
 import data.utils.plus
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import model.HashTag
 import model.Mention
+import model.MonthRecord
+import model.WeekRecord
+import kotlin.test.assertContentEquals
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -30,7 +35,7 @@ class RepositoryTest {
     }
 
     @Test
-    fun addRecord() = runTest(timeout = 1.seconds) {
+    fun `one record added adds also one day week and month`() = runTest(timeout = 1.seconds) {
         repository.addRecord(MoodRecord(now()))
 
         checkNextValueSize(1, repository.todayRecords)
@@ -51,67 +56,77 @@ class RepositoryTest {
         )
         repository.addRecords(todayRecords + yesterdaysRecords)
 
-        checkNextValueSize(2, repository.days)
-//        repository.days.test {
-//            skipItems(1)
-//            val days = awaitItem()
-//            assertEquals(2, days.size)
-//            assertContentEquals(
-//                todayRecords + yesterdaysRecords,
-//                days.flatMap { it.records }
-//            )
-//        }
-        checkNextValueSize(2, repository.todayRecords)
-//        repository.todayRecords.test {
-//            skipItems(1)
-//            assertContentEquals(
-//                todayRecords,
-//                awaitItem()
-//            )
-//        }
+        checkNextValues(todayRecords + yesterdaysRecords, repository.records)
+        checkNextValues(todayRecords, repository.todayRecords)
     }
 
     @Test
     fun getWeeks() = runTest(timeout = 1.seconds) {
-        arrayOf(
-            MoodRecord(date = date(year = 2005, month = 1, dayOfMonth = 10)),
-            MoodRecord(date = date(year = 2005, month = 1, dayOfMonth = 18)),
-        ).forEach { repository.addRecord(it) }
+        val record1 = MoodRecord(date = dateTime(year = 2005, month = 1, dayOfMonth = 10))
+        val record2 = MoodRecord(date = dateTime(year = 2005, month = 1, dayOfMonth = 20))
+        val records = listOf(record1, record2)
 
-        checkNextValueSize(2, repository.weeks)
-//        repository.weeks.test {
-//            skipItems(1)
-//            assertEquals(2, awaitItem().size)
-//        }
+        val weeks = listOf(
+            WeekRecord(
+                index = 0,
+                start = date(year = 2005, month = 1, dayOfMonth = 10),
+                end = date(year = 2005, month = 1, dayOfMonth = 16),
+                records = listOf(record1)
+            ),
+            WeekRecord(
+                index = 1,
+                start = date(year = 2005, month = 1, dayOfMonth = 17),
+                end = date(year = 2005, month = 1, dayOfMonth = 23),
+                records = listOf(record2)
+            )
+        )
+        repository.addRecords(records)
+
+        checkNextValues(weeks, repository.weeks)
     }
 
     @Test
     fun getMonths() = runTest(timeout = 1.seconds) {
-        arrayOf(
-            MoodRecord(date = date(year = 2005, month = 1, dayOfMonth = 10)),
-            MoodRecord(date = date(year = 2005, month = 2, dayOfMonth = 16)),
-        ).forEach { repository.addRecord(it) }
+        val record1 = MoodRecord(date = dateTime(year = 2005, month = 1, dayOfMonth = 10))
+        val record2 = MoodRecord(date = dateTime(year = 2005, month = 3, dayOfMonth = 16))
 
-        checkNextValueSize(2, repository.months)
+        repository.addRecords(listOf(record1, record2))
+
+        val months = listOf(
+            MonthRecord(
+                index = 0,
+                start = date(2005, 1, 1),
+                end = date(2005, 1, 31),
+                records = listOf(record1)
+            ),
+            MonthRecord(
+                index = 1,
+                start = date(2005, 3, 1),
+                end = date(2005, 3, 31),
+                records = listOf(record2)
+            )
+        )
+        checkNextValues(months, repository.months)
     }
 
     @Test
     fun `check that all records are properly split between weeks`() = runTest(timeout = 1.seconds) {
-        repository.addRecords(
-            listOf(
-                MoodRecord(date = date(2005, 1, 15)),
-                MoodRecord(date = date(2005, 1, 15)),
-                MoodRecord(date = date(2005, 1, 15)),
+        val records = listOf(
+            MoodRecord(date = dateTime(2005, 1, 15)),
+            MoodRecord(date = dateTime(2005, 1, 15)),
+            MoodRecord(date = dateTime(2005, 1, 15)),
+        )
+        repository.addRecords(records)
+
+        val weeks = listOf(
+            WeekRecord(
+                index = 0,
+                start = date(2005, 1, 10),
+                end = date(2005, 1, 16),
+                records = records
             )
         )
-        checkNextValueSize(1, repository.weeks)
-//        repository.weeks.test {
-//            skipItems(1)
-//            val weeks = awaitItem()
-//            assertEquals(1, weeks.size)
-//            assertEquals(10, weeks[0].start.dayOfMonth)
-//            assertEquals(16, weeks[0].end.dayOfMonth)
-//        }
+        checkNextValues(weeks, repository.weeks)
     }
 
     @Test
@@ -172,6 +187,20 @@ class RepositoryTest {
     }
 }
 
+private suspend fun <T> checkNextValues(
+    expected: List<T>,
+    flow: StateFlow<List<T>>
+) {
+    flow.test {
+        var got: List<T>? = null
+        while (expected.size != got?.size) {
+            println("### wait for $expected, got $got")
+            got = awaitItem()
+        }
+        assertContentEquals(expected, got)
+    }
+}
+
 private suspend fun <T> checkNextValueSize(
     expectedSize: Int,
     flow: StateFlow<List<T>>
@@ -179,8 +208,8 @@ private suspend fun <T> checkNextValueSize(
     flow.test {
         var item1: List<T>? = null
         while (expectedSize != item1?.size) {
+            println("### wait for $expectedSize, got ${item1?.size}")
             item1 = awaitItem()
-            println("### wait for $expectedSize, got ${item1.size}")
         }
         assertEquals(expectedSize, item1.size)
     }

@@ -1,6 +1,7 @@
 package data.utils
 
 import data.storage.FORMAT
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toKotlinInstant
@@ -19,4 +20,8 @@ actual fun String.toLocalDateTime(dateTimeFormat: String): LocalDateTime {
         ?.toKotlinInstant()
         ?.toLocalDateTime(TimeZone.of("EET"))
         ?: throw IllegalStateException("Failed to convert String $this to LocalDateTime")
+}
+
+actual fun LocalDate.format(dateFormat: String): String {
+    TODO("Not yet implemented")
 }

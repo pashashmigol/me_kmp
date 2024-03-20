@@ -3,15 +3,27 @@ package data.utils
 import android.os.Build
 import androidx.annotation.RequiresApi
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.offsetIn
+import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toJavaZoneOffset
 import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+
+@RequiresApi(Build.VERSION_CODES.O)
+actual fun LocalDate.format(dateFormat: String): String {
+    val javaDateTime = toJavaLocalDate()
+
+    TimeZone.currentSystemDefault()
+    return DateTimeFormatter
+        .ofPattern(dateFormat, Locale.getDefault())
+        .format(javaDateTime)
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 actual fun LocalDateTime.format(dateTimeFormat: String): String {

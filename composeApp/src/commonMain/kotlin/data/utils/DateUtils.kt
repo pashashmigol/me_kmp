@@ -7,6 +7,11 @@ import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.Clock.System.now
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
+import kotlinx.datetime.number
+import kotlinx.datetime.plus
 import kotlin.random.Random.Default.nextInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -22,6 +27,8 @@ fun randomDate(): LocalDateTime = LocalDateTime(
 
 expect fun LocalDateTime.format(dateTimeFormat: String): String
 
+expect fun LocalDate.format(dateFormat: String): String
+
 expect fun String.toLocalDateTime(dateTimeFormat: String): LocalDateTime
 
 val LocalDateTime.startOfMonth: LocalDateTime
@@ -33,16 +40,14 @@ val LocalDateTime.startOfMonth: LocalDateTime
         minute = 0
     )
 
-val LocalDateTime.endOfMonth: LocalDateTime
-    get() = LocalDateTime(
-        year = year,
-        month = month,
-        dayOfMonth = dayOfMonth,
-        hour = 23,
-        minute = 59,
-        second = 59,
-        nanosecond = 999
-    )
+val LocalDate.endOfMonth: LocalDate
+    get() {
+        return LocalDate(
+            year = year,
+            month = month,
+            dayOfMonth = YearMonth(year, month).atEndOfMonth().dayOfMonth,
+        )
+    }
 
 val LocalDateTime.startOfIsoWeek: LocalDateTime
     get() {
@@ -53,11 +58,11 @@ val LocalDateTime.startOfIsoWeek: LocalDateTime
         error("Shouldn't happen")
     }
 
-val LocalDateTime.endOfIsoWeek: LocalDateTime
+val LocalDate.endOfIsoWeek: LocalDate
     get() {
         for (n in 0 until 7) {
-            val date = (this + n.days)
-            if (date.dayOfWeek == DayOfWeek.SUNDAY) return date.endOfDay
+            val date = (this + DatePeriod(days = n))
+            if (date.dayOfWeek == DayOfWeek.SUNDAY) return date
         }
         error("Shouldn't happen")
     }
@@ -93,11 +98,18 @@ val LocalDateTime.endOfDay
     )
 
 fun now(): LocalDateTime = now().toLocalDateTime(TimeZone.currentSystemDefault())
+fun today(): LocalDate = now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-fun date(year: Int, month: Int, dayOfMonth: Int) = LocalDateTime(
+fun dateTime(year: Int, month: Int, dayOfMonth: Int) = LocalDateTime(
     year = year,
     monthNumber = month,
     dayOfMonth = dayOfMonth,
     hour = 0,
     minute = 0
+)
+
+fun date(year: Int, month: Int, dayOfMonth: Int) = LocalDate(
+    year = year,
+    monthNumber = month,
+    dayOfMonth = dayOfMonth
 )

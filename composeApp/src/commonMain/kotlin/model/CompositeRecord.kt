@@ -1,13 +1,12 @@
 package model
 
-import kotlinx.datetime.LocalDateTime
-
+import kotlinx.datetime.LocalDate
 
 sealed class CompositeRecord(
-    val index: Int,
-    val start: LocalDateTime,
-    val end: LocalDateTime,
-    val records: List<MoodRecord>
+    open val index: Int,
+    open val start: LocalDate,
+    open val end: LocalDate,
+    open val records: List<MoodRecord>
 ) : HistoryRecord {
     override val feelings: List<Feeling>
         get() = records

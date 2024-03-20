@@ -6,7 +6,6 @@ import data.storage.Storage
 import data.utils.endOfIsoWeek
 import data.utils.endOfMonth
 import data.utils.now
-import data.utils.startOfDay
 import data.utils.startOfIsoWeek
 import data.utils.startOfMonth
 import kotlinx.coroutines.CoroutineScope
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import model.DayRecord
@@ -53,7 +51,7 @@ class Repository(val storage: Storage) {
         .map { generateWeeks(it) }
         .stateIn(
             scope = scope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
 
@@ -96,15 +94,15 @@ class Repository(val storage: Storage) {
     }
 
     fun addRecord(record: MoodRecord) {
-        records.update { it + record }
         scope.launch {
+            records.emit(records.value + record)
             storage.addRecord(record)
         }
     }
 
     fun addRecords(recordList: List<MoodRecord>) {
-        records.update { it + recordList }
         scope.launch {
+            records.emit(records.value + recordList)
             recordList.forEach { record ->
                 storage.addRecord(record)
             }
@@ -112,21 +110,17 @@ class Repository(val storage: Storage) {
     }
 
     fun addMention(mention: Mention) {
-        mentions.update {
-            mentions.value[mention.value] = mention
-            mentions.value
-        }
         scope.launch {
+            mentions.value[mention.value] = mention
+            mentions.emit(mentions.value)
             storage.addMention(mention)
         }
     }
 
     fun addTag(tag: HashTag) {
-        tags.update {
-            tags.value[tag.value] = tag
-            tags.value
-        }
         scope.launch {
+            tags.value[tag.value] = tag
+            tags.emit(tags.value)
             storage.addTag(tag)
         }
     }
@@ -176,8 +170,8 @@ private fun generateMonths(records: List<MoodRecord>): List<MonthRecord> = recor
     .foldIndexed(initial = mutableListOf()) { index, acc, monthsRecords ->
         MonthRecord(
             index = index,
-            start = monthsRecords.key,
-            end = monthsRecords.key.endOfMonth,
+            start = monthsRecords.key.date,
+            end = monthsRecords.key.date.endOfMonth,
             records = monthsRecords.value.toList()
 
         ).let { acc.add(it) }
@@ -197,8 +191,8 @@ private fun generateWeeks(records: List<MoodRecord>): List<WeekRecord> = records
     .foldIndexed(initial = mutableListOf()) { index, acc, weekRecords ->
         WeekRecord(
             index = index,
-            start = weekRecords.key,
-            end = weekRecords.key.endOfIsoWeek,
+            start = weekRecords.key.date,
+            end = weekRecords.key.date.endOfIsoWeek,
             records = weekRecords.value.toList()
         ).let { acc.add(it) }
         acc
@@ -208,7 +202,7 @@ private fun generateDays(records: List<MoodRecord>): List<DayRecord> = records
     .fold(
         initial = mutableMapOf<LocalDateTime, MutableList<MoodRecord>>()
     ) { acc, moodRecord ->
-        val dayStart = moodRecord.date.startOfDay
+        val dayStart = moodRecord.date
 
         if (!acc.containsKey(dayStart)) {
             acc[dayStart] = mutableListOf()
@@ -220,7 +214,7 @@ private fun generateDays(records: List<MoodRecord>): List<DayRecord> = records
     ) { index, acc, dayRecords ->
         DayRecord(
             index = index,
-            start = dayRecords.key,
+            start = dayRecords.key.date,
             records = dayRecords.value.toList()
         ).let { acc.add(it) }
         acc
