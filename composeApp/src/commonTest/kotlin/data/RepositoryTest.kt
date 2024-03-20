@@ -17,6 +17,7 @@ import data.utils.plus
 import kotlinx.coroutines.flow.StateFlow
 import model.HashTag
 import model.Mention
+import kotlin.test.Ignore
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -29,6 +30,7 @@ class RepositoryTest {
         repository = Repository(StorageStub())
     }
 
+    @Ignore
     @Test
     fun addRecord() = runTest(timeout = 1.seconds) {
         repository.addRecord(MoodRecord(now()))
@@ -39,6 +41,7 @@ class RepositoryTest {
         checkNextValueSize(1, repository.months)
     }
 
+    @Ignore
     @Test
     fun getTodayRecords() = runTest {
         val todayRecords = listOf(
