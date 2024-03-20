@@ -3,14 +3,11 @@ package data.utils
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.Clock.System.now
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
-import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlin.random.Random.Default.nextInt
 import kotlin.time.Duration
@@ -68,12 +65,12 @@ val LocalDate.endOfIsoWeek: LocalDate
     }
 
 operator fun LocalDateTime.minus(delta: Duration): LocalDateTime =
-    toInstant(UtcOffset.ZERO)
+    toInstant(TimeZone.currentSystemDefault())
         .minus(delta)
         .toLocalDateTime(TimeZone.currentSystemDefault())
 
 operator fun LocalDateTime.plus(delta: Duration): LocalDateTime =
-    toInstant(UtcOffset.ZERO)
+    toInstant(TimeZone.currentSystemDefault())
         .plus(delta)
         .toLocalDateTime(TimeZone.currentSystemDefault())
 
@@ -86,19 +83,8 @@ val LocalDateTime.startOfDay: LocalDateTime
         minute = 0
     )
 
-val LocalDateTime.endOfDay
-    get() = LocalDateTime(
-        year = year,
-        month = month,
-        dayOfMonth = dayOfMonth,
-        hour = 23,
-        minute = 59,
-        second = 59,
-        nanosecond = 999
-    )
-
-fun now(): LocalDateTime = now().toLocalDateTime(TimeZone.currentSystemDefault())
-fun today(): LocalDate = now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+fun now(): LocalDateTime = now().toLocalDateTime(TimeZone.UTC)
+fun today(): LocalDate = now().toLocalDateTime(TimeZone.UTC).date
 
 fun dateTime(year: Int, month: Int, dayOfMonth: Int) = LocalDateTime(
     year = year,

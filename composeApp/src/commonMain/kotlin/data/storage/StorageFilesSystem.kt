@@ -25,7 +25,9 @@ class StorageFilesSystem : Storage {
     }
 
     private fun addRecordSync(moodRecord: MoodRecord) {
-        val filePath = recordsFolder().resolve(moodRecord.date.format(FORMAT).toPath())
+        val filePath = recordsFolder().resolve(
+            moodRecord.date.format(DATE_TIME_FORMAT).toPath()
+        )
         val fileHandle = fileSystem().openReadWrite(filePath)
 
         fileHandle.sink().buffer().use {
@@ -45,10 +47,6 @@ class StorageFilesSystem : Storage {
             }
             MoodRecord.fromJson(json)
         }
-    }
-
-    fun deleteAllSync() {
-        fileSystem().deleteRecursively(recordsFolder())
     }
 
     override suspend fun tags(): List<HashTag> {
@@ -136,4 +134,5 @@ class StorageFilesSystem : Storage {
 
 expect fun filesFolder(): String
 
-const val FORMAT = "EEE, dd MMM yyyy HH:mm:ss 'GMT'Z"
+const val DATE_TIME_FORMAT = "EEE, dd MMM yyyy HH:mm:ss 'GMT'Z"
+const val DATE_FORMAT = "EEE, dd MMM yyyy"

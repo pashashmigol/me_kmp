@@ -1,6 +1,6 @@
 package data.storage.utils
 
-import data.storage.FORMAT
+import data.storage.DATE_TIME_FORMAT
 import data.utils.format
 import data.utils.toLocalDateTime
 import kotlinx.datetime.LocalDateTime
@@ -12,13 +12,11 @@ import model.HashTag
 import model.Mention
 import model.MoodRecord
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.descriptors.listSerialDescriptor
 import kotlinx.serialization.descriptors.nullable
 import kotlinx.serialization.descriptors.serialDescriptor
@@ -62,18 +60,12 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
         PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): LocalDateTime =
-        decoder.decodeString().toLocalDateTime(FORMAT)
+        decoder.decodeString().toLocalDateTime(DATE_TIME_FORMAT)
 
     override fun serialize(encoder: Encoder, value: LocalDateTime) {
-        encoder.encodeString(value.format(FORMAT))
+        encoder.encodeString(value.format(DATE_TIME_FORMAT))
     }
 }
-
-val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56 GMT+0200\"," +
-        "\"feelings\":[{\"type\":\"Irritated\",\"emotion\":{\"type\":\"Anger\"}}, " +
-        "{\"type\":\"Jealous\"}], " +
-        "\"text\":\"#work\"}"
-
 
 object FeelingsListSerializer : KSerializer<List<Feeling>> {
     @OptIn(ExperimentalSerializationApi::class)

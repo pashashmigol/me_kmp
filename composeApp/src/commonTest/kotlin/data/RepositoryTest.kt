@@ -16,7 +16,6 @@ import data.utils.date
 import data.utils.dateTime
 import data.utils.plus
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import model.HashTag
 import model.Mention
 import model.MonthRecord
@@ -136,27 +135,18 @@ class RepositoryTest {
             lastUsed = now() - 1.milliseconds
         )
         repository.addMention(mention1)
-        repository.mentions.test {
-            val mentions = awaitItem().values.toList()
-            assertEquals(1, mentions.size)
-            assertEquals(mention1.value, mentions[0].value)
-        }
+        checkTags(listOf(mention1), repository.mentions)
 
-        val mention2 = Mention(value = "mention 2", lastUsed = now())
+        val mention2 = Mention(
+            value = "mention 2",
+            lastUsed = now()
+        )
         repository.addMention(mention2)
+        checkTags(listOf(mention1, mention2), repository.mentions)
 
-        repository.mentions.test {
-            val mentions = awaitItem().values.toList()
-            assertEquals(2, mentions.size)
-            assertEquals(mention2.value, mentions[1].value)
-        }
-
-        repository.addMention(mention1.copy(lastUsed = now() + 1.milliseconds))
-        repository.mentions.test {
-            val mentions = awaitItem()
-            assertEquals(2, mentions.size)
-            assertEquals(mention1.value, mentions.values.first().value)
-        }
+        val mention3 = mention1.copy(lastUsed = mention1.lastUsed + 1.milliseconds)
+        repository.addMention(mention3)
+        checkTags(expected = listOf(mention3, mention2), flow = repository.mentions)
     }
 
     @Test
@@ -184,6 +174,20 @@ class RepositoryTest {
             assertEquals(2, tags.size)
             assertEquals(hashTag1.value, tags.values.first().value)
         }
+    }
+}
+
+private suspend fun <T> checkTags(
+    expected: List<T>,
+    flow: StateFlow<MutableMap<String, T>>
+) {
+    flow.test {
+        var got: Collection<T>? = null
+        while (expected.size != got?.size) {
+            println("### wait for $expected, got $got")
+            got = awaitItem().values
+        }
+        assertContentEquals(expected, got)
     }
 }
 
