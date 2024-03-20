@@ -16,8 +16,7 @@ actual fun String.toLocalDateTime(dateTimeFormat: String): LocalDateTime {
     }
     return formatter
         .dateFromString(this)
-        // extensions functions provided by kotlinx.datetime
         ?.toKotlinInstant()
-        ?.toLocalDateTime(TimeZone.currentSystemDefault())
+        ?.toLocalDateTime(TimeZone.of("EET"))
         ?: throw IllegalStateException("Failed to convert String $this to LocalDateTime")
 }
