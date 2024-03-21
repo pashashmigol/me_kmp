@@ -25,7 +25,8 @@ import model.MoodRecord
 import model.WeekRecord
 
 class Repository(val storage: Storage) {
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val ramScope = CoroutineScope(Dispatchers.IO)
+    private val storageScope = CoroutineScope(Dispatchers.IO)
 
     val records = MutableStateFlow<List<MoodRecord>>(emptyList())
     val tags = MutableStateFlow<MutableMap<String, HashTag>>(mutableMapOf())
@@ -34,7 +35,7 @@ class Repository(val storage: Storage) {
     val todayRecords: StateFlow<List<MoodRecord>> = records
         .map { todayRecords(it) }
         .stateIn(
-            scope = scope,
+            scope = storageScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
@@ -42,7 +43,7 @@ class Repository(val storage: Storage) {
     val days: StateFlow<List<DayRecord>> = records
         .map { generateDays(it) }
         .stateIn(
-            scope = scope,
+            scope = storageScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
@@ -50,7 +51,7 @@ class Repository(val storage: Storage) {
     val weeks: StateFlow<List<WeekRecord>> = records
         .map { generateWeeks(it) }
         .stateIn(
-            scope = scope,
+            scope = storageScope,
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
@@ -58,14 +59,14 @@ class Repository(val storage: Storage) {
     val months: StateFlow<List<MonthRecord>> = records
         .map { generateMonths(it) }
         .stateIn(
-            scope = scope,
+            scope = storageScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
 
     init {
         println("### ${Repository::class.simpleName}; init()")
-        scope.launch {
+        storageScope.launch {
             val testRecords: List<MoodRecord> = if (GENERATE_TEST_RECORDS) {
                 generateSequence { MoodRecord.random() }.take(1000).toList()
             } else {
@@ -75,7 +76,7 @@ class Repository(val storage: Storage) {
                 records.emit(it)
             }
         }
-        scope.launch {
+        storageScope.launch {
             storage.tags().let { storageTags ->
                 mutableMapOf<String, HashTag>().let { map ->
                     storageTags.forEach { map[it.value] = it }
@@ -83,7 +84,7 @@ class Repository(val storage: Storage) {
                 }
             }
         }
-        scope.launch {
+        storageScope.launch {
             storage.mentions().let { storageMentions ->
                 mutableMapOf<String, Mention>().let { map ->
                     storageMentions.forEach { map[it.value] = it }
@@ -94,15 +95,20 @@ class Repository(val storage: Storage) {
     }
 
     fun addRecord(record: MoodRecord) {
-        scope.launch {
+        ramScope.launch {
             records.emit(records.value + record)
+        }
+        storageScope.launch {
             storage.addRecord(record)
         }
     }
 
     fun addRecords(recordList: List<MoodRecord>) {
-        scope.launch {
+        ramScope.launch {
             records.emit(records.value + recordList)
+
+        }
+        storageScope.launch {
             recordList.forEach { record ->
                 storage.addRecord(record)
             }
@@ -110,17 +116,21 @@ class Repository(val storage: Storage) {
     }
 
     fun addMention(mention: Mention) {
-        scope.launch {
+        ramScope.launch {
             mentions.value[mention.value] = mention
             mentions.emit(mentions.value)
+        }
+        storageScope.launch {
             storage.addMention(mention)
         }
     }
 
     fun addTag(tag: HashTag) {
-        scope.launch {
+        ramScope.launch {
             tags.value[tag.value] = tag
             tags.emit(tags.value)
+        }
+        storageScope.launch {
             storage.addTag(tag)
         }
     }
@@ -132,7 +142,7 @@ class Repository(val storage: Storage) {
         other as Repository
 
         if (storage != other.storage) return false
-        if (scope != other.scope) return false
+        if (storageScope != other.storageScope) return false
         if (records != other.records) return false
         if (tags != other.tags) return false
         if (mentions != other.mentions) return false
@@ -144,7 +154,7 @@ class Repository(val storage: Storage) {
 
     override fun hashCode(): Int {
         var result = storage.hashCode()
-        result = 31 * result + scope.hashCode()
+        result = 31 * result + storageScope.hashCode()
         result = 31 * result + records.hashCode()
         result = 31 * result + tags.hashCode()
         result = 31 * result + mentions.hashCode()
