@@ -2,6 +2,13 @@ package data.storage.utils
 
 import data.utils.format
 import data.utils.now
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.UtcOffset
+import kotlinx.datetime.offsetAt
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import model.Anger
 import model.MoodRecord
 import model.dateTimeFormat
@@ -12,7 +19,6 @@ import kotlin.test.assertEquals
 
 class MoodRecordAdapterTest {
 
-    @Ignore
     @Test
     fun `parse normal object from old json format`() {
         val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56 GMT+0200\"," +
@@ -45,6 +51,16 @@ class MoodRecordAdapterTest {
                 "{\"type\":\"Jealous\"}], " +
                 "\"text\":\"#work\"}"
 
+        val expectedDate = LocalDateTime(
+            year = 19,
+            monthNumber = 1,
+            dayOfMonth = 2024,
+            hour = 19,
+            minute = 43,
+            second = 56
+        ).toInstant(TimeZone.currentSystemDefault())
+            .toLocalDateTime(TimeZone.UTC)
+
         val moodRecord = MoodRecord.fromJson(json)
 
         assertEquals("#work", moodRecord.text)
@@ -53,12 +69,7 @@ class MoodRecordAdapterTest {
             moodRecord.feelings
         )
 
-        assertEquals(19, moodRecord.date.hour)
-        assertEquals(1, moodRecord.date.monthNumber)
-        assertEquals(2024, moodRecord.date.year)
-        assertEquals(19, moodRecord.date.hour)
-        assertEquals(43, moodRecord.date.minute)
-        assertEquals(56, moodRecord.date.second)
+        assertEquals(expectedDate, moodRecord.date)
     }
 
     @Test

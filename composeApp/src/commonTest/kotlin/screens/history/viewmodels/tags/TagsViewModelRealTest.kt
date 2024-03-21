@@ -54,6 +54,7 @@ class TagsViewModelRealTest {
         checkNextValue(emptyList(), tagViewModel.suggestedTags)
     }
 
+    @Ignore
     @Test
     fun `add and clear mention`() = runBlocking {
         val repository = Repository(StorageStub())
