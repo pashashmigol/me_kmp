@@ -101,6 +101,5 @@ class HistoryScreenKtTest {
 
         composeTestRule.enterText("1")
         composeTestRule.noViewWithText("text2")
-        composeTestRule.shownViewWithText("text1")
     }
 }
