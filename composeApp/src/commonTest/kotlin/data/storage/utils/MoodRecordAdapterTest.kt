@@ -2,17 +2,13 @@ package data.storage.utils
 
 import data.utils.format
 import data.utils.now
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.UtcOffset
-import kotlinx.datetime.offsetAt
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import model.Anger
 import model.MoodRecord
 import model.dateTimeFormat
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -26,6 +22,17 @@ class MoodRecordAdapterTest {
                 "{\"type\":\"Jealous\",\"emotion\":{\"type\":\"Anger\"}}]," +
                 "\"text\":\"#work\"}"
 
+        val expectedDate = LocalDateTime(
+            year = 2024,
+            monthNumber = 1,
+            dayOfMonth = 19,
+            hour = 19,
+            minute = 43,
+            second = 56
+        )
+            .toInstant(TimeZone.currentSystemDefault())
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+
         println(json)
         val moodRecord = MoodRecord.fromJson(json)
 
@@ -35,15 +42,9 @@ class MoodRecordAdapterTest {
             moodRecord.feelings
         )
 
-        assertEquals(19, moodRecord.date.hour)
-        assertEquals(1, moodRecord.date.monthNumber)
-        assertEquals(2024, moodRecord.date.year)
-        assertEquals(19, moodRecord.date.hour)
-        assertEquals(43, moodRecord.date.minute)
-        assertEquals(56, moodRecord.date.second)
+        assertEquals(expectedDate, moodRecord.date)
     }
 
-    @Ignore
     @Test
     fun `parse normal object from old and new json formats mixed`() {
         val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56 GMT+0200\"," +
@@ -52,14 +53,15 @@ class MoodRecordAdapterTest {
                 "\"text\":\"#work\"}"
 
         val expectedDate = LocalDateTime(
-            year = 19,
+            year = 2024,
             monthNumber = 1,
-            dayOfMonth = 2024,
+            dayOfMonth = 19,
             hour = 19,
             minute = 43,
             second = 56
-        ).toInstant(TimeZone.currentSystemDefault())
-            .toLocalDateTime(TimeZone.UTC)
+        )
+            .toInstant(TimeZone.currentSystemDefault())
+            .toLocalDateTime(TimeZone.currentSystemDefault())
 
         val moodRecord = MoodRecord.fromJson(json)
 
