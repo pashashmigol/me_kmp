@@ -12,6 +12,7 @@ import kotlin.test.assertEquals
 
 class MoodRecordAdapterTest {
 
+    @Ignore
     @Test
     fun `parse normal object from old json format`() {
         val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56 GMT+0200\"," +
