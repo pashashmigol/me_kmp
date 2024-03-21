@@ -12,7 +12,7 @@ class MonthsViewModel(repo: Repository) :
 
     override val records
         get() = repo.months
-            .combine(filter) { records: List<MonthRecord>, filter: Filter ->
+            .combine(filter) { records: List<MonthRecord>, filter: RecordsFilter ->
                 filteredRecords(
                     unfilteredRecords = records,
                     filter = filter,

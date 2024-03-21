@@ -13,7 +13,7 @@ class DaysViewModel(repo: Repository) : HistoryViewModelReal<DayRecord>(repo) {
     override val records: StateFlow<List<HistoryRecord>>
         get() {
             return repo.days
-                .combine(filter) { records: List<DayRecord>, filter: Filter ->
+                .combine(filter) { records: List<DayRecord>, filter: RecordsFilter ->
                     val filtered = filteredRecords(
                         unfilteredRecords = records,
                         filter = filter,

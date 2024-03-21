@@ -21,7 +21,7 @@ class OneDayRecordsViewModel(repo: Repository, val dayIndex: Int?) : HistoryView
                     ?.let { days[it].records }
             }
             .filterNotNull()
-            .combine(filter) { records: List<MoodRecord>, filter: Filter ->
+            .combine(filter) { records: List<MoodRecord>, filter: RecordsFilter ->
                 filteredRecords(
                     unfilteredRecords = records,
                     filter = filter,

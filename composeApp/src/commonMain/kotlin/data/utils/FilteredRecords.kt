@@ -1,11 +1,11 @@
 package data.utils
 
 import model.HistoryRecord
-import screens.history.viewmodels.Filter
+import screens.history.viewmodels.RecordsFilter
 
 fun <T : HistoryRecord> filteredRecords(
     unfilteredRecords: List<T>,
-    filter: Filter,
+    filter: RecordsFilter,
 ): List<T> {
     return unfilteredRecords.filter { record: T ->
         record.matches(

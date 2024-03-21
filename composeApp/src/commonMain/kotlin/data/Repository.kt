@@ -106,7 +106,6 @@ class Repository(val storage: Storage) {
     fun addRecords(recordList: List<MoodRecord>) {
         ramScope.launch {
             records.emit(records.value + recordList)
-
         }
         storageScope.launch {
             recordList.forEach { record ->
@@ -128,6 +127,7 @@ class Repository(val storage: Storage) {
     fun addTag(tag: HashTag) {
         ramScope.launch {
             tags.value[tag.value] = tag
+            println("###: addTag(): tag = \"$tag\"; emit: \"${tags.value}\", subscriptionCount = ${tags.subscriptionCount.value}")
             tags.emit(tags.value)
         }
         storageScope.launch {

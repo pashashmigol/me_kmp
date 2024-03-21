@@ -14,7 +14,7 @@ class TodayRecordsViewModel(repo: Repository) :
 
     override val records: StateFlow<List<HistoryRecord>>
         get() = repo.todayRecords
-            .combine(filter) { records: List<MoodRecord>, filter: Filter ->
+            .combine(filter) { records: List<MoodRecord>, filter: RecordsFilter ->
                 filteredRecords(
                     unfilteredRecords = records,
                     filter = filter,

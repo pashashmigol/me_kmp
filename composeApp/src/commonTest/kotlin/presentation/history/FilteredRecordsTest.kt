@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.setMain
 import model.Anger
 import model.MoodRecord
 import model.Surprise
-import screens.history.viewmodels.Filter
+import screens.history.viewmodels.RecordsFilter
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,7 +35,7 @@ class FilteredRecordsTest {
         )
         val records = filteredRecords(
             unfilteredRecords = allRecords,
-            filter = Filter(text = "", emotions = listOf(Anger)),
+            filter = RecordsFilter(text = "", emotions = listOf(Anger)),
         )
         assertEquals(2, records.size)
         assertEquals(
@@ -57,7 +57,7 @@ class FilteredRecordsTest {
         )
         val filteredRecords = filteredRecords(
             unfilteredRecords = allRecords,
-            filter = Filter(text = "asha", emotions = listOf()),
+            filter = RecordsFilter(text = "asha", emotions = listOf()),
         )
         assertEquals(3, filteredRecords.size)
     }

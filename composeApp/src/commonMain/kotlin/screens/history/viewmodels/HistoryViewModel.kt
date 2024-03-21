@@ -1,11 +1,9 @@
 package screens.history.viewmodels
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
 import com.rickclephas.kmm.viewmodel.KMMViewModel
 import model.HistoryRecord
-import screens.history.viewmodels.Filter.Companion.noFilter
-import kotlinx.coroutines.flow.Flow
+import screens.history.viewmodels.RecordsFilter.Companion.noFilter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -46,13 +44,5 @@ abstract class HistoryViewModel<T : HistoryRecord> : KMMViewModel() {
                 }
             )
         }
-    }
-}
-
-data class Filter(val text: String, val emotions: List<Emotion>) {
-    fun isSelected(emotion: Emotion) = emotions.contains(emotion)
-
-    companion object {
-        val noFilter = Filter(text = "", emotions = emptyList())
     }
 }

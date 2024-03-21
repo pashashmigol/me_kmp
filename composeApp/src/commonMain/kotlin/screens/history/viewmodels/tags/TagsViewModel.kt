@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import com.rickclephas.kmm.viewmodel.KMMViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 abstract class TagsViewModel : KMMViewModel() {
@@ -20,5 +20,5 @@ abstract class TagsViewModel : KMMViewModel() {
 
     abstract fun annotateString(text: AnnotatedString): AnnotatedString
 
-    abstract val suggestedTags: MutableStateFlow<List<String>>
+    abstract val suggestedTags: StateFlow<List<String>>
 }

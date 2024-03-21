@@ -34,7 +34,7 @@ class DraftRecordViewModelReal(
         viewModelScope.coroutineScope.launch {
 
             println("###: clearRecord(); suggestions emit: emptyList()")
-            tagsViewModel.suggestedTags.emit(emptyList())
+            tagsViewModel.onTextChanged(TextFieldValue(""))
         }
     }
 

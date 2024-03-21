@@ -12,6 +12,7 @@ import model.Mention
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
@@ -21,9 +22,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
+
 class TagsViewModelRealTest {
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     @BeforeTest
@@ -38,6 +39,8 @@ class TagsViewModelRealTest {
 
         repository.addTag(HashTag("#1", lastUsed = now()))
         repository.addTag(HashTag("#2", lastUsed = now()))
+
+        delay(1000)
 
         tagViewModel.onTextChanged(TextFieldValue(text = "#"))
         checkNextValue(listOf("#1", "#2"), tagViewModel.suggestedTags)

@@ -15,6 +15,7 @@ import kotlinx.coroutines.test.runTest
 import data.utils.date
 import data.utils.dateTime
 import data.utils.plus
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import model.HashTag
 import model.Mention
@@ -135,6 +136,7 @@ class RepositoryTest {
             lastUsed = now() - 1.milliseconds
         )
         repository.addMention(mention1)
+        delay(1000)
         checkTags(listOf(mention1), repository.mentions)
 
         val mention2 = Mention(
@@ -142,10 +144,12 @@ class RepositoryTest {
             lastUsed = now()
         )
         repository.addMention(mention2)
+        delay(1000)
         checkTags(listOf(mention1, mention2), repository.mentions)
 
         val mention3 = mention1.copy(lastUsed = mention1.lastUsed + 1.milliseconds)
         repository.addMention(mention3)
+        delay(1000)
         checkTags(expected = listOf(mention3, mention2), flow = repository.mentions)
     }
 
@@ -153,6 +157,7 @@ class RepositoryTest {
     fun addTag() = runTest(timeout = 1.seconds) {
         val hashTag1 = HashTag(value = "tag 1", lastUsed = now() - 1.milliseconds)
         repository.addTag(hashTag1)
+        delay(1000)
 
         repository.tags.test {
             assertEquals(1, awaitItem().size)
@@ -160,6 +165,7 @@ class RepositoryTest {
 
         val hashTag2 = HashTag(value = "tag 2", lastUsed = now())
         repository.addTag(hashTag2)
+        delay(1000)
 
         repository.tags.test {
             val tags = awaitItem()
@@ -168,6 +174,7 @@ class RepositoryTest {
         }
 
         repository.addTag(hashTag1.copy(lastUsed = now() + 1.milliseconds))
+        delay(1000)
 
         repository.tags.test {
             val tags = awaitItem()

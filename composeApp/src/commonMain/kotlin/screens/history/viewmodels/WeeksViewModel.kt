@@ -12,7 +12,7 @@ class WeeksViewModel(repo: Repository) :
 
     override val records
         get() = repo.weeks
-            .combine(filter) { records: List<WeekRecord>, filter: Filter ->
+            .combine(filter) { records: List<WeekRecord>, filter: RecordsFilter ->
                 filteredRecords(
                     unfilteredRecords = records,
                     filter = filter,

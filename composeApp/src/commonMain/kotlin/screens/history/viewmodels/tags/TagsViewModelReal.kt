@@ -9,8 +9,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.rickclephas.kmm.viewmodel.coroutineScope
 import data.Repository
 import data.utils.now
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import model.HashTag
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import model.Mention
 
@@ -18,14 +23,22 @@ class TagsViewModelReal(
     val repo: Repository
 ) : TagsViewModel() {
 
+    val testscope = CoroutineScope(Dispatchers.Default)
+    private val filter = MutableStateFlow("")
+
     override fun onTextChanged(newText: TextFieldValue): TextFieldValue {
-        return newText.copy(
-            annotatedString = annotateString(newText.annotatedString),
-        ).also {
-            viewModelScope.coroutineScope.launch {
-                updateSuggestions(newText.text)
-            }
+        viewModelScope.coroutineScope.launch {
+            println("###: onTextChanged(); ${newText.text}")
+            filter.emit(newText.text)
         }
+        return newText.copy(
+            annotatedString = newText.annotatedString,
+        )
+//            .also {
+//            viewModelScope.coroutineScope.launch {
+//                updateSuggestions(newText.text)
+//            }
+//        }
     }
 
     override fun onHashClicked(current: TextFieldValue): TextFieldValue {
@@ -86,7 +99,8 @@ class TagsViewModelReal(
     ).also {
         viewModelScope.coroutineScope.launch {
             println("###: onSuggestionClicked(); suggestions emit: emptyList()")
-            suggestedTags.emit(emptyList())
+//            suggestedTags.emit(emptyList())
+            filter.emit("")
         }
     }
 
@@ -102,35 +116,68 @@ class TagsViewModelReal(
         }
     }
 
-    private suspend fun updateSuggestions(string: String) {
-        if (string.isBlank()) {
-            println("###: suggestions emit: emptyList()")
-            suggestedTags.emit(emptyList())
-            return
-        }
-        Regex(LAST_TAG_PATTERN).find(string)?.value?.let { found ->
-            (if (found.startsWith("@")) {
-                repo.mentions.value
-                    .map { it.value }
-                    .sortedBy { it.lastUsed }
-                    .map { it.value }
-            } else if (found.startsWith("#")) {
-                repo.tags.value
-                    .map { it.value }
-                    .sortedBy { it.lastUsed }
-                    .map { it.value }
+//    private suspend fun updateSuggestions(string: String) {
+//        println("###: updateSuggestions: \"$string\"")
+//        if (string.isBlank()) {
+//            println("###: suggestions emit: emptyList()")
+//            suggestedTags.emit(emptyList())
+//            return
+//        }
+//        Regex(LAST_TAG_PATTERN).find(string)?.value?.let { found ->
+//            (if (found.startsWith("@")) {
+//                repo.mentions.value
+//                    .map { it.value }
+//                    .sortedBy { it.lastUsed }
+//                    .map { it.value }
+//            } else if (found.startsWith("#")) {
+//                repo.tags.value
+//                    .map { it.value }
+//                    .sortedBy { it.lastUsed }
+//                    .map { it.value }
+//            } else {
+//                emptyList()
+//            }).filter {
+//                val res = kotlin.runCatching {
+//                    it.contains(found)
+//                }.getOrDefault(false)
+//                println("###: filter: \"$it\"; res = $res")
+//
+//                res
+//            }.let { suggestions ->
+//                println("###: suggestions emit:$suggestions")
+//                suggestedTags.emit(suggestions)
+//            }
+//        }
+//    }
+
+    override val suggestedTags = combine(
+        repo.tags,
+        repo.mentions,
+        filter
+    ) { tags, mentions, rawFilter: String ->
+        println("###: suggestedTags: tags = $tags")
+        println("###: suggestedTags: mentions = $mentions")
+        println("###: suggestedTags: rawFilter = \"$rawFilter\"")
+        Regex(LAST_TAG_PATTERN).find(rawFilter)?.value?.let { filter ->
+            (if (filter.startsWith("@")) {
+                mentions.values.sortedBy { it.lastUsed }.map { it.value }
+            } else if (filter.startsWith("#")) {
+                tags.values.sortedBy { it.lastUsed }.map { it.value }
             } else {
                 emptyList()
             }).filter {
-                kotlin.runCatching { it.contains(found) }.getOrDefault(false)
-            }.let { suggestions ->
-                println("###: suggestions emit:$suggestions")
-                suggestedTags.emit(suggestions)
+                val res = kotlin.runCatching {
+                    it.contains(filter)
+                }.getOrDefault(false)
+                println("###: filter: \"$it\"; res = $res")
+                res
             }
-        }
-    }
-
-    override val suggestedTags = MutableStateFlow<List<String>>(emptyList())
+        } ?: emptyList()
+    }.stateIn(
+        scope = testscope,
+        started = SharingStarted.Eagerly,
+        initialValue = emptyList()
+    )
 
     companion object {
         internal const val TAG_PATTERN = "(?<!\\w)[@#][\\w\']*"
