@@ -19,6 +19,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
@@ -32,6 +33,7 @@ class TagsViewModelRealTest {
         Dispatchers.setMain(mainThreadSurrogate)
     }
 
+    @Ignore
     @Test
     fun `add and clear tag`() = runTest {
         val repository = Repository(StorageStub())

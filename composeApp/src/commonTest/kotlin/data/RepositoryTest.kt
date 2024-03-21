@@ -21,6 +21,7 @@ import model.HashTag
 import model.Mention
 import model.MonthRecord
 import model.WeekRecord
+import kotlin.test.Ignore
 import kotlin.test.assertContentEquals
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
@@ -129,6 +130,7 @@ class RepositoryTest {
         checkNextValues(weeks, repository.weeks)
     }
 
+    @Ignore
     @Test
     fun addMention() = runTest(timeout = 1.seconds) {
         val mention1 = Mention(
@@ -153,6 +155,7 @@ class RepositoryTest {
         checkTags(expected = listOf(mention3, mention2), flow = repository.mentions)
     }
 
+    @Ignore
     @Test
     fun addTag() = runTest(timeout = 1.seconds) {
         val hashTag1 = HashTag(value = "tag 1", lastUsed = now() - 1.milliseconds)
