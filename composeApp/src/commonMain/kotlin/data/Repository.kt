@@ -8,8 +8,11 @@ import data.utils.endOfMonth
 import data.utils.now
 import data.utils.startOfIsoWeek
 import data.utils.startOfMonth
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.datetime.LocalDateTime
 import model.DayRecord
 import model.Mention
@@ -24,9 +28,13 @@ import model.MonthRecord
 import model.MoodRecord
 import model.WeekRecord
 
-class Repository(val storage: Storage) {
-    private val ramScope = CoroutineScope(Dispatchers.IO)
+@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+class Repository(
+    val storage: Storage,
+    dispatcher: CoroutineDispatcher = newSingleThreadContext("ramScope")
+) {
     private val storageScope = CoroutineScope(Dispatchers.IO)
+    private val ramScope = CoroutineScope(dispatcher)
 
     val records = MutableStateFlow<List<MoodRecord>>(emptyList())
     val tags = MutableStateFlow<MutableMap<String, HashTag>>(mutableMapOf())
@@ -66,7 +74,7 @@ class Repository(val storage: Storage) {
 
     init {
         println("### ${Repository::class.simpleName}; init()")
-        storageScope.launch {
+        storageScope.launch(Dispatchers.Unconfined) {
             val testRecords: List<MoodRecord> = if (GENERATE_TEST_RECORDS) {
                 generateSequence { MoodRecord.random() }.take(1000).toList()
             } else {
@@ -76,7 +84,7 @@ class Repository(val storage: Storage) {
                 records.emit(it)
             }
         }
-        storageScope.launch {
+        storageScope.launch(Dispatchers.Unconfined) {
             storage.tags().let { storageTags ->
                 mutableMapOf<String, HashTag>().let { map ->
                     storageTags.forEach { map[it.value] = it }
@@ -84,7 +92,7 @@ class Repository(val storage: Storage) {
                 }
             }
         }
-        storageScope.launch {
+        storageScope.launch(Dispatchers.Unconfined) {
             storage.mentions().let { storageMentions ->
                 mutableMapOf<String, Mention>().let { map ->
                     storageMentions.forEach { map[it.value] = it }
@@ -127,7 +135,6 @@ class Repository(val storage: Storage) {
     fun addTag(tag: HashTag) {
         ramScope.launch {
             tags.value[tag.value] = tag
-            println("###: addTag(): tag = \"$tag\"; emit: \"${tags.value}\", subscriptionCount = ${tags.subscriptionCount.value}")
             tags.emit(tags.value)
         }
         storageScope.launch {

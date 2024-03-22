@@ -23,7 +23,7 @@ class TagsViewModelReal(
     val repo: Repository
 ) : TagsViewModel() {
 
-    val testscope = CoroutineScope(Dispatchers.Default)
+    private val testscope = CoroutineScope(Dispatchers.Default)
     private val filter = MutableStateFlow("")
 
     override fun onTextChanged(newText: TextFieldValue): TextFieldValue {

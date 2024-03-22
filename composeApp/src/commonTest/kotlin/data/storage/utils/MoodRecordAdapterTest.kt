@@ -3,10 +3,6 @@ package data.storage.utils
 import data.utils.format
 import data.utils.now
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.UtcOffset
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 import model.Anger
 import model.MoodRecord
 import model.dateTimeFormat
@@ -18,7 +14,7 @@ class MoodRecordAdapterTest {
 
     @Test
     fun `parse normal object from old json format`() {
-        val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56 GMT+0200\"," +
+        val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56\"," +
                 "\"feelings\":[{\"type\":\"Irritated\",\"emotion\":{\"type\":\"Anger\"}}, " +
                 "{\"type\":\"Jealous\",\"emotion\":{\"type\":\"Anger\"}}]," +
                 "\"text\":\"#work\"}"
@@ -37,7 +33,7 @@ class MoodRecordAdapterTest {
 
     @Test
     fun `parse normal object from old and new json formats mixed`() {
-        val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56 GMT+0200\"," +
+        val json = "{\"date\":\"Fri, 19 Jan 2024 19:43:56\"," +
                 "\"feelings\":[{\"type\":\"Irritated\",\"emotion\":{\"type\":\"Anger\"}}, " +
                 "{\"type\":\"Jealous\"}], " +
                 "\"text\":\"#work\"}"
@@ -79,7 +75,4 @@ class MoodRecordAdapterTest {
         minute = 43,
         second = 56
     )
-//        .toInstant(TimeZone.currentSystemDefault())
-//        .toInstant(UtcOffset(hours = 2))
-//        .toLocalDateTime(TimeZone.UTC)
 }

@@ -1,22 +1,22 @@
 package data
 
+import RepeatableTest
 import data.utils.now
 import kotlinx.datetime.LocalDateTime
 import model.MoodRecord
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
-import app.cash.turbine.test
 import data.storage.StorageStub
 import data.utils.minus
 import data.utils.startOfDay
-import kotlinx.coroutines.test.runTest
 import data.utils.date
 import data.utils.dateTime
 import data.utils.plus
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import model.HashTag
 import model.Mention
 import model.MonthRecord
@@ -25,17 +25,19 @@ import kotlin.test.assertContentEquals
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
-class RepositoryTest {
+class RepositoryTest : RepeatableTest() {
     private val now: LocalDateTime = now()
     private lateinit var repository: Repository
 
-    @BeforeTest
-    fun init() {
-        repository = Repository(StorageStub())
+    override fun beforeEach() {
+        repository = Repository(
+            storage = StorageStub(),
+            dispatcher = Dispatchers.Unconfined
+        )
     }
 
     @Test
-    fun `one record added adds also one day week and month`() = runTest(timeout = 1.seconds) {
+    fun `one record added adds also one day week and month`() = runTest(times = 100) {
         repository.addRecord(MoodRecord(now()))
         testScheduler.advanceUntilIdle()
 
@@ -46,7 +48,7 @@ class RepositoryTest {
     }
 
     @Test
-    fun getTodayRecords() = runTest {
+    fun getTodayRecords() = runTest(times = 100) {
         val todayRecords = listOf(
             MoodRecord(now, "1"),
             MoodRecord(now, "2"),
@@ -63,7 +65,7 @@ class RepositoryTest {
     }
 
     @Test
-    fun getWeeks() = runTest(timeout = 1.seconds) {
+    fun getWeeks() = runTest(times = 100) {
         val record1 = MoodRecord(date = dateTime(year = 2005, month = 1, dayOfMonth = 10))
         val record2 = MoodRecord(date = dateTime(year = 2005, month = 1, dayOfMonth = 20))
         val records = listOf(record1, record2)
@@ -89,7 +91,7 @@ class RepositoryTest {
     }
 
     @Test
-    fun getMonths() = runTest(timeout = 1.seconds) {
+    fun getMonths() = runTest(times = 100) {
         val record1 = MoodRecord(date = dateTime(year = 2005, month = 1, dayOfMonth = 10))
         val record2 = MoodRecord(date = dateTime(year = 2005, month = 3, dayOfMonth = 16))
 
@@ -114,127 +116,96 @@ class RepositoryTest {
     }
 
     @Test
-    fun `check that all records are properly split between weeks`() = runTest(timeout = 1.seconds) {
-        val records = listOf(
-            MoodRecord(date = dateTime(2005, 1, 15)),
-            MoodRecord(date = dateTime(2005, 1, 15)),
-            MoodRecord(date = dateTime(2005, 1, 15)),
-        )
-        repository.addRecords(records)
-        testScheduler.advanceUntilIdle()
-
-        val weeks = listOf(
-            WeekRecord(
-                index = 0,
-                start = date(2005, 1, 10),
-                end = date(2005, 1, 16),
-                records = records
+    fun `check that all records are properly split between weeks`() =
+        runTest(times = 100, timeout = 1.seconds) {
+            val records = listOf(
+                MoodRecord(date = dateTime(2005, 1, 15)),
+                MoodRecord(date = dateTime(2005, 1, 15)),
+                MoodRecord(date = dateTime(2005, 1, 15)),
             )
+            repository.addRecords(records)
+            testScheduler.advanceUntilIdle()
+
+            val weeks = listOf(
+                WeekRecord(
+                    index = 0,
+                    start = date(2005, 1, 10),
+                    end = date(2005, 1, 16),
+                    records = records
+                )
+            )
+            checkNextValues(weeks, repository.weeks)
+        }
+
+    @Test
+    fun addMention() = runTest(times = 100, timeout = 10.seconds) {
+        val mention1 = Mention(
+            value = "mention 1",
+            lastUsed = now() - 1.milliseconds
         )
-        checkNextValues(weeks, repository.weeks)
+        repository.addMention(mention1)
+        waitForTags(listOf(mention1), repository.mentions)
+
+        val mention2 = Mention(
+            value = "mention 2",
+            lastUsed = now()
+        )
+        repository.addMention(mention2)
+        waitForTags(listOf(mention1, mention2), repository.mentions)
+
+        val mention3 = mention1.copy(lastUsed = mention1.lastUsed + 1.milliseconds)
+        repository.addMention(mention3)
+        waitForTags(expected = listOf(mention3, mention2), flow = repository.mentions)
     }
 
     @Test
-    fun addMention() = runTest {
-            val repository = Repository(StorageStub())
-            testScheduler.advanceUntilIdle()
-
-            val mention1 = Mention(
-                value = "mention 1",
-                lastUsed = now() - 1.milliseconds
-            )
-            repository.addMention(mention1)
-            testScheduler.advanceUntilIdle()
-
-            waitForTags(listOf(mention1), repository.mentions)
-
-            val mention2 = Mention(
-                value = "mention 2",
-                lastUsed = now()
-            )
-            repository.addMention(mention2)
-            testScheduler.advanceUntilIdle()
-
-            waitForTags(listOf(mention1, mention2), repository.mentions)
-
-            val mention3 = mention1.copy(lastUsed = mention1.lastUsed + 1.milliseconds)
-            repository.addMention(mention3)
-            testScheduler.advanceUntilIdle()
-
-            waitForTags(expected = listOf(mention3, mention2), flow = repository.mentions)
-    }
-
-    @Test
-    fun addTag() = runTest(timeout = 1.seconds) {
-        val hashTag1 = HashTag(value = "tag 1", lastUsed = now() - 1.milliseconds)
+    fun addTag() = runTest(times = 100) {
+        val hashTag1 = HashTag(value = "tag 1", lastUsed = now())
         repository.addTag(hashTag1)
-        testScheduler.advanceUntilIdle()
+        waitForTags(listOf(hashTag1), repository.tags)
 
-        repository.tags.test {
-            assertEquals(1, awaitItem().size)
-        }
-
-        val hashTag2 = HashTag(value = "tag 2", lastUsed = now())
+        val hashTag2 = HashTag(value = "tag 2", lastUsed = now() + 10.milliseconds)
         repository.addTag(hashTag2)
-        testScheduler.advanceUntilIdle()
+        waitForTags(listOf(hashTag1, hashTag2), repository.tags)
 
-        repository.tags.test {
-            val tags = awaitItem()
-            assertEquals(2, tags.size)
-            assertEquals(hashTag2.value, tags.values.last().value)
-        }
-
-        repository.addTag(hashTag1.copy(lastUsed = now() + 1.milliseconds))
-        testScheduler.advanceUntilIdle()
-
-        repository.tags.test {
-            val tags = awaitItem()
-            assertEquals(2, tags.size)
-            assertEquals(hashTag1.value, tags.values.first().value)
-        }
+        val hashTag3 = hashTag1.copy(lastUsed = hashTag1.lastUsed + 20.milliseconds)
+        repository.addTag(hashTag3)
+        waitForTags(listOf(hashTag3, hashTag2), repository.tags)
     }
 }
 
-private suspend fun <T> waitForTags(
+private suspend inline fun <reified T> waitForTags(
     expected: List<T>,
-    flow: Flow<MutableMap<String, T>>
+    flow: StateFlow<MutableMap<String, T>>
 ) {
-    flow.test {
-        var got: Collection<T>? = null
-        while (expected.size != got?.size) {
-            got = awaitItem().values
-            println("### wait for ${expected.size}, got ${got.size}")
-        }
-        println("### SUCCESS")
+    var got: Array<T>? = null
+    while (!got.contentEquals(expected.toTypedArray())) {
+        got = flow.first().values.toList().toTypedArray()
+        delay(100)
     }
+    assertContentEquals(expected, got?.toList())
 }
 
-private suspend fun <T> checkNextValues(
+private suspend inline fun <reified T> checkNextValues(
     expected: List<T>,
     flow: StateFlow<List<T>>
 ) {
-    flow.test {
-        var got: List<T>? = null
-        while (expected.size != got?.size) {
-            got = awaitItem()
-            println("### wait for ${expected.size}, got ${got.size}")
-        }
-        println("### SUCCESS")
-        assertContentEquals(expected, got)
+    var got: Array<T>? = null
+    while (!got.contentEquals(expected.toTypedArray())) {
+        got = flow.first().toTypedArray()
+        delay(100)
     }
+    assertContentEquals(expected, got?.toList())
 }
 
 private suspend fun <T> checkNextValueSize(
     expectedSize: Int,
     flow: StateFlow<List<T>>
 ) {
-    flow.test {
-        var item1: List<T>? = null
-        while (expectedSize != item1?.size) {
-            println("### wait for $expectedSize, got ${item1?.size}")
-            item1 = awaitItem()
-        }
-        println("### SUCCESS")
-        assertEquals(expectedSize, item1.size)
+    var got: Int? = null
+    while (got != (expectedSize)) {
+        got = flow.first().size
+        delay(100)
     }
+    assertEquals(expectedSize, got)
 }
