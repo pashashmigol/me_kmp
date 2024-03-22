@@ -1,6 +1,6 @@
 package data.storage.utils
 
-import data.storage.DATE_TIME_FORMAT
+import data.utils.DATE_TIME_FORMAT
 import data.utils.format
 import data.utils.toLocalDateTime
 import kotlinx.datetime.LocalDateTime
@@ -59,8 +59,13 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): LocalDateTime =
-        decoder.decodeString().toLocalDateTime(DATE_TIME_FORMAT)
+    override fun deserialize(decoder: Decoder): LocalDateTime {
+        val str = decoder.decodeString()
+        println("### toLocalDateTime str = $str")
+        val res = str.toLocalDateTime()
+        println("### toLocalDateTime res = $res")
+        return res
+    }
 
     override fun serialize(encoder: Encoder, value: LocalDateTime) {
         encoder.encodeString(value.format(DATE_TIME_FORMAT))
@@ -105,8 +110,7 @@ object FeelingSerializer : KSerializer<Feeling> {
         var feeling: Feeling? = null
         decoder.decodeStructure(descriptor) {
             loop@ while (true) {
-                val index = decodeElementIndex(descriptor)
-                when (index) {
+                when (val index = decodeElementIndex(descriptor)) {
                     DECODE_DONE -> break@loop
                     0 -> {
                         val type = decodeStringElement(

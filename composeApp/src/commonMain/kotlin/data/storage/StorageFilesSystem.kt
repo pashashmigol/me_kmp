@@ -4,6 +4,7 @@ import data.storage.utils.fromJson
 import data.storage.utils.hashTagsToJson
 import data.storage.utils.mentionsToJson
 import data.storage.utils.toJson
+import data.utils.DATE_TIME_FORMAT
 import data.utils.format
 import model.HashTag
 import kotlinx.coroutines.CoroutineScope
@@ -133,6 +134,3 @@ class StorageFilesSystem : Storage {
 }
 
 expect fun filesFolder(): String
-
-const val DATE_TIME_FORMAT = "EEE, dd MMM yyyy HH:mm:ss 'GMT'Z"
-const val DATE_FORMAT = "EEE, dd MMM yyyy"

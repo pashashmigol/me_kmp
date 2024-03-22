@@ -4,6 +4,7 @@ import data.utils.format
 import data.utils.now
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import model.Anger
@@ -21,17 +22,6 @@ class MoodRecordAdapterTest {
                 "\"feelings\":[{\"type\":\"Irritated\",\"emotion\":{\"type\":\"Anger\"}}, " +
                 "{\"type\":\"Jealous\",\"emotion\":{\"type\":\"Anger\"}}]," +
                 "\"text\":\"#work\"}"
-
-        val expectedDate = LocalDateTime(
-            year = 2024,
-            monthNumber = 1,
-            dayOfMonth = 19,
-            hour = 19,
-            minute = 43,
-            second = 56
-        )
-            .toInstant(TimeZone.currentSystemDefault())
-            .toLocalDateTime(TimeZone.currentSystemDefault())
 
         println(json)
         val moodRecord = MoodRecord.fromJson(json)
@@ -51,17 +41,6 @@ class MoodRecordAdapterTest {
                 "\"feelings\":[{\"type\":\"Irritated\",\"emotion\":{\"type\":\"Anger\"}}, " +
                 "{\"type\":\"Jealous\"}], " +
                 "\"text\":\"#work\"}"
-
-        val expectedDate = LocalDateTime(
-            year = 2024,
-            monthNumber = 1,
-            dayOfMonth = 19,
-            hour = 19,
-            minute = 43,
-            second = 56
-        )
-            .toInstant(TimeZone.currentSystemDefault())
-            .toLocalDateTime(TimeZone.currentSystemDefault())
 
         val moodRecord = MoodRecord.fromJson(json)
 
@@ -91,4 +70,16 @@ class MoodRecordAdapterTest {
             moodRecordParsed.date.format(dateTimeFormat)
         )
     }
+
+    private val expectedDate = LocalDateTime(
+        year = 2024,
+        monthNumber = 1,
+        dayOfMonth = 19,
+        hour = 19,
+        minute = 43,
+        second = 56
+    )
+//        .toInstant(TimeZone.currentSystemDefault())
+//        .toInstant(UtcOffset(hours = 2))
+//        .toLocalDateTime(TimeZone.UTC)
 }

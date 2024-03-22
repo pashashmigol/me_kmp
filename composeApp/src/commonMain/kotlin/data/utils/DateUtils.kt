@@ -13,6 +13,10 @@ import kotlin.random.Random.Default.nextInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
+const val DATE_TIME_FORMAT_OLD = "EEE, dd MMM yyyy HH:mm:ss 'GMT'Z"
+const val DATE_TIME_FORMAT = "EEE, dd MMM yyyy HH:mm:ss"
+const val DATE_FORMAT = "EEE, dd MMM yyyy"
+
 fun randomDate(): LocalDateTime = LocalDateTime(
     year = nextInt(2010, 2024),
     monthNumber = nextInt(1, 13),
@@ -26,7 +30,7 @@ expect fun LocalDateTime.format(dateTimeFormat: String): String
 
 expect fun LocalDate.format(dateFormat: String): String
 
-expect fun String.toLocalDateTime(dateTimeFormat: String): LocalDateTime
+expect fun String.toLocalDateTime(): LocalDateTime
 
 val LocalDateTime.startOfMonth: LocalDateTime
     get() = LocalDateTime(
@@ -65,14 +69,14 @@ val LocalDate.endOfIsoWeek: LocalDate
     }
 
 operator fun LocalDateTime.minus(delta: Duration): LocalDateTime =
-    toInstant(TimeZone.currentSystemDefault())
+    toInstant(TimeZone.UTC)
         .minus(delta)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .toLocalDateTime(TimeZone.UTC)
 
 operator fun LocalDateTime.plus(delta: Duration): LocalDateTime =
-    toInstant(TimeZone.currentSystemDefault())
+    toInstant(TimeZone.UTC)
         .plus(delta)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .toLocalDateTime(TimeZone.UTC)
 
 val LocalDateTime.startOfDay: LocalDateTime
     get() = LocalDateTime(
@@ -83,8 +87,8 @@ val LocalDateTime.startOfDay: LocalDateTime
         minute = 0
     )
 
-fun now(): LocalDateTime = now().toLocalDateTime(TimeZone.UTC)
-fun today(): LocalDate = now().toLocalDateTime(TimeZone.UTC).date
+fun now(): LocalDateTime = now().toLocalDateTime(TimeZone.currentSystemDefault())
+fun today(): LocalDate = now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
 fun dateTime(year: Int, month: Int, dayOfMonth: Int) = LocalDateTime(
     year = year,
