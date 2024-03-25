@@ -55,8 +55,7 @@ fun <T : HistoryRecord> HistoryScreen(
         verticalArrangement = Arrangement.Bottom,
         reverseLayout = true
     ) {
-
-        item(key = "0") {
+        item(key = "00") {
             Spacer(modifier = Modifier.height(150.dp))
         }
         item(key = "01") {
@@ -72,7 +71,7 @@ fun <T : HistoryRecord> HistoryScreen(
         }
         items(
             count = suggestions.value.size,
-            key = { it }
+            key = { "suggestion_$it" }
         ) { index ->
             val reversedIndex = suggestions.value.lastIndex - index
             TextButton(
@@ -102,7 +101,7 @@ fun <T : HistoryRecord> HistoryScreen(
 
         items(
             count = records.value.size,
-            key = { it }
+            key = { "record_$it" }
         ) { index ->
             val reversedIndex = records.value.lastIndex - index
             Box(
