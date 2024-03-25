@@ -1,7 +1,6 @@
 package screens.history.viewmodels
 
 import RepeatableTest
-import app.cash.turbine.test
 import data.Repository
 import data.storage.StorageStub
 import data.utils.now
@@ -11,8 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.setMain
+import waitForListWithSize
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 class OneWeekRecordsViewModelTest : RepeatableTest() {
@@ -27,14 +26,9 @@ class OneWeekRecordsViewModelTest : RepeatableTest() {
 
     @Test
     fun `on item is added on the screen`() = runTest {
-        val repository = Repository(StorageStub())
-        val viewModel = OneWeekRecordsViewModel(repository, 0)
+        val viewModel = OneWeekRecordsViewModel(repository!!, 0)
+        repository!!.addRecord(MoodRecord(date = now()))
 
-        repository.addRecord(MoodRecord(date = now()))
-
-        viewModel.records.test {
-            skipItems(1)
-            assertEquals(1, awaitItem().size)
-        }
+        waitForListWithSize(1, viewModel.records)
     }
 }

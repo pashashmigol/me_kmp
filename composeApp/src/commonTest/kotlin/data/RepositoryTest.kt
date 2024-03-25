@@ -1,11 +1,11 @@
 package data
 
 import RepeatableTest
+import waitForList
 import data.utils.now
 import kotlinx.datetime.LocalDateTime
 import model.MoodRecord
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 import data.storage.StorageStub
 import data.utils.minus
@@ -14,14 +14,12 @@ import data.utils.date
 import data.utils.dateTime
 import data.utils.plus
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import model.HashTag
 import model.Mention
 import model.MonthRecord
 import model.WeekRecord
-import kotlin.test.assertContentEquals
+import waitForListWithSize
+import waitForTags
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -41,10 +39,10 @@ class RepositoryTest : RepeatableTest() {
         repository.addRecord(MoodRecord(now()))
         testScheduler.advanceUntilIdle()
 
-        checkNextValueSize(1, repository.todayRecords)
-        checkNextValueSize(1, repository.days)
-        checkNextValueSize(1, repository.weeks)
-        checkNextValueSize(1, repository.months)
+        waitForListWithSize(1, repository.todayRecords)
+        waitForListWithSize(1, repository.days)
+        waitForListWithSize(1, repository.weeks)
+        waitForListWithSize(1, repository.months)
     }
 
     @Test
@@ -60,8 +58,8 @@ class RepositoryTest : RepeatableTest() {
         repository.addRecords(todayRecords + yesterdaysRecords)
         testScheduler.advanceUntilIdle()
 
-        checkNextValues(todayRecords + yesterdaysRecords, repository.records)
-        checkNextValues(todayRecords, repository.todayRecords)
+        waitForList(todayRecords + yesterdaysRecords, repository.records)
+        waitForList(todayRecords, repository.todayRecords)
     }
 
     @Test
@@ -87,7 +85,7 @@ class RepositoryTest : RepeatableTest() {
         repository.addRecords(records)
         testScheduler.advanceUntilIdle()
 
-        checkNextValues(weeks, repository.weeks)
+        waitForList(weeks, repository.weeks)
     }
 
     @Test
@@ -112,7 +110,7 @@ class RepositoryTest : RepeatableTest() {
                 records = listOf(record2)
             )
         )
-        checkNextValues(months, repository.months)
+        waitForList(months, repository.months)
     }
 
     @Test
@@ -134,7 +132,7 @@ class RepositoryTest : RepeatableTest() {
                     records = records
                 )
             )
-            checkNextValues(weeks, repository.weeks)
+            waitForList(weeks, repository.weeks)
         }
 
     @Test
@@ -172,40 +170,4 @@ class RepositoryTest : RepeatableTest() {
         repository.addTag(hashTag3)
         waitForTags(listOf(hashTag3, hashTag2), repository.tags)
     }
-}
-
-private suspend inline fun <reified T> waitForTags(
-    expected: List<T>,
-    flow: StateFlow<MutableMap<String, T>>
-) {
-    var got: Array<T>? = null
-    while (!got.contentEquals(expected.toTypedArray())) {
-        got = flow.first().values.toList().toTypedArray()
-        delay(100)
-    }
-    assertContentEquals(expected, got?.toList())
-}
-
-private suspend inline fun <reified T> checkNextValues(
-    expected: List<T>,
-    flow: StateFlow<List<T>>
-) {
-    var got: Array<T>? = null
-    while (!got.contentEquals(expected.toTypedArray())) {
-        got = flow.first().toTypedArray()
-        delay(100)
-    }
-    assertContentEquals(expected, got?.toList())
-}
-
-private suspend fun <T> checkNextValueSize(
-    expectedSize: Int,
-    flow: StateFlow<List<T>>
-) {
-    var got: Int? = null
-    while (got != (expectedSize)) {
-        got = flow.first().size
-        delay(100)
-    }
-    assertEquals(expectedSize, got)
 }

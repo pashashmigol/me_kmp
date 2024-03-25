@@ -4,7 +4,6 @@ package screens.history.viewmodels.tags
 
 import RepeatableTest
 import androidx.compose.ui.text.input.TextFieldValue
-import app.cash.turbine.test
 import data.Repository
 import data.storage.StorageStub
 import data.utils.now
@@ -14,13 +13,12 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.setMain
+import waitForList
 import kotlin.test.Ignore
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 
 class TagsViewModelRealTest : RepeatableTest() {
     init {
@@ -44,13 +42,13 @@ class TagsViewModelRealTest : RepeatableTest() {
         delay(1000)
 
         tagViewModel.onTextChanged(TextFieldValue(text = "#"))
-        checkNextValue(listOf("#1", "#2"), tagViewModel.suggestedTags)
+        waitForList(listOf("#1", "#2"), tagViewModel.suggestedTags)
 
         tagViewModel.onTextChanged(TextFieldValue(text = "#1"))
-        checkNextValue(listOf("#1"), tagViewModel.suggestedTags)
+        waitForList(listOf("#1"), tagViewModel.suggestedTags)
 
         tagViewModel.onTextChanged(TextFieldValue(text = ""))
-        checkNextValue(emptyList(), tagViewModel.suggestedTags)
+        waitForList(emptyList(), tagViewModel.suggestedTags)
     }
 
     @Ignore
@@ -63,23 +61,12 @@ class TagsViewModelRealTest : RepeatableTest() {
         repository.addMention(Mention("@2", lastUsed = now()))
 
         tagViewModel.onTextChanged(TextFieldValue(text = "@"))
-        checkNextValue(listOf("@1", "@2"), tagViewModel.suggestedTags)
+        waitForList(listOf("@1", "@2"), tagViewModel.suggestedTags)
 
         tagViewModel.onTextChanged(TextFieldValue(text = "@1"))
-        checkNextValue(listOf("@1"), tagViewModel.suggestedTags)
+        waitForList(listOf("@1"), tagViewModel.suggestedTags)
 
         tagViewModel.onTextChanged(TextFieldValue(text = ""))
-        checkNextValue(emptyList(), tagViewModel.suggestedTags)
-    }
-
-    private suspend fun checkNextValue(expected: List<String>, flow: StateFlow<List<String>>) {
-        flow.test {
-            var item1: List<String>? = null
-            while (item1?.size != expected.size) {
-                item1 = awaitItem()
-                println("### wait for $expected, got $item1")
-            }
-            assertContentEquals(expected, item1)
-        }
+        waitForList(emptyList(), tagViewModel.suggestedTags)
     }
 }
