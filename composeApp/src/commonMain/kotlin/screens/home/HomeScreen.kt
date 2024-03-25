@@ -122,7 +122,7 @@ fun HomeScreen(
             }
         }
         Text(
-            text = "v${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})",
+            text = "v${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})-muliplatform",
             color = Color.White,
             fontSize = 8.sp,
         )
