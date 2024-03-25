@@ -10,7 +10,7 @@ abstract class RepeatableTest {
     abstract fun beforeEach()
 
     fun runTest(
-        times: Int = 10,
+        times: Int = 100,
         context: CoroutineContext = EmptyCoroutineContext,
         timeout: Duration = 10.seconds,
         testBody: suspend TestScope.() -> Unit

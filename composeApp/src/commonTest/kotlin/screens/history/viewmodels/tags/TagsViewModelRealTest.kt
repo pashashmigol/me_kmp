@@ -2,6 +2,7 @@
 
 package screens.history.viewmodels.tags
 
+import RepeatableTest
 import androidx.compose.ui.text.input.TextFieldValue
 import app.cash.turbine.test
 import data.Repository
@@ -16,21 +17,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
+class TagsViewModelRealTest : RepeatableTest() {
+    init {
+        newSingleThreadContext("UI thread").let { Dispatchers.setMain(it) }
+    }
 
-class TagsViewModelRealTest {
-    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
-
-    @BeforeTest
-    fun setUp() {
-        Dispatchers.setMain(mainThreadSurrogate)
+    private var repository: Repository? = null
+    override fun beforeEach() {
+        repository = Repository(StorageStub(), dispatcher = Dispatchers.Unconfined)
     }
 
     @Ignore

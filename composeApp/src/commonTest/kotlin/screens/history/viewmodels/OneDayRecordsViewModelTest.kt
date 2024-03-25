@@ -23,7 +23,6 @@ class OneDayRecordsViewModelTest : RepeatableTest() {
     }
 
     private var repository: Repository? = null
-
     override fun beforeEach() {
         repository = Repository(StorageStub(), dispatcher = Dispatchers.Unconfined)
     }
