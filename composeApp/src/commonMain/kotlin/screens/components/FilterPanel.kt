@@ -73,6 +73,9 @@ fun <T : HistoryRecord> FilterPanel(
                         .testTag("text input"),
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.White,
+                        cursorColor = Color.White,
+                        unfocusedIndicatorColor = Color.White,
+                        focusedIndicatorColor = Color.White,
                     ),
                     onValueChange = { newText: TextFieldValue ->
                         historyViewModel.onTextChanged(newText)
