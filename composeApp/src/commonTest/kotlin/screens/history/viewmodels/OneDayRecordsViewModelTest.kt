@@ -1,5 +1,6 @@
 package screens.history.viewmodels
 
+import RepeatableTest
 import app.cash.turbine.test
 import data.Repository
 import data.storage.StorageStub
@@ -9,23 +10,26 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
-class OneDayRecordsViewModelTest {
-    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
+class OneDayRecordsViewModelTest : RepeatableTest() {
+    init {
+        newSingleThreadContext("UI thread").let {
+            Dispatchers.setMain(it)
+        }
+    }
 
-    @BeforeTest
-    fun setUp() {
-        Dispatchers.setMain(mainThreadSurrogate)
+    private var repository: Repository? = null
+
+    override fun beforeEach() {
+        repository = Repository(StorageStub(), dispatcher = Dispatchers.Unconfined)
     }
 
     @Test
-    fun `on item is added on the screen`() = runTest {
+    fun `on item is added on the screen`() = runTest(times = 100) {
         val repository = Repository(StorageStub())
 
         val viewModel = OneDayRecordsViewModel(repository, 0)
@@ -38,3 +42,4 @@ class OneDayRecordsViewModelTest {
         }
     }
 }
+
