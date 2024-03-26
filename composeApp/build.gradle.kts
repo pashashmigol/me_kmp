@@ -129,6 +129,11 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+            all { test ->
+                if(project.hasProperty("skipUI")) {
+                    test.exclude("**/screens/**")
+                }
+            }
         }
     }
     packaging {
