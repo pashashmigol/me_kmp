@@ -15,7 +15,11 @@ fun generateMonths(records: List<MoodRecord>): List<MonthRecord> = records
         acc
     }
     .entries
-    .foldIndexed<MutableMap.MutableEntry<LocalDateTime, MutableList<MoodRecord>>, MutableList<MonthRecord>>(initial = mutableListOf()) { index, acc, monthsRecords ->
+    .sortedBy { it.key }
+    .foldIndexed(
+        initial = mutableListOf()
+    )
+    { index, acc, monthsRecords ->
         MonthRecord(
             index = index,
             start = monthsRecords.key.date,
@@ -24,4 +28,4 @@ fun generateMonths(records: List<MoodRecord>): List<MonthRecord> = records
 
         ).let { acc.add(it) }
         acc
-    }.sortedBy { it.start }
+    }

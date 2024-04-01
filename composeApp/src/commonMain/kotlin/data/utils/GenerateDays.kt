@@ -15,7 +15,9 @@ fun generateDays(records: List<MoodRecord>): List<DayRecord> = records
         }
         acc[startOfDay]!! += moodRecord
         acc
-    }.entries.foldIndexed<MutableMap.MutableEntry<LocalDateTime, MutableList<MoodRecord>>, MutableList<DayRecord>>(
+    }.entries
+    .sortedBy { it.key }
+    .foldIndexed<MutableMap.MutableEntry<LocalDateTime, MutableList<MoodRecord>>, MutableList<DayRecord>>(
         initial = mutableListOf()
     ) { index, acc, dayRecords ->
         DayRecord(
@@ -24,4 +26,4 @@ fun generateDays(records: List<MoodRecord>): List<DayRecord> = records
             records = dayRecords.value.toList()
         ).let { acc.add(it) }
         acc
-    }.sortedBy { it.start }
+    }

@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.flow.onEach
 import model.CompositeRecord
 import kotlinx.coroutines.flow.update
 import model.HistoryRecord
@@ -51,10 +50,7 @@ fun <T : HistoryRecord> HistoryScreen(
         .collectAsState(emptyList(), context)
 
     val records: State<List<HistoryRecord>> = historyViewModel.records
-        .onEach { println("### HistoryScreen.onEach: $it") }
         .collectAsState(emptyList(), context)
-
-    println("### HistoryScreen: records.size = ${records.value.size}")
 
     LazyColumn(
         modifier = Modifier

@@ -14,7 +14,8 @@ fun generateWeeks(records: List<MoodRecord>): List<WeekRecord> = records
         acc[weekStart]!! += moodRecord
         acc
     }.entries
-    .foldIndexed<MutableMap.MutableEntry<LocalDateTime, MutableList<MoodRecord>>, MutableList<WeekRecord>>(initial = mutableListOf()) { index, acc, weekRecords ->
+    .sortedBy { it.key }
+    .foldIndexed(initial = mutableListOf()) { index, acc, weekRecords ->
         WeekRecord(
             index = index,
             start = weekRecords.key.date,
@@ -22,4 +23,4 @@ fun generateWeeks(records: List<MoodRecord>): List<WeekRecord> = records
             records = weekRecords.value.toList()
         ).let { acc.add(it) }
         acc
-    }.sortedBy { it.start }
+    }

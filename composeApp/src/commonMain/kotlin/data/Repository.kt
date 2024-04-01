@@ -74,7 +74,7 @@ class Repository(
         println("### ${Repository::class.simpleName}; init(); testRecords = $GENERATE_TEST_RECORDS")
         storageScope.launch(Dispatchers.Unconfined) {
             val testRecords: List<MoodRecord> = if (GENERATE_TEST_RECORDS) {
-                generateSequence { MoodRecord.random() }.take(1000).toList()
+                generateSequence { MoodRecord.random() }.take(10).toList()
             } else {
                 emptyList()
             }
