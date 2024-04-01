@@ -19,13 +19,16 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.onEach
 import model.CompositeRecord
 import kotlinx.coroutines.flow.update
 import model.HistoryRecord
@@ -43,8 +46,15 @@ fun <T : HistoryRecord> HistoryScreen(
     tagsViewModel: TagsViewModel,
     onItemClick: ((index: Int) -> Unit)? = null,
 ) {
-    val suggestions = tagsViewModel.suggestedTags.collectAsState()
-    val records = historyViewModel.records.collectAsState()
+    val context = rememberCompositionContext().effectCoroutineContext
+    val suggestions: State<List<String>> = tagsViewModel.suggestedTags
+        .onEach { println("###: $it") }
+        .collectAsState(emptyList(), context)
+
+    val records: State<List<HistoryRecord>> = historyViewModel.records
+        .onEach { println("### onEach: $it") }
+        .collectAsState(emptyList(), context)
+
     println("### HistoryScreen: records.size = ${records.value.size}")
 
     LazyColumn(

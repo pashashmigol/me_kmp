@@ -34,4 +34,33 @@ class DaysViewModelTest : RepeatableTest() {
         repository.addRecord(MoodRecord(date = now()))
         waitForListWithSize(1, viewModel.records)
     }
+
+
+    @Test
+    fun `two view models`() = runTest {
+        val repository = Repository(StorageStub())
+        repository.addRecord(MoodRecord(date = now()))
+
+        val viewModel1 = DaysViewModel(repository)
+        val viewModel2 = DaysViewModel(repository)
+
+        waitForListWithSize(1, viewModel1.records)
+        waitForListWithSize(1, viewModel2.records)
+    }
+
+
+
+    @Test
+    fun `test with state`() = runTest {
+        val repository = Repository(StorageStub())
+        repository.addRecord(MoodRecord(date = now()))
+
+        val viewModel1 = DaysViewModel(repository)
+        val viewModel2 = DaysViewModel(repository)
+
+        repository.addRecord(MoodRecord(date = now()))
+
+
+//        viewModel1.records.collectAsState().value
+    }
 }

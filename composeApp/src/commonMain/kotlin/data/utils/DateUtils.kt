@@ -17,7 +17,7 @@ const val DATE_TIME_FORMAT_OLD = "EEE, dd MMM yyyy HH:mm:ss 'GMT'Z"
 const val DATE_TIME_FORMAT = "EEE, dd MMM yyyy HH:mm:ss"
 const val DATE_FORMAT = "EEE, dd MMM yyyy"
 
-fun randomDate(): LocalDateTime = LocalDateTime(
+fun randomDateTime(): LocalDateTime = LocalDateTime(
     year = nextInt(2010, 2024),
     monthNumber = nextInt(1, 13),
     dayOfMonth = nextInt(1, 29),

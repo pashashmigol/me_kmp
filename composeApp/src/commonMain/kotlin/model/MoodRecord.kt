@@ -2,7 +2,7 @@ package model
 
 import data.storage.utils.FeelingsListSerializer
 import data.storage.utils.LocalDateTimeSerializer
-import data.utils.randomDate
+import data.utils.randomDateTime
 import data.utils.randomString
 import data.utils.format
 import kotlinx.datetime.LocalDateTime
@@ -43,7 +43,7 @@ data class MoodRecord(
         const val MAX_EMOTIONS_NUMBER = 1
 
         fun random(): MoodRecord = MoodRecord(
-            date = randomDate(),
+            date = randomDateTime(),
             text = randomString(),
             feelings = listOf(Feeling.random())
         )

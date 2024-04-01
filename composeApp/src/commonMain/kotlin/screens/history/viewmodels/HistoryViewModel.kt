@@ -1,5 +1,6 @@
 package screens.history.viewmodels
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
 import com.rickclephas.kmm.viewmodel.KMMViewModel
 import model.HistoryRecord
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import model.Emotion
 import model.MoodRecord
 
-//@Stable
+@Stable
 abstract class HistoryViewModel<T : HistoryRecord> : KMMViewModel() {
     abstract fun addRecord(moodRecord: MoodRecord)
     abstract val records: StateFlow<List<HistoryRecord>>
