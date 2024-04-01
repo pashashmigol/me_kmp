@@ -61,10 +61,7 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
 
     override fun deserialize(decoder: Decoder): LocalDateTime {
         val str = decoder.decodeString()
-        println("### toLocalDateTime str = $str")
-        val res = str.toLocalDateTime()
-        println("### toLocalDateTime res = $res")
-        return res
+        return str.toLocalDateTime()
     }
 
     override fun serialize(encoder: Encoder, value: LocalDateTime) {

@@ -3,6 +3,7 @@ package data.di
 import screens.history.viewmodels.OneMonthRecordsViewModel
 import data.Repository
 import data.storage.StorageFilesSystem
+import data.storage.StorageStub
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
 import org.kodein.di.bindSingleton

@@ -44,7 +44,7 @@ class DaysViewModelTest : RepeatableTest() {
     }
 
     @Test
-    fun `days view model is created after the repo`() = runTest(times = 1) {
+    fun `days view model is created after the repo`() = runTest(times = 100) {
         val todayRecordsViewModel = TodayRecordsViewModel(repository!!)
 
         val records = listOf(
@@ -62,6 +62,18 @@ class DaysViewModelTest : RepeatableTest() {
         assertContentEquals(
             records,
             (viewModel.records.first().first() as DayRecord).records
+        )
+
+        val record3 = MoodRecord(text = "test3", date = now().startOfDay + 2.hours)
+        todayRecordsViewModel.addRecord(record3)
+
+        waitForListWithSize(1, viewModel.records)
+        val got = (viewModel.records.first().first() as DayRecord).records
+        println("### got: $got")
+
+        assertContentEquals(
+            records + record3,
+            got
         )
     }
 }

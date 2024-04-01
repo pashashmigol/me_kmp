@@ -136,7 +136,7 @@ fun MainContent(di: DirectDI) {
                 onItemClick = { navigation.push(Screen.OneDay(it)) }
             )
             is Screen.Today -> TodayScreen(
-                historyViewModel = TodayRecordsViewModel(Repository(StorageFilesSystem())),
+                historyViewModel = di.instance<TodayRecordsViewModel>(),
                 draftViewModel = di.instance(),
                 wheelViewModel = di.instance(),
                 tagsViewModel = di.instance(),

@@ -48,11 +48,10 @@ fun <T : HistoryRecord> HistoryScreen(
 ) {
     val context = rememberCompositionContext().effectCoroutineContext
     val suggestions: State<List<String>> = tagsViewModel.suggestedTags
-        .onEach { println("###: $it") }
         .collectAsState(emptyList(), context)
 
     val records: State<List<HistoryRecord>> = historyViewModel.records
-        .onEach { println("### onEach: $it") }
+        .onEach { println("### HistoryScreen.onEach: $it") }
         .collectAsState(emptyList(), context)
 
     println("### HistoryScreen: records.size = ${records.value.size}")
