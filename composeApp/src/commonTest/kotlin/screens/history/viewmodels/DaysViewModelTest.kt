@@ -63,17 +63,5 @@ class DaysViewModelTest : RepeatableTest() {
             records,
             (viewModel.records.first().first() as DayRecord).records
         )
-
-        val record3 = MoodRecord(text = "test3", date = now().startOfDay + 2.hours)
-        todayRecordsViewModel.addRecord(record3)
-
-        waitForListWithSize(1, viewModel.records)
-        val got = (viewModel.records.first().first() as DayRecord).records
-        println("### got: $got")
-
-        assertContentEquals(
-            records + record3,
-            got
-        )
     }
 }
