@@ -10,19 +10,17 @@ import model.DayRecord
 import model.HistoryRecord
 
 class DaysViewModel(repo: Repository) : HistoryViewModelReal<DayRecord>(repo) {
-    override val records: StateFlow<List<HistoryRecord>>
-        get() {
-            return repo.days
-                .combine(filter) { records: List<DayRecord>, filter: RecordsFilter ->
-                    val filtered = filteredRecords(
-                        unfilteredRecords = records,
-                        filter = filter,
-                    )
-                    filtered
-                }.stateIn(
-                    scope = scope,
-                    started = SharingStarted.Lazily,
-                    initialValue = emptyList()
-                )
+    override val records: StateFlow<List<HistoryRecord>> = repo.days
+        .combine(filter) { records: List<DayRecord>, filter: RecordsFilter ->
+            val filtered = filteredRecords(
+                unfilteredRecords = records,
+                filter = filter,
+            )
+            filtered
         }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
 }

@@ -101,7 +101,9 @@ class Repository(
     }
 
     fun addRecord(record: MoodRecord) {
+        println("### Repository.addRecord(): $record")
         ramScope.launch {
+            println("### Repository.emit(): ${records.value + record}")
             records.emit(records.value + record)
         }
         storageScope.launch {

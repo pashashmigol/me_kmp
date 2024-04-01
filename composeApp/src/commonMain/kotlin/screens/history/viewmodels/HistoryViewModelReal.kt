@@ -12,6 +12,7 @@ abstract class HistoryViewModelReal<T : HistoryRecord>(val repo: Repository) :
     internal val scope: CoroutineScope = viewModelScope.coroutineScope
 
     override fun addRecord(moodRecord: MoodRecord) {
+        println("### HistoryViewModelReal.addRecord(): $moodRecord")
         repo.addRecord(moodRecord)
     }
 }

@@ -4,22 +4,18 @@ import RepeatableTest
 import data.Repository
 import data.storage.StorageStub
 import data.utils.now
+import data.utils.plus
+import data.utils.startOfDay
 import model.MoodRecord
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.flow.first
+import model.DayRecord
 import waitForListWithSize
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.time.Duration.Companion.hours
 
-@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 class DaysViewModelTest : RepeatableTest() {
-    init {
-        newSingleThreadContext("UI thread").let {
-            Dispatchers.setMain(it)
-        }
-    }
 
     private var repository: Repository? = null
     override fun beforeEach() {
@@ -35,7 +31,6 @@ class DaysViewModelTest : RepeatableTest() {
         waitForListWithSize(1, viewModel.records)
     }
 
-
     @Test
     fun `two view models`() = runTest {
         val repository = Repository(StorageStub())
@@ -48,19 +43,25 @@ class DaysViewModelTest : RepeatableTest() {
         waitForListWithSize(1, viewModel2.records)
     }
 
-
-
     @Test
-    fun `test with state`() = runTest {
-        val repository = Repository(StorageStub())
-        repository.addRecord(MoodRecord(date = now()))
+    fun `days view model is created after the repo`() = runTest(times = 1) {
+        val todayRecordsViewModel = TodayRecordsViewModel(repository!!)
 
-        val viewModel1 = DaysViewModel(repository)
-        val viewModel2 = DaysViewModel(repository)
+        val records = listOf(
+            MoodRecord(text = "test1", date = now().startOfDay),
+            MoodRecord(text = "test2", date = now().startOfDay + 1.hours)
+        )
+        records.forEach {
+            todayRecordsViewModel.addRecord(it)
+        }
 
-        repository.addRecord(MoodRecord(date = now()))
+        val viewModel = DaysViewModel(repository!!)
 
+        waitForListWithSize(1, viewModel.records)
 
-//        viewModel1.records.collectAsState().value
+        assertContentEquals(
+            records,
+            (viewModel.records.first().first() as DayRecord).records
+        )
     }
 }

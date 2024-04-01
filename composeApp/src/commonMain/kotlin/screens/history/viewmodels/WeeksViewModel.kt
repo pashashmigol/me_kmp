@@ -10,8 +10,7 @@ import model.WeekRecord
 class WeeksViewModel(repo: Repository) :
     HistoryViewModelReal<WeekRecord>(repo) {
 
-    override val records
-        get() = repo.weeks
+    override val records = repo.weeks
             .combine(filter) { records: List<WeekRecord>, filter: RecordsFilter ->
                 filteredRecords(
                     unfilteredRecords = records,

@@ -34,8 +34,10 @@ suspend fun <T> waitForListWithSize(
 ) {
     var got: Int? = null
     while (got != (expectedSize)) {
+        println("### got: ${flow.first()}")
         got = flow.first().size
         delay(100)
     }
+    println("### got: ${flow.first()}")
     assertEquals(expectedSize, got)
 }
